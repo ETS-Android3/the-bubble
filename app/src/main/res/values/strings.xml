@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">The Bubble</string>
+    <string name="password">Password</string>
+    <string name="user_name">User name</string>
+    <string name="missing_account_message">Don\'t have an account?</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up"><u>Sign up</u></string>
+    <string name="phone_number">Phone Number</string>
+    <string name="date_of_birth">Date of birth</string>
+    <string name="next">Next</string>
+    <string name="gender">I am a</string>
+    <string name="transgender_woman">Transgender Woman</string>
+    <string name="transgender_man">Transgender Man</string>
+    <string name="man">Man</string>
+    <string name="woman">Woman</string>
+    <string name="genderqueer">Genderqueer</string>
+    <string name="city">My City</string>
 </resources>
