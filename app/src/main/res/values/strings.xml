@@ -15,4 +15,7 @@
     <string name="woman">Woman</string>
     <string name="genderqueer">Genderqueer</string>
     <string name="city">My City</string>
+    <string name="nav_bar_connections">Connections</string>
+    <string name="nav_bar_live">LIVE</string>
+    <string name="nav_bar_Agent">Agent</string>
 </resources>

@@ -42,7 +42,7 @@ public class LiveZoneFragment extends Fragment {
 	public View onCreateView(@NonNull LayoutInflater inflater,
 							 @Nullable ViewGroup container,
 							 @Nullable Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_live_zone, container, false);
+		return inflater.inflate(R.layout.live_zone_fragment, container, false);
 	}
 
 	@Override

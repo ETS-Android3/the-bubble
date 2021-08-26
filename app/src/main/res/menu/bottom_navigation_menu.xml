@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/connections_button"
+        android:enabled="true"
+        android:icon="@drawable/connections_icon"
+        android:title="@string/nav_bar_connections"/>
+    <item
+        android:id="@+id/live_button"
+        android:enabled="true"
+        android:icon="@drawable/live_icon"
+        android:title="@string/nav_bar_live"
+        />
+    <item
+        android:id="@+id/agent_button"
+        android:enabled="true"
+        android:icon="@drawable/agent_icon"
+        android:title="@string/nav_bar_Agent"
+
+        />
+</menu>
