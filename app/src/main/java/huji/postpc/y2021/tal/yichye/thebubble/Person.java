@@ -29,7 +29,7 @@ public class Person {
 	private String aboutMe;
 	private String country;
 	private String city;
-	private int phoneNumber;
+	private int phoneNumber; // TODO: phone number should be private and saved in othe place
 	private Image avatar;
 	private ArrayList<Image> profilePhotos;
 	private short minAgePreference;
@@ -42,6 +42,10 @@ public class Person {
 
 	public Person(){
 		this.id = UUID.randomUUID();
+	}
+
+	public String getId() {
+		return id.toString();
 	}
 
 	public String getName() {
