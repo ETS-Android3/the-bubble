@@ -1,4 +1,9 @@
 package huji.postpc.y2021.tal.yichye.thebubble;
 
-public class LiveZoneViewModel {
+import androidx.lifecycle.ViewModel;
+
+public class LiveZoneViewModel extends ViewModel {
+
+
+
 }
