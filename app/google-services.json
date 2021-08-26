@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "985443197032",
+    "project_id": "the-bubble-36220",
+    "storage_bucket": "the-bubble-36220.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985443197032:android:c1ea751736b432fbaddbdd",
+        "android_client_info": {
+          "package_name": "huji.postpc.y2021.tal.yichye.thebubble"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "985443197032-lj3malqpq4p41m0buqd49q6qg9192f40.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFkWrZOHyYm--LrJxJB40AZgP0sBEUcbc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "985443197032-lj3malqpq4p41m0buqd49q6qg9192f40.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
