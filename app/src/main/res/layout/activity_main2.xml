@@ -6,10 +6,56 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity2">
 
+
     <Button
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/liveZoneButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/getLocationButton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Get location"
         >
     </Button>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/latitude"
+        app:layout_constraintTop_toBottomOf="@id/getLocationButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        </TextView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/longitude"
+        app:layout_constraintTop_toBottomOf="@id/latitude"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+    </TextView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/country"
+        app:layout_constraintTop_toBottomOf="@id/longitude"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+    </TextView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/locality"
+        app:layout_constraintTop_toBottomOf="@id/country"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+    </TextView>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
