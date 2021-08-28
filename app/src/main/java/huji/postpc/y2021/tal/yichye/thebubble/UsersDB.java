@@ -31,13 +31,13 @@ public class UsersDB {
 
 
 
-	private Person getUserById(String id){
-		final Person[] requestedOrder = {null};
+	private PersonData getUserById(String id){
+		final PersonData[] requestedOrder = {null};
 		db.collection("orders").document(id).get()
 				.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
 					@Override
 					public void onSuccess(DocumentSnapshot documentSnapshot) {
-						Person user = documentSnapshot.toObject(Person.class);
+						PersonData user = documentSnapshot.toObject(PersonData.class);
 //						if (order != null) {
 //							orderStatus.postValue(order.getStatus());
 //						}
@@ -52,7 +52,7 @@ public class UsersDB {
 		return requestedOrder[0];
 	}
 
-	public void saveUserToFS(Person userToSave){
+	public void saveUserToFS(PersonData userToSave){
 		FirebaseFirestore db = FirebaseFirestore.getInstance();
 		db.collection("users").document(userToSave.getId()).set(userToSave);
 	}
