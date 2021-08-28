@@ -25,8 +25,10 @@ import android.widget.TextView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -87,23 +89,49 @@ public class MainActivity2 extends AppCompatActivity {
 						public void onComplete(@NonNull Task<Location> task) {
 							// Init location
 							Location location = task.getResult();
-							if (location != null) {
-								try {
-									// Init geoCoder
-									Geocoder geocoder = new Geocoder(MainActivity2.this,
-											Locale.getDefault());
-									// Init address list
-									List<Address> addresses = geocoder.getFromLocation(
-											location.getLatitude(), location.getLongitude(), 1
-									);
-									latitudeView.setText("Latitude: " + addresses.get(0).getLatitude());
-									longitudeView.setText("Longitude: " + addresses.get(0).getLongitude());
-									countryView.setText("County: " + addresses.get(0).getCountryName());
-									localityView.setText("Locality: " + addresses.get(0).getLocality());
-									// TODO: do something with received location
-								} catch (IOException e) {
-									e.printStackTrace();
+							if (false){
+//							if (location == null) {
+//								try {
+//									// Init geoCoder
+//									Geocoder geocoder = new Geocoder(MainActivity2.this,
+//											Locale.getDefault());
+////									// Init address list
+//									List<Address> addresses = geocoder.getFromLocation(
+//											location.getLatitude(), location.getLongitude(), 1
+//									);
+////									latitudeView.setText("Latitude: " + addresses.get(0).getLatitude());
+////									longitudeView.setText("Longitude: " + addresses.get(0).getLongitude());
+////									countryView.setText("County: " + addresses.get(0).getCountryName());
+////									localityView.setText("Locality: " + addresses.get(0).getLocality());
+//									latitudeView.setText("Latitude: " + location.getLatitude());
+//									longitudeView.setText("Longitude: " + location.getLongitude());
+//									// TODO: do something with received location
+//								} catch (IOException e) {
+//									e.printStackTrace();
+//								}
+							} else {
+								// Request location updates
+								LocationRequest locationRequest = createLocationRequest();
+								LocationCallback locationCallback = new LocationCallback() {
+									@Override
+									public void onLocationResult(@NonNull LocationResult locationResult) {
+										super.onLocationResult(locationResult);
+										Location location1 = locationResult.getLastLocation();
+										latitudeView.setText("Latitude: " + location1.getLatitude());
+										longitudeView.setText("Longitude: " + location1.getLongitude());
+									}
+								};
+								if (ActivityCompat.checkSelfPermission(MainActivity2.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity2.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+									// TODO: Consider calling
+									//    ActivityCompat#requestPermissions
+									// here to request the missing permissions, and then overriding
+									//   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+									//                                          int[] grantResults)
+									// to handle the case where the user grants the permission. See the documentation
+									// for ActivityCompat#requestPermissions for more details.
+									return;
 								}
+								fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
 							}
 						}
 					});
@@ -116,6 +144,25 @@ public class MainActivity2 extends AppCompatActivity {
 		});
 
 
+
+
+	}
+
+	protected LocationRequest createLocationRequest() {
+		LocationRequest locationRequest = LocationRequest.create();
+		locationRequest.setInterval(10000);
+		locationRequest.setFastestInterval(5000);
+		locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+		return locationRequest;
+
+//		LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+//				.addLocationRequest(locationRequest);
+//
+//
+//		SettingsClient client = LocationServices.getSettingsClient(this);
+//		Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
+//
+//		fusedLocationProviderClient.requestLocationUpdates()
 	}
 
 	void getLocation() {
