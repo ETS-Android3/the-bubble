@@ -28,4 +28,7 @@
     <string name="description">Description</string>
     <string name="description_hint">Write something</string>
     <string name="error_message_names">Must enter name</string>
+    <string name="chats_match_requests">Chats / Match requests</string>
+    <string name="live_search_for_people_nearby">Live search for people nearby</string>
+    <string name="search_for_matches_using_n_common_location_history">Search for matches using\n common location history</string>
 </resources>
