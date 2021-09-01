@@ -88,6 +88,7 @@ public class PhotosFragment extends Fragment
         profile_pic_plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                current_picked = profile_image_spot;
                 selectImage(getActivity());
             }
         });
@@ -96,7 +97,7 @@ public class PhotosFragment extends Fragment
             @Override
             public void onClick(View v) {
                 current_picked = rect1;
-                current_picked.setVisibility(View.GONE);
+                reg_plus1.setVisibility(View.GONE);
                 selectImage(getActivity());
             }
         });
@@ -105,7 +106,7 @@ public class PhotosFragment extends Fragment
             @Override
             public void onClick(View v) {
                 current_picked = rect2;
-                current_picked.setVisibility(View.GONE);
+                reg_plus2.setVisibility(View.GONE);
                 selectImage(getActivity());
             }
         });
@@ -115,7 +116,7 @@ public class PhotosFragment extends Fragment
             @Override
             public void onClick(View v) {
                 current_picked = rect3;
-                current_picked.setVisibility(View.GONE);
+                reg_plus3.setVisibility(View.GONE);
                 selectImage(getActivity());
             }
         });
@@ -144,7 +145,9 @@ public class PhotosFragment extends Fragment
                     startActivityForResult(pickPhoto , 1);
 
                 } else if (options[item].equals("Cancel")) {
-                    current_picked.setVisibility(View.VISIBLE);
+                    reg_plus1.setVisibility(View.VISIBLE);
+                    reg_plus2.setVisibility(View.VISIBLE);
+                    reg_plus3.setVisibility(View.VISIBLE);
                     dialog.dismiss();
 
                 }
