@@ -31,4 +31,6 @@
     <string name="chats_match_requests">Chats / Match requests</string>
     <string name="live_search_for_people_nearby">Live search for people nearby</string>
     <string name="search_for_matches_using_n_common_location_history">Search for matches using\n common location history</string>
+    <string name="this_will_be_your_profile_picture">This will be your profile picture</string>
+
 </resources>
