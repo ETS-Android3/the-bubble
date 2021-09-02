@@ -56,16 +56,16 @@ public LookingForFragment()
         activity = getActivity();
 
 
-        newUserViewModel.minAgePreferenceLiveData.observe(getViewLifecycleOwner(), new Observer<Short>() {
+        newUserViewModel.minAgePreferenceLiveData.observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
-            public void onChanged(Short num) {
+            public void onChanged(Integer num) {
                 handleRangeLiveDataListener(newUserViewModel);
             }
         });
 
-        newUserViewModel.maxAgePreferenceLiveData.observe(getViewLifecycleOwner(), new Observer<Short>() {
+        newUserViewModel.maxAgePreferenceLiveData.observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
-            public void onChanged(Short num) {
+            public void onChanged(Integer num) {
                 handleRangeLiveDataListener(newUserViewModel);
             }
         });
@@ -79,8 +79,8 @@ public LookingForFragment()
             public void onStopTrackingTouch(@NonNull RangeSlider slider) {
                 Float minValue = slider.getValues().get(0);
                 Float maxValue = slider.getValues().get(1);
-                newUserViewModel.minAgePreferenceLiveData.setValue(minValue.shortValue());
-                newUserViewModel.maxAgePreferenceLiveData.setValue(maxValue.shortValue());
+                newUserViewModel.minAgePreferenceLiveData.setValue(minValue.intValue());
+                newUserViewModel.maxAgePreferenceLiveData.setValue(maxValue.intValue());
             }
         });
 
@@ -118,8 +118,8 @@ public LookingForFragment()
 
     private void handleRangeLiveDataListener(NewUserViewModel newUserViewModel)
     {
-        Short minValue = newUserViewModel.minAgePreferenceLiveData.getValue();
-        Short maxValue = newUserViewModel.maxAgePreferenceLiveData.getValue();
+        Integer minValue = newUserViewModel.minAgePreferenceLiveData.getValue();
+        Integer maxValue = newUserViewModel.maxAgePreferenceLiveData.getValue();
 
         List<Float> list = new ArrayList<>();
         list.add((float) minValue);

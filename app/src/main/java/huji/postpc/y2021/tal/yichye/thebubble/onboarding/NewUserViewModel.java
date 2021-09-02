@@ -23,8 +23,8 @@ public class NewUserViewModel extends ViewModel
 
     protected MutableLiveData<String> photosLiveData = new MutableLiveData<>("");
 
-    protected MutableLiveData<Short> minAgePreferenceLiveData = new MutableLiveData<Short>((short) 26);
-    protected MutableLiveData<Short> maxAgePreferenceLiveData = new MutableLiveData<Short>((short) 40);
+    protected MutableLiveData<Integer> minAgePreferenceLiveData = new MutableLiveData<Integer>( 26);
+    protected MutableLiveData<Integer> maxAgePreferenceLiveData = new MutableLiveData<Integer>( 40);
     protected MutableLiveData<HashSet<Integer>> genderTendencyLiveData = new MutableLiveData<>(new HashSet<>());
 
     protected MutableLiveData<String> aboutMeLiveData = new MutableLiveData<>("");

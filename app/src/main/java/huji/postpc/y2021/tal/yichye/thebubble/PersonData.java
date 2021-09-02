@@ -5,45 +5,37 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.Year;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.UUID;
 
 
+public class PersonData implements Serializable {
 
-public class PersonData {
-
-	public UUID id;
-	public String name;
+	public String fullName;
+	public String userName;
+	public String password;
 	public Gender gender;
-	public LocalDate dateOfBirth;
+//	public LocalDate dateOfBirth;
 	public String aboutMe;
-	public String country;
 	public String city;
 	public String phoneNumber; // TODO: phone number should be private and saved in othe place
 	public Image avatar;
 	public ArrayList<Image> profilePhotos;
-	public short minAgePreference;
-	public short maxAgePreference;
+	public int minAgePreference;
+	public int maxAgePreference;
 	public ArrayList<Gender> genderTendency;
 	public ArrayList<String> requests;
 	public ArrayList<String> matches;
 
 
-
-	public PersonData(){
-		this.id = UUID.randomUUID();
-	}
-
 	public String getId() {
-		return id.toString();
+		return userName;
 	}
 
 	public String getName() {
-		return name;
+		return fullName;
 	}
 
 	public Gender getGender() {
@@ -51,19 +43,18 @@ public class PersonData {
 	}
 
 	@RequiresApi(api = Build.VERSION_CODES.O)
-	public int getAge() {
-		return Period.between(this.dateOfBirth, LocalDate.now()).getYears();
-	}
+//	public int getAge() {
+//		return Period.between(this.dateOfBirth, LocalDate.now()).getYears();
+//	}
 
 	@Override
 	public String toString() {
 		return "PersonData{" +
-				"id=" + id +
-				", name='" + name + '\'' +
+				", full name='" + fullName + '\'' +
+				", user name='" + userName + '\'' +
 				", gender=" + gender +
-				", dateOfBirth=" + dateOfBirth +
+//				", dateOfBirth=" + dateOfBirth +
 				", aboutMe='" + aboutMe + '\'' +
-				", country='" + country + '\'' +
 				", city='" + city + '\'' +
 				", phoneNumber='" + phoneNumber + '\'' +
 				", avatar=" + avatar +
