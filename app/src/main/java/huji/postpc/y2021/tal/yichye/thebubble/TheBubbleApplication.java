@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 public class TheBubbleApplication extends Application {
 
     private UsersDB usersDB;
@@ -33,12 +35,17 @@ public class TheBubbleApplication extends Application {
 
         // TODO - ADD LOGOUT OPTION
         String userName = sp.getString("user_name", null);
+        Intent intent;
         if (userName != null) {
-            startActivity(new Intent(this, MainActivity.class));
+            intent = new Intent(this, MainActivity.class).
+                    setFlags(FLAG_ACTIVITY_NEW_TASK);
         }
         else {
-            startActivity(new Intent(this, LoginActivity.class));
+            intent = new Intent(this, LoginActivity.class).
+                    setFlags(FLAG_ACTIVITY_NEW_TASK);
         }
+        startActivity(intent);
+
     }
 
 }
