@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:name=".TheBubbleApplication"
         android:theme="@style/Theme.TheBubble">
-<!--        <activity android:name=".MainActivity2"></activity>-->
+        <!--        <activity android:name=".MainActivity2"></activity>-->
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
