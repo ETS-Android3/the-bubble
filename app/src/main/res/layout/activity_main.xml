@@ -12,13 +12,62 @@
         android:layout_height="500dp"
         app:layout_constraintBottom_toTopOf="@id/bottom_bar"/>
 
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="The Bubble"
+            app:navigationIcon="@drawable/ic_baseline_menu_24"
+            app:navigationIconTint="@color/black"
+            android:background="@drawable/gradient_color"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:theme="@style/Theme.TheBubble"
+            />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/navigationView"
+        app:menu="@menu/navigation_drawer"
+        app:headerLayout="@layout/header_navigation_drawer"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="@color/background_gray"
+            android:layout_marginTop="140dp"/>
+
+
+    </com.google.android.material.navigation.NavigationView>
+
+
+
+
+
+
     <LinearLayout
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent">
-
-        ...
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"

@@ -20,4 +20,48 @@
                 android:bottom="2dp" />
         </shape>
     </item>
+
+
+<!--    <item>-->
+<!--        <shape>-->
+<!--            <gradient-->
+<!--                android:startColor="#00b5cb"-->
+<!--                android:centerColor="-->
+<!--#87a7e7"-->
+<!--                android:endColor="-->
+<!--#c386d3"-->
+<!--                android:angle="45"-->
+<!--                android:type="linear" />-->
+<!--            <stroke-->
+<!--                android:width="0dp"/>-->
+<!--            <corners-->
+<!--                android:radius="9dp" />-->
+<!--            <padding-->
+<!--                android:left="2dp"-->
+<!--                android:top="2dp"-->
+<!--                android:right="2dp"-->
+<!--                android:bottom="2dp" />-->
+<!--        </shape>-->
+<!--    </item>-->
+
+<!--        <item>-->
+<!--            <shape>-->
+<!--                <gradient-->
+<!--                    android:startColor="#296bf7"-->
+<!--                    android:centerColor="-->
+<!--#7a74e5"-->
+<!--                    android:endColor="#dc85ba"-->
+<!--                    android:angle="45"-->
+<!--                    android:type="linear" />-->
+<!--                <stroke-->
+<!--                    android:width="0dp"/>-->
+<!--                <corners-->
+<!--                    android:radius="9dp" />-->
+<!--                <padding-->
+<!--                    android:left="2dp"-->
+<!--                    android:top="2dp"-->
+<!--                    android:right="2dp"-->
+<!--                    android:bottom="2dp" />-->
+<!--            </shape>-->
+<!--        </item>-->
 </selector>
