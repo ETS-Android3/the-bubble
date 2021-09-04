@@ -10,21 +10,19 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-
 import java.util.ArrayList;
 
 import huji.postpc.y2021.tal.yichye.thebubble.PersonData;
 import huji.postpc.y2021.tal.yichye.thebubble.R;
 import huji.postpc.y2021.tal.yichye.thebubble.TheBubbleApplication;
 
-public class WelcomeFragment extends Fragment
+public class AppNavigationFragment extends Fragment
 {
     private Button nextButton;
 
-    public WelcomeFragment()
+    public AppNavigationFragment()
     {
-        super(R.layout.welcome_screen);
+        super(R.layout.app_navigation_screen);
     }
 
     @Override

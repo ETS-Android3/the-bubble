@@ -1,12 +1,15 @@
 package huji.postpc.y2021.tal.yichye.thebubble;
 
 import android.content.Intent;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 import huji.postpc.y2021.tal.yichye.thebubble.onboarding.OnBoardingActivity;
@@ -18,6 +21,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button signInButton;
     private TextView signUpTextView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +31,7 @@ public class LoginActivity extends AppCompatActivity {
         signInButton = findViewById(R.id.signInButton);
         signUpTextView = findViewById(R.id.signUpTextView);
 
+        defineGradientColorToText(signInButton);
         signInButton.setOnClickListener(v -> {
             checkUserCredentials();
         });
@@ -61,5 +66,17 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(getBaseContext(),
                     "Must enter user name and password", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    protected void defineGradientColorToText(Button view)
+    {
+        int startColor = ContextCompat.getColor(getApplicationContext(),
+                R.color.gradient_peach);
+        int endColor = ContextCompat.getColor(getApplicationContext(),
+                R.color.gradient_purple);
+
+        Shader shader = new LinearGradient(0,0,0,view.getLineHeight(),
+                startColor, endColor, Shader.TileMode.REPEAT);
+        view.getPaint().setShader(shader);
     }
 }

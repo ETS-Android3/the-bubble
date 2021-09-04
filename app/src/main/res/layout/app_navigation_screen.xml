@@ -52,7 +52,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/IconDescription"
-
             android:text="Live search for people nearby"
             />
 
@@ -60,7 +59,6 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginTop="30dp"
-
             android:src="@drawable/agent_icon"
             />
 
@@ -68,7 +66,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/IconDescription"
-
             android:text="Chats / Match requests"
             />
 
@@ -83,16 +80,11 @@
         android:text="Got it !"
         android:textStyle="bold"
         android:theme="@style/NextButton"
-        android:layout_marginBottom="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:backgroundTint="@color/gradient_purple"
         android:textColor="@color/black"/>
-
-
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
