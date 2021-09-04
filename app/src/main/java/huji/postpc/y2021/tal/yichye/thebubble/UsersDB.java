@@ -1,27 +1,12 @@
 package huji.postpc.y2021.tal.yichye.thebubble;
 
-import static android.content.ContentValues.TAG;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.UUID;
 
 public class UsersDB {
-
 
 	private FirebaseFirestore db = null;
 
@@ -30,35 +15,29 @@ public class UsersDB {
 	}
 
 
-
-	private PersonData getUserById(String id){
-		final PersonData[] requestedOrder = {null};
-		db.collection("orders").document(id).get()
-				.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-					@Override
-					public void onSuccess(DocumentSnapshot documentSnapshot) {
+	public LiveData<PersonData> getUserByID(String userId)
+	{
+		MutableLiveData<PersonData> liveData = new MutableLiveData<>();
+		db.collection("users").document(userId).get()
+				.addOnSuccessListener(documentSnapshot -> {
+					if (documentSnapshot.exists()) {
 						PersonData user = documentSnapshot.toObject(PersonData.class);
-//						if (order != null) {
-//							orderStatus.postValue(order.getStatus());
-//						}
+						liveData.setValue(user);
 					}
-				})
-				.addOnFailureListener(new OnFailureListener() {
-					@Override
-					public void onFailure(@NonNull Exception e) {
-						Log.e(TAG, "onFailure: ", e);
+					else {
+						liveData.setValue(null);
 					}
 				});
-		return requestedOrder[0];
+		return liveData;
 	}
 
-	public void saveUserToFS(PersonData userToSave){
+	public void addUserToDB(PersonData userToSave){
 		FirebaseFirestore db = FirebaseFirestore.getInstance();
 		db.collection("users").document(userToSave.getId()).set(userToSave);
 	}
 
 
-	private void removeUserFromFS(String id){
+	private void removeUserFromDB(String id){
 		db.collection("users").document(id).delete();
 	}
 

@@ -18,7 +18,7 @@
         android:label="CommunityRulesFragment" >
         <action
             android:id="@+id/action_communityRulesFragment_to_welcomeFragment"
-            app:destination="@id/welcomeFragment"
+            app:destination="@id/appNavigationFragment"
             app:popUpTo="@+id/nav_graph"
             app:popUpToInclusive="true"/>
     </fragment>
@@ -71,9 +71,9 @@
             app:destination="@id/aboutMeFragment" />
     </fragment>
     <fragment
-        android:id="@+id/welcomeFragment"
-        android:name="huji.postpc.y2021.tal.yichye.thebubble.onboarding.WelcomeFragment"
-        android:label="WelcomeFragment" />
+        android:id="@+id/appNavigationFragment"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.onboarding.AppNavigationFragment"
+        android:label="AppNavigationFragment" />
     <fragment
         android:id="@+id/loginDetailsFragment"
         android:name="huji.postpc.y2021.tal.yichye.thebubble.onboarding.LoginDetailsFragment"

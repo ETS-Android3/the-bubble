@@ -74,7 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:itemBackground="@drawable/button_navigation_background"
-            app:itemIconSize="35dp"
+            app:itemIconSize="25dp"
             app:itemIconTint="@color/gradient_purple"
             app:itemTextColor="@color/gradient_pink"
             app:menu="@menu/bottom_navigation_menu"

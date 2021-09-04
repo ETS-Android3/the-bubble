@@ -15,8 +15,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-<!--        <activity android:name=".MainActivity2"></activity>-->
+        android:name=".TheBubbleApplication"
+        android:theme="@style/Theme.TheBubble">
+        <!--        <activity android:name=".MainActivity2"></activity>-->
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -29,16 +30,15 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".MainActivity" android:screenOrientation="portrait">
+        <activity android:name="MainActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".onboarding.OnBoardingActivity" android:screenOrientation="portrait"> </activity>
 
-
-
-        <activity android:name=".onboarding.OnBoardingActivity"> </activity>
+        <activity android:name=".LoginActivity"> </activity>
     </application>
 
 </manifest>

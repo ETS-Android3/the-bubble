@@ -12,7 +12,7 @@
             <stroke
                 android:width="0dp"/>
             <corners
-                android:radius="9dp" />
+                android:radius="0dp" />
             <padding
                 android:left="2dp"
                 android:top="2dp"

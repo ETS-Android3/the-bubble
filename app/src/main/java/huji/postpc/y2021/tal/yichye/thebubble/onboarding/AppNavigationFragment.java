@@ -1,5 +1,6 @@
 package huji.postpc.y2021.tal.yichye.thebubble.onboarding;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,20 +10,19 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-
 import java.util.ArrayList;
 
 import huji.postpc.y2021.tal.yichye.thebubble.PersonData;
 import huji.postpc.y2021.tal.yichye.thebubble.R;
+import huji.postpc.y2021.tal.yichye.thebubble.TheBubbleApplication;
 
-public class WelcomeFragment extends Fragment
+public class AppNavigationFragment extends Fragment
 {
     private Button nextButton;
 
-    public WelcomeFragment()
+    public AppNavigationFragment()
     {
-        super(R.layout.welcome_screen);
+        super(R.layout.app_navigation_screen);
     }
 
     @Override
@@ -40,7 +40,6 @@ public class WelcomeFragment extends Fragment
 
         nextButton.setOnClickListener(v -> {
             newUserViewModel.progressLiveData.setValue(OnBoardingActivity.DONE_ON_BOARDING);
-
         });
 
     }
@@ -48,8 +47,11 @@ public class WelcomeFragment extends Fragment
     private void createUser(NewUserViewModel newUserViewModel)
     {
         PersonData newUser = new PersonData();
+        newUser.fullName = newUserViewModel.fullNameLiveData.getValue();
+        newUser.userName = newUserViewModel.userNameLiveData.getValue();
+        newUser.password = newUserViewModel.passwordLiveData.getValue();
         newUser.phoneNumber = newUserViewModel.phoneNumberLiveData.getValue();
-        newUser.dateOfBirth = newUserViewModel.dataOfBirthLiveData.getValue();
+//        newUser.dateOfBirth = newUserViewModel.dataOfBirthLiveData.getValue();
         newUser.city = newUserViewModel.cityLiveData.getValue();
         newUser.minAgePreference = newUserViewModel.minAgePreferenceLiveData.getValue();
         newUser.maxAgePreference = newUserViewModel.maxAgePreferenceLiveData.getValue();
@@ -64,6 +66,13 @@ public class WelcomeFragment extends Fragment
         }
         newUser.genderTendency = tendencyList;
 
+
         System.out.println(newUser);
+
+        TheBubbleApplication application = TheBubbleApplication.getInstance();
+        SharedPreferences sp = application.getSP();
+        sp.edit().putString("user_name", newUser.userName).apply();
+        application.getUsersDB().addUserToDB(newUser);
+
     }
 }
