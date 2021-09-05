@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_main_activity.xml"
+    app:startDestination="@id/connectionsFragment">
+
+    <fragment
+        android:id="@+id/agentFragment"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.AgentFragment"
+        android:label="AgentFragment" >
+    </fragment>
+    <fragment
+        android:id="@+id/connectionsFragment"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.ConnectionsFragment"
+        android:label="ConnectionsFragment" >
+    </fragment>
+    <fragment
+        android:id="@+id/liveZoneFragment"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.LiveZoneFragment"
+        android:label="liveZoneFragment">
+    </fragment>
+</navigation>

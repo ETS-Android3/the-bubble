@@ -5,31 +5,26 @@
         android:id="@+id/group1"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/d_item1"
+            android:id="@+id/myProfile"
             android:icon="@drawable/user_icon"
             android:iconTint="@color/gradient_purple"
-            android:title="Profile Preview" />
+            android:title="My Profile" />
+
         <item
-            android:id="@+id/d_item2"
-            android:icon="@drawable/settings_icon"
+            android:id="@+id/myTendency"
+            android:icon="@drawable/user_icon"
             android:iconTint="@color/gradient_purple"
-            android:title="Edit Your Details"
-            android:checked="true" />
+            android:title="I'm Looking For" />
         <item
-            android:id="@+id/d_item3"
-            android:icon="@drawable/write"
-            android:iconTint="@color/gradient_purple"
-            android:title="Edit Profile Description" />
-        <item
-            android:id="@+id/d_item4"
-            android:icon="@drawable/orientation_icon"
-            android:iconTint="@color/gradient_purple"
-            android:title="App Orientation" />
-        <item
-            android:id="@+id/d_item5"
+            android:id="@+id/communityRules"
             android:icon="@drawable/rules_icon"
             android:iconTint="@color/gradient_purple"
             android:title="Community Rules" />
+        <item
+            android:id="@+id/appNavigation"
+            android:icon="@drawable/orientation_icon"
+            android:iconTint="@color/gradient_purple"
+            android:title="App Navigation" />
     </group>
 
 </menu>

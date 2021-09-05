@@ -32,11 +32,12 @@ public class ConnectionsFragment extends Fragment {
 
 
         new TabLayoutMediator(tabLayout, viewPager,
-                new TabLayoutMediator.TabConfigurationStrategy() {
-                    @Override
-                    public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                        tab.setText("Tab " + (position + 1));
+                (tab, position) -> {
+                    if (position == 0 ){
+                        tab.setText("Conversations");
                     }
+                    else tab.setText("BTB Requests");
+
                 }).attach();
 
     }
