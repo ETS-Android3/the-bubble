@@ -27,7 +27,7 @@
         android:label="Smart Match" />
     <fragment
         android:id="@+id/connections"
-        android:name="huji.postpc.y2021.tal.yichye.thebubble.ConnectionsFragment"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.Connections.ConnectionsFragment"
         android:label="Connections" />
     <fragment
         android:id="@+id/liveZone"

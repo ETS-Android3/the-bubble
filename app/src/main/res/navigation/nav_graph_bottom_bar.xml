@@ -12,7 +12,7 @@
     </fragment>
     <fragment
         android:id="@+id/connectionsFragment"
-        android:name="huji.postpc.y2021.tal.yichye.thebubble.ConnectionsFragment"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.Connections.ConnectionsFragment"
         android:label="ConnectionsFragment" >
     </fragment>
     <fragment

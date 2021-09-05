@@ -1,35 +1,40 @@
 package huji.postpc.y2021.tal.yichye.thebubble;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import android.annotation.SuppressLint;
-import android.content.res.ColorStateList;
-import android.content.res.Resources;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
+import android.widget.Toast;
 
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+
+import huji.postpc.y2021.tal.yichye.thebubble.Connections.ConnectionsFragment;
+import io.grpc.internal.JsonUtil;
 
 import java.util.Set;
 
@@ -38,18 +43,70 @@ import static com.google.firebase.components.Dependency.setOf;
 
 public class MainActivity extends AppCompatActivity {
 
+    UserViewModel userViewModel ;
+    SharedPreferences sp;
+    ListenerRegistration listenerRegistration;
 
-    private  NavController sideNavController;
+
+    private NavController sideNavController;
     private AppBarConfiguration appBarConfiguration;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private LinearLayout bottomBarLinearView;
     private BottomNavigationView bottomNavigationView;
 
-    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.loading_screen);
+        userViewModel =  new ViewModelProvider(this).get(UserViewModel.class);
+        sp = TheBubbleApplication.getInstance().getSP();
+        setUserViewModel();
+    }
+
+    private void setUserViewModel() {
+        if (sp != null){
+            String userName = sp.getString("user_name", null);
+            if (userName != null){
+                LiveData<PersonData> personDataLiveData = TheBubbleApplication.getInstance().getUsersDB().getUserByID(userName);
+                final Observer<PersonData> personDataObserver = personData -> {
+                    if(personData != null){
+                        System.out.println(personData);
+                        updateUserViewModel(personData);
+                       }
+                    else {
+                        Toast.makeText(getBaseContext(),
+                                "Person doesn't exist", Toast.LENGTH_SHORT).show();
+                    }
+                    setMainView();
+                    attach_listener(personData);
+
+
+                };
+                personDataLiveData.observe(this,personDataObserver);
+            }
+        }
+    }
+
+    private void updateUserViewModel(PersonData personData){
+        userViewModel.fullNameLiveData.setValue(personData.fullName);
+        userViewModel.userNameLiveData.setValue(personData.userName);
+        userViewModel.passwordLiveData.setValue(personData.password);
+        userViewModel.phoneNumberLiveData.setValue(personData.phoneNumber);
+        userViewModel.ageLiveData.setValue(personData.age);
+        userViewModel.myGenderLiveData.setValue(personData.gender);
+        userViewModel.cityLiveData.setValue(personData.city);
+        userViewModel.profilePicture.setValue(personData.profilePicture);
+        userViewModel.photosLiveData.setValue(personData.photos);
+        userViewModel.minAgePreferenceLiveData.setValue(personData.minAgePreference);
+        userViewModel.maxAgePreferenceLiveData.setValue(personData.maxAgePreference);
+        userViewModel.genderTendency.setValue(personData.genderTendency);
+        userViewModel.requestsLiveData.setValue(personData.requests);
+        userViewModel.aboutMeLiveData.setValue(personData.aboutMe);
+    }
+
+
+    private void setMainView() {
         setContentView(R.layout.activity_main);
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -134,6 +191,8 @@ public class MainActivity extends AppCompatActivity {
             };
 
 
+
+
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             item -> {
                 NavHostFragment navHostFragment = (NavHostFragment)
@@ -181,94 +240,52 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.getMenu().setGroupCheckable(R.id.group_bottom_menu,false, false);
         bottomNavigationView.setEnabled(false);
 
+        }
+
+
+    private void attach_listener(PersonData personData){
+        listenerRegistration = TheBubbleApplication.getInstance()
+                .getUsersDB()
+                .getDb()
+                .collection("users")
+                .document(personData.getId())
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException error) {
+                        System.out.println("IN ON EVENT");
+                        if (error != null) {
+                            System.err.println(error.getMessage());
+
+                        } else if (snapshot == null) {
+                            System.err.println("snap shot is null");
+                        } else {
+                            System.out.println("in every");
+                            PersonData changedPerson = snapshot.toObject(PersonData.class);
+                            if (changedPerson != null) {
+                                updateUserViewModel(changedPerson);
+                            }
+                        }
+                        System.out.println(userViewModel.fullNameLiveData.getValue());
+                        System.out.println(userViewModel.requestsLiveData.getValue());
+                        System.out.println(userViewModel.userNameLiveData.getValue());
+                        System.out.println(userViewModel.passwordLiveData.getValue());
+
+                    }
+                });
+    }
+
+    private void detachListener(){
+        if(listenerRegistration != null)        listenerRegistration.remove();
     }
 
 
+    @Override
+    protected void onDestroy() {
+        detachListener();
+        super.onDestroy();
 
-    //    public DrawerLayout drawerLayout;
-//    public ActionBarDrawerToggle actionBarDrawerToggle;
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
-//
-//        // drawer layout instance to toggle the menu icon to open
-//        // drawer and back button to close drawer
-//        drawerLayout = findViewById(R.id.my_drawer_layout);
-//        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
-//
-//        // pass the Open and Close toggle for the drawer layout listener
-//        // to toggle the button
-//        drawerLayout.addDrawerListener(actionBarDrawerToggle);
-//        actionBarDrawerToggle.syncState();
-//
-//        // to make the Navigation drawer icon always appear on the action bar
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//    }
-//
-    // override the onOptionsItemSelected()
-    // function to implement
-    // the item click listener callback
-    // to open and close the navigation
-    // drawer when the icon is clicked
-
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//
-//        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-
-
+    }
 }
 
 
-
-//    drawerLayout = findViewById(R.id.drawer_layout);
-//    bottomNavigationView = findViewById(R.id.bottom_navigation);
-//    bottomBarLinearView = findViewById(R.id.bottom_bar);
-//
-//    findViewById(R.id.menuImageView).setOnClickListener(new View.OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//            drawerLayout.openDrawer(GravityCompat.START);
-//            bottomBarLinearView.setVisibility(View.GONE);
-////                bottomNavigationView.setVisibility(View.GONE);
-//        }
-//    });
-//
-//    NavigationView sideBarNavigationView = findViewById(R.id.sideBarNavigationView);
-//    NavHostFragment navHostFragmentSideBar = (NavHostFragment)
-//            getSupportFragmentManager().findFragmentById(R.id.fragment_container_main_side_bar);
-//    NavController navControllerSideBar = navHostFragmentSideBar.getNavController();
-//        NavigationUI.setupWithNavController(sideBarNavigationView, navControllerSideBar);
-//
-//
-//}
-//
-//    @Override
-//    public void onBackPressed() {
-//        return;
-//    }
-
-//
-//    // side bar navigation - WORKING!!!
-//    setSupportActionBar(topAppBar);
-//    NavHostFragment navHostFragmentSideBar = (NavHostFragment)
-//            getSupportFragmentManager().findFragmentById(R.id.fragment_container_main_side_bar);
-//    NavController navControllerSideBar = navHostFragmentSideBar.getNavController();
-//        appBarConfiguration = new AppBarConfiguration.
-//                Builder(navControllerSideBar.getGraph()).setOpenableLayout(drawerLayout).build();
-//                NavigationUI.setupActionBarWithNavController(this, navControllerSideBar, appBarConfiguration);
-//                NavigationUI.setupWithNavController(sideBarNavigationView, navControllerSideBar);
-
-// Setup bottom navigation bar - WORKING!!!
-//        NavHostFragment navHostFragment = (NavHostFragment)
-//                getSupportFragmentManager().findFragmentById(R.id.fragment_container_main);
-//        NavController navController = navHostFragment.getNavController();
-//        NavigationUI.setupWithNavController(bottomNavigationView, navController);
-//        bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
 

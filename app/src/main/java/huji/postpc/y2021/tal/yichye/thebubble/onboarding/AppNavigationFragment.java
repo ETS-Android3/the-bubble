@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.util.ArrayList;
 
+import huji.postpc.y2021.tal.yichye.thebubble.Connections.Request;
 import huji.postpc.y2021.tal.yichye.thebubble.PersonData;
 import huji.postpc.y2021.tal.yichye.thebubble.R;
 import huji.postpc.y2021.tal.yichye.thebubble.TheBubbleApplication;
@@ -65,6 +66,7 @@ public class AppNavigationFragment extends Fragment
             tendencyList.add(genderList[genderIndex]);
         }
         newUser.genderTendency = tendencyList;
+        newUser.requests = new ArrayList<Request>();
 
 
         System.out.println(newUser);

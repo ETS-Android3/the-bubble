@@ -1,9 +1,11 @@
-package huji.postpc.y2021.tal.yichye.thebubble;
+package huji.postpc.y2021.tal.yichye.thebubble.Connections;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
+
+import huji.postpc.y2021.tal.yichye.thebubble.Connections.MessagingFragment;
+import huji.postpc.y2021.tal.yichye.thebubble.Connections.RequestsFragment;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
 
