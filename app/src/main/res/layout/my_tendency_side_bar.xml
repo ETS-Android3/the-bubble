@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/background_gray">
+
+
+    <LinearLayout
+        android:id="@+id/gendersLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/tendencyPageTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+
+        <CheckBox
+            android:id="@+id/gender1"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/man"
+            android:layout_marginTop="40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/genderPageTitle"
+            style="@style/GenderRadioButton"
+            />
+
+        <CheckBox
+            android:id="@+id/gender2"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="@string/woman"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radio1"
+            style="@style/GenderRadioButton"
+            />
+
+        <CheckBox
+            android:id="@+id/gender3"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="@string/transgender_man"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radio2"
+            style="@style/GenderRadioButton"
+            />
+
+        <CheckBox
+            android:id="@+id/gender4"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="@string/transgender_woman"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radio3"
+            style="@style/GenderRadioButton"
+            />
+
+        <CheckBox
+            android:id="@+id/gender5"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="@string/genderqueer"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radio4"
+            style="@style/GenderRadioButton"
+            />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/age_range"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/gendersLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/PageTitle"
+        android:text="@string/age_range"
+        />
+
+
+    <com.google.android.material.slider.RangeSlider
+        android:id="@+id/age_slider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:stepSize="1.0"
+        android:valueFrom="18.0"
+        android:valueTo="120.0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/age_range"
+        app:values="@array/initial_slider_values" />
+
+    <TextView
+        android:id="@+id/age_result_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/age_slider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="26-40"
+        android:textStyle="bold"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

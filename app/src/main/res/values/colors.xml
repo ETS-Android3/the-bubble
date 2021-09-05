@@ -15,6 +15,7 @@
     <color name="blue">#316BF7</color>
     <color name="white_blue">#AAE7F1</color>
     <color name="background_gray">#E6E1E1</color>
+    <color name="disable_gray">#BAB7B7</color>
 
 
 </resources>

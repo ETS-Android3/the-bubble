@@ -67,7 +67,6 @@ public class AppNavigationFragment extends Fragment
         }
         newUser.genderTendency = tendencyList;
         newUser.requests = new ArrayList<Request>();
-        newUser.requests.add(new Request("tal1234", "tal yichye",true));
 
 
         System.out.println(newUser);

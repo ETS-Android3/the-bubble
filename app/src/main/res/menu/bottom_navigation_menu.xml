@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/group_bottom_menu"
+        android:checkableBehavior="single">
     <item
-        android:id="@+id/connections_button"
+        android:id="@+id/connections"
         android:enabled="true"
         android:icon="@drawable/connections_icon"
         android:title="@string/nav_bar_connections"/>
     <item
-        android:id="@+id/live_button"
+        android:id="@+id/liveZone"
         android:enabled="true"
         android:icon="@drawable/live_icon"
         android:title="@string/nav_bar_live"
         />
     <item
-        android:id="@+id/agent_button"
+        android:id="@+id/agent"
         android:enabled="true"
         android:icon="@drawable/agent_icon"
         android:title="@string/nav_bar_Agent"
 
         />
+    </group>
+
 </menu>
