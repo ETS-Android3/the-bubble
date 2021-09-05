@@ -1,4 +1,5 @@
-package huji.postpc.y2021.tal.yichye.thebubble;
+package huji.postpc.y2021.tal.yichye.thebubble.Connections;
+
 
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +11,9 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+
+import huji.postpc.y2021.tal.yichye.thebubble.Connections.ViewPagerAdapter;
+import huji.postpc.y2021.tal.yichye.thebubble.R;
 
 public class ConnectionsFragment extends Fragment {
 
@@ -32,11 +36,12 @@ public class ConnectionsFragment extends Fragment {
 
 
         new TabLayoutMediator(tabLayout, viewPager,
-                new TabLayoutMediator.TabConfigurationStrategy() {
-                    @Override
-                    public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                        tab.setText("Tab " + (position + 1));
+                (tab, position) -> {
+                    if (position == 0 ){
+                        tab.setText("Conversations");
                     }
+                    else tab.setText("BTB Requests");
+
                 }).attach();
 
     }

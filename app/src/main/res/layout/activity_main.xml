@@ -47,7 +47,8 @@
         android:id="@+id/navigationView"
         app:menu="@menu/navigation_drawer"
         app:headerLayout="@layout/header_navigation_drawer"
-        android:visibility="gone">
+        android:visibility="gone"
+        >
 
         <View
             android:layout_width="match_parent"
