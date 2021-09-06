@@ -5,7 +5,10 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.Request;
 
@@ -16,8 +19,7 @@ public class PersonData implements Serializable {
 	public String userName;
 	public String password;
 	public Gender gender;
-//	public LocalDate dateOfBirth;
-	public int age;
+	public long dateOfBirth;
 	public String aboutMe;
 	public String city;
 	public String phoneNumber; // TODO: phone number should be private and saved in othe place
@@ -44,9 +46,10 @@ public class PersonData implements Serializable {
 
 
 	@RequiresApi(api = Build.VERSION_CODES.O)
-//	public int getAge() {
-//		return Period.between(this.dateOfBirth, LocalDate.now()).getYears();
-//	}
+	public static int calcAge(Long epochDate) {
+		LocalDate date = LocalDate.ofEpochDay(epochDate);
+		return Period.between(date, LocalDate.now()).getYears();
+	}
 
 	@Override
 	public String toString() {
@@ -55,7 +58,7 @@ public class PersonData implements Serializable {
 				", user name='" + userName + '\'' +
 				", password-'" + password + '\'' +
 				", gender=" + gender +
-//				", dateOfBirth=" + dateOfBirth +
+				", dateOfBirth=" + dateOfBirth +
 				", aboutMe='" + aboutMe + '\'' +
 				", city='" + city + '\'' +
 				", phoneNumber='" + phoneNumber + '\'' +

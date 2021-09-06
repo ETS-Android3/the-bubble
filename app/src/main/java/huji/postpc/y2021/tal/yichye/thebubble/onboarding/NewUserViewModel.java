@@ -10,14 +10,14 @@ import java.util.HashSet;
 public class NewUserViewModel extends ViewModel
 {
 
-    LocalDate START_DATE = LocalDate.of(2003, 1, 1);
+    Long START_DATE = LocalDate.of(2003, 1, 1).toEpochDay();
 
     protected MutableLiveData<String> fullNameLiveData = new MutableLiveData<>("");
     protected MutableLiveData<String> userNameLiveData = new MutableLiveData<>("");
     protected MutableLiveData<String> passwordLiveData = new MutableLiveData<>("");
 
     protected MutableLiveData<String> phoneNumberLiveData = new MutableLiveData<>("");
-    protected MutableLiveData<LocalDate> dataOfBirthLiveData = new MutableLiveData<LocalDate>(START_DATE);
+    protected MutableLiveData<Long> dataOfBirthLiveData = new MutableLiveData<Long>(START_DATE);
     protected MutableLiveData<Integer> myGenderLiveData = new MutableLiveData<Integer>(1);
     protected MutableLiveData<String> cityLiveData = new MutableLiveData<>("");
 

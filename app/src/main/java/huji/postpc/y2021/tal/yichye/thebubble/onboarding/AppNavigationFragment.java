@@ -10,7 +10,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.Request;
 import huji.postpc.y2021.tal.yichye.thebubble.PersonData;
@@ -52,11 +55,14 @@ public class AppNavigationFragment extends Fragment
         newUser.userName = newUserViewModel.userNameLiveData.getValue();
         newUser.password = newUserViewModel.passwordLiveData.getValue();
         newUser.phoneNumber = newUserViewModel.phoneNumberLiveData.getValue();
-//        newUser.dateOfBirth = newUserViewModel.dataOfBirthLiveData.getValue();
+        newUser.dateOfBirth = newUserViewModel.dataOfBirthLiveData.getValue();
         newUser.city = newUserViewModel.cityLiveData.getValue();
         newUser.minAgePreference = newUserViewModel.minAgePreferenceLiveData.getValue();
         newUser.maxAgePreference = newUserViewModel.maxAgePreferenceLiveData.getValue();
         newUser.aboutMe = newUserViewModel.aboutMeLiveData.getValue();
+
+
+        LocalDate dateOfBirth = LocalDate.ofEpochDay(newUserViewModel.dataOfBirthLiveData.getValue());
 
         PersonData.Gender[] genderList = PersonData.Gender.values();
         newUser.gender = genderList[newUserViewModel.myGenderLiveData.getValue()];

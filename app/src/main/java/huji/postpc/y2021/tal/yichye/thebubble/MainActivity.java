@@ -17,11 +17,13 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -33,11 +35,14 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 
+import org.w3c.dom.Text;
+
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.ConnectionsFragment;
 import io.grpc.internal.JsonUtil;
 
 import java.util.Set;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.google.firebase.components.Dependency.setOf;
 
 
@@ -54,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private LinearLayout bottomBarLinearView;
     private BottomNavigationView bottomNavigationView;
+    private NavigationView sideBarNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         userViewModel =  new ViewModelProvider(this).get(UserViewModel.class);
         sp = TheBubbleApplication.getInstance().getSP();
         setUserViewModel();
+
     }
 
     private void setUserViewModel() {
@@ -93,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         userViewModel.userNameLiveData.setValue(personData.userName);
         userViewModel.passwordLiveData.setValue(personData.password);
         userViewModel.phoneNumberLiveData.setValue(personData.phoneNumber);
-        userViewModel.ageLiveData.setValue(personData.age);
+        userViewModel.dateOfBirthLiveData.setValue(personData.dateOfBirth);
         userViewModel.myGenderLiveData.setValue(personData.gender);
         userViewModel.cityLiveData.setValue(personData.city);
         userViewModel.profilePicture.setValue(personData.profilePicture);
@@ -111,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
-        NavigationView sideBarNavigationView = findViewById(R.id.sideBarNavigationView);
+        sideBarNavigationView = findViewById(R.id.sideBarNavigationView);
         drawerLayout = findViewById(R.id.drawer_layout);
         bottomBarLinearView = findViewById(R.id.bottom_bar);
 
@@ -135,6 +142,41 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         sideBarNavigationView.setNavigationItemSelectedListener(sideBarNavListener);
+
+        createLiveDataListeners();
+    }
+
+    private void createLiveDataListeners()
+    {
+        View headerView = sideBarNavigationView.getHeaderView(0);
+        TextView fullNameTextView = (TextView) headerView.findViewById(R.id.full_name_header);
+        TextView userNameTextView = (TextView) headerView.findViewById(R.id.user_name_header);
+        TextView logoutTextView = (TextView) headerView.findViewById(R.id.logout_header);
+        userViewModel.getFullNameLiveData().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                fullNameTextView.setText(s);
+            }
+        });
+
+        userViewModel.getUserNameLiveData().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                userNameTextView.setText(s);
+            }
+        });
+
+        logoutTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TheBubbleApplication.getInstance().getSP().edit().remove("user_name").apply();
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class).
+                        setFlags(FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finishAfterTransition();
+            }
+        });
+
 
     }
 
@@ -189,7 +231,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return true;
             };
-
 
 
 
