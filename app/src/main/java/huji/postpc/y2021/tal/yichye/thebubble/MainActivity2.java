@@ -17,7 +17,9 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -46,6 +48,8 @@ public class MainActivity2 extends AppCompatActivity {
 	private final long FASTEST_INTERVAL = 2000; /* 2 sec */
 	FusedLocationProviderClient fusedLocationProviderClient;
 
+	TextView localityView;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -56,7 +60,7 @@ public class MainActivity2 extends AppCompatActivity {
 		TextView latitudeView = findViewById(R.id.latitude);
 		TextView longitudeView = findViewById(R.id.longitude);
 		TextView countryView = findViewById(R.id.country);
-		TextView localityView = findViewById(R.id.locality);
+		localityView = findViewById(R.id.locality);
 
 //		LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
 //				.addLocationRequest(mLocationRequestHighAccuracy)
@@ -147,6 +151,22 @@ public class MainActivity2 extends AppCompatActivity {
 
 
 	}
+
+//	private class GeoHandler extends Handler {
+//		@Override
+//		public void handleMessage(@NonNull Message msg) {
+//			super.handleMessage(msg);
+//			String address;
+//			if (msg.what == 1) {
+//				Bundle bundle = msg.getData();
+//				address = bundle.getString("address");
+//			} else {
+//				address = null;
+//			}
+//			// TODO do sonething with address
+//			localityView.setText(address);
+//		}
+//	}
 
 	protected LocationRequest createLocationRequest() {
 		LocationRequest locationRequest = LocationRequest.create();
