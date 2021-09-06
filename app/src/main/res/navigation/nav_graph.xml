@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginDetailsFragment">
+
+    <fragment
+        android:id="@+id/aboutMeFragment"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.onboarding.AboutMeFragment"
+        android:label="AboutMeFragment" >
+        <action
+            android:id="@+id/action_aboutMeFragment_to_communityRulesFragment"
+            app:destination="@id/communityRulesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/communityRulesFragment"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.onboarding.CommunityRulesFragment"
+        android:label="CommunityRulesFragment" >
+        <action
+            android:id="@+id/action_communityRulesFragment_to_welcomeFragment"
+            app:destination="@id/appNavigationFragment"
+            app:popUpTo="@+id/nav_graph"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/phoneNumberFragment"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.onboarding.PhoneNumberFragment"
+        android:label="PhoneNumberFragment" >
+        <action
+            android:id="@+id/action_phoneNumberFragment_to_dataOfBirthFragment"
+            app:destination="@id/dataOfBirthFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/dataOfBirthFragment"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.onboarding.DataOfBirthFragment"
+        android:label="DataOfBirthFragment" >
+        <action
+            android:id="@+id/action_dataOfBirthFragment_to_genderFragment"
+            app:destination="@id/genderFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/genderFragment"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.onboarding.GenderFragment"
+        android:label="GenderFragment" >
+        <action
+            android:id="@+id/action_genderFragment_to_cityFragment"
+            app:destination="@id/cityFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cityFragment"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.onboarding.CityFragment"
+        android:label="CityFragment" >
+        <action
+            android:id="@+id/action_cityFragment_to_photosFragment"
+            app:destination="@id/photosFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/photosFragment"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.onboarding.PhotosFragment"
+        android:label="PhotosFragment" >
+        <action
+            android:id="@+id/action_photosFragment_to_lookingForFragment"
+            app:destination="@id/lookingForFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/lookingForFragment"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.onboarding.LookingForFragment"
+        android:label="LookingForFragment" >
+        <action
+            android:id="@+id/action_lookingForFragment_to_aboutMeFragment"
+            app:destination="@id/aboutMeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/appNavigationFragment"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.onboarding.AppNavigationFragment"
+        android:label="AppNavigationFragment" />
+    <fragment
+        android:id="@+id/loginDetailsFragment"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.onboarding.LoginDetailsFragment"
+        android:label="LoginDetailsFragment" >
+        <action
+            android:id="@+id/action_loginDetailsFragment_to_phoneNumberFragment"
+            app:destination="@id/phoneNumberFragment" />
+    </fragment>
+</navigation>

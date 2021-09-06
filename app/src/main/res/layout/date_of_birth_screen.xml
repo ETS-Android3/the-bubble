@@ -20,7 +20,7 @@
 
 
     <DatePicker
-        android:id="@+id/datePicker1"
+        android:id="@+id/dateOfBirthPicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:calendarViewShown="false"
@@ -29,6 +29,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/phoneNumberPageTitle"
         android:layout_marginTop="40dp"
+        android:maxDate="12/31/2003"
+        android:minDate="12/31/1920"
         />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton

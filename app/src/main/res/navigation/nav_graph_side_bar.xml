@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph_side_bar"
+    app:startDestination="@id/connections">
+
+    <fragment
+        android:id="@+id/myProfile"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.sidebar.ProfilePreviewFragment"
+        android:label="My Profile" />
+    <fragment
+        android:id="@+id/myTendency"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.sidebar.MyTendencyFragment"
+        android:label="My Tendency" />
+    <fragment
+        android:id="@+id/communityRules"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.sidebar.CommunityRulesFragment"
+        android:label="Community Rules" />
+    <fragment
+        android:id="@+id/appNavigation"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.sidebar.AppNavigationFragment"
+        android:label="App Navigation" />
+
+    <fragment
+        android:id="@+id/agent"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.AgentFragment"
+        android:label="Smart Match" />
+    <fragment
+        android:id="@+id/connections"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.Connections.ConnectionsFragment"
+        android:label="Connections" />
+    <fragment
+        android:id="@+id/liveZone"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.LiveZoneFragment"
+        android:label="Live Zone"/>
+
+
+</navigation>

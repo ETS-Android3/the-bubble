@@ -1,66 +1,58 @@
 package huji.postpc.y2021.tal.yichye.thebubble;
 
-import static android.content.ContentValues.TAG;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.UUID;
+import com.google.firebase.firestore.ListenerRegistration;
 
 public class UsersDB {
-
 
 	private FirebaseFirestore db = null;
 
 	public UsersDB(Context context) {
 		db = FirebaseFirestore.getInstance();
+
 	}
 
 
-
-	private Person getUserById(String id){
-		final Person[] requestedOrder = {null};
-		db.collection("orders").document(id).get()
-				.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-					@Override
-					public void onSuccess(DocumentSnapshot documentSnapshot) {
-						Person user = documentSnapshot.toObject(Person.class);
-//						if (order != null) {
-//							orderStatus.postValue(order.getStatus());
-//						}
+	public LiveData<PersonData> getUserByID(String userId)
+	{
+		MutableLiveData<PersonData> liveData = new MutableLiveData<>();
+		db.collection("users").document(userId).get()
+				.addOnSuccessListener(documentSnapshot -> {
+					if (documentSnapshot.exists()) {
+						PersonData user = documentSnapshot.toObject(PersonData.class);
+						liveData.setValue(user);
 					}
-				})
-				.addOnFailureListener(new OnFailureListener() {
-					@Override
-					public void onFailure(@NonNull Exception e) {
-						Log.e(TAG, "onFailure: ", e);
+					else {
+						liveData.setValue(null);
 					}
 				});
-		return requestedOrder[0];
+		return liveData;
 	}
 
-	public void saveUserToFS(Person userToSave){
+	public void addUserToDB(PersonData userToSave){
 		FirebaseFirestore db = FirebaseFirestore.getInstance();
 		db.collection("users").document(userToSave.getId()).set(userToSave);
 	}
 
 
-	private void removeUserFromFS(String id){
+	private void removeUserFromDB(String id){
 		db.collection("users").document(id).delete();
 	}
 
-
+	public FirebaseFirestore getDb() {
+		return db;
+	}
 }

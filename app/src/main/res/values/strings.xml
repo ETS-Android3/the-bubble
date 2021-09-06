@@ -22,9 +22,16 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="i_am_looking_for">I am looking for</string>
     <string name="age_range">Age range</string>
-    <string name="welcome_string">Welcome!</string>
+    <string name="welcome_string">App Navigation</string>
     <string name="about_me">About me</string>
     <string name="hi_my_name_is">Hi!, my name is...</string>
     <string name="description">Description</string>
     <string name="description_hint">Write something</string>
+    <string name="error_message_names">Must enter name</string>
+    <string name="chats_match_requests">Chats / Match requests</string>
+    <string name="live_search_for_people_nearby">Live search for people nearby</string>
+    <string name="search_for_matches_using_n_common_location_history">Search for matches using\n common location history</string>
+    <string name="this_will_be_your_profile_picture">This will be your profile picture</string>
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
 </resources>
