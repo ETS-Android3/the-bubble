@@ -6,12 +6,20 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
+import java.time.LocalDate;
+
+import huji.postpc.y2021.tal.yichye.thebubble.PersonData;
 import huji.postpc.y2021.tal.yichye.thebubble.R;
+import huji.postpc.y2021.tal.yichye.thebubble.TheBubbleApplication;
+import huji.postpc.y2021.tal.yichye.thebubble.UserViewModel;
 
 public class ProfilePreviewFragment extends Fragment {
 
@@ -23,7 +31,8 @@ public class ProfilePreviewFragment extends Fragment {
     private ImageView thirdImage;
     private EditText aboutMeEditText;
     private EditText nameEditText;
-    private EditText ageEditText;
+    private UserViewModel userViewModel;
+    private EditText ageTextView;
 
     public ProfilePreviewFragment()
     {
@@ -40,12 +49,12 @@ public class ProfilePreviewFragment extends Fragment {
         checkedButton.bringToFront();
         aboutMeEditText = view.findViewById(R.id.aboutMeEditProfile);
         nameEditText = view.findViewById(R.id.nameEditProfile);
-        ageEditText = view.findViewById(R.id.ageEditProfile);
         firstImage = view.findViewById(R.id.firstImageViewEditProfile);
         secondImage = view.findViewById(R.id.secondImageViewEditProfile);
         thirdImage = view.findViewById(R.id.thirdImageViewEditProfile);
+        ageTextView = view.findViewById(R.id.ageEditProfile);
 
-
+        userViewModel =  new ViewModelProvider(requireActivity()).get(UserViewModel.class);
 
         citySpinner = (Spinner) view.findViewById(R.id.spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -58,37 +67,42 @@ public class ProfilePreviewFragment extends Fragment {
 
         setAllViews(false);
 
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editButton.setVisibility(View.GONE);
-                checkedButton.setVisibility(View.VISIBLE);
-                setAllViews(true);
-            }
+
+        userViewModel.getDateOfBirthLiveData().observe(getViewLifecycleOwner(),
+                aLong -> ageTextView.setText(PersonData.calcAge(aLong)+ ""));
+
+        userViewModel.getFullNameLiveData().observe(getViewLifecycleOwner(), s ->
+                nameEditText.setText(s));
+
+        userViewModel.getCityLiveData().observe(getViewLifecycleOwner(), city -> {
+            int pos = adapter.getPosition(city);
+            citySpinner.setSelection(pos);
         });
 
 
-        checkedButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editButton.setVisibility(View.VISIBLE);
-                checkedButton.setVisibility(View.GONE);
-                setAllViews(false);
-                // TODO UPDATE VIEW MODEL WITH THE NEW VALUES
-            }
+        editButton.setOnClickListener(v -> {
+            editButton.setVisibility(View.GONE);
+            checkedButton.setVisibility(View.VISIBLE);
+            setAllViews(true);
         });
 
+        checkedButton.setOnClickListener(v -> {
+            editButton.setVisibility(View.VISIBLE);
+            checkedButton.setVisibility(View.GONE);
+            setAllViews(false);
+
+            // TODO UPDATE VIEW MODEL WITH THE NEW VALUES
+            userViewModel.setFullNameLiveData(nameEditText.getText().toString());
+            userViewModel.setAboutMeLiveData(aboutMeEditText.getText().toString());
+            userViewModel.setCityLiveData(citySpinner.getSelectedItem().toString());
+        });
     }
 
     private void setAllViews(boolean enabled)
     {
         aboutMeEditText.setEnabled(enabled);
         nameEditText.setEnabled(enabled);
-        ageEditText.setEnabled(enabled);
         citySpinner.setEnabled(enabled);
-//        Drawable regularDrawable = ContextCompat.getDrawable(getActivity(), R.drawable.regular_gender);
-//        Drawable selectDrawable = ContextCompat.getDrawable(getActivity(), R.drawable.selected_gender);
-
 
     }
 }

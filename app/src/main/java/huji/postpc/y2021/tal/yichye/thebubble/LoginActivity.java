@@ -25,6 +25,12 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (TheBubbleApplication.getInstance().getSP().getString("user_name", null) != null)
+        {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            finishAffinity();
+        }
         setContentView(R.layout.login_screen);
         userNameEditText = findViewById(R.id.userNameTextInputEdit);
         passwordEditText = findViewById(R.id.passwordTextInputEdit);
@@ -41,6 +47,8 @@ public class LoginActivity extends AppCompatActivity {
             finishAffinity();
         });
     }
+
+
 
     private void checkUserCredentials()
     {

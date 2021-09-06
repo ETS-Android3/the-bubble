@@ -4,18 +4,24 @@
     <group
         android:id="@+id/group1"
         android:checkableBehavior="single">
+
         <item
             android:id="@+id/myProfile"
-            android:icon="@drawable/user_icon"
+            android:icon="@drawable/ic_baseline_perm_identity_24"
             android:iconTint="@color/gradient_purple"
-            android:title="My Profile" />
+            android:title="Profile" />
 
         <item
             android:id="@+id/myTendency"
             android:icon="@drawable/user_icon"
             android:iconTint="@color/gradient_purple"
             android:title="I'm Looking For" />
-        <item
+    </group>
+
+    <group
+        android:id="@+id/group2"
+        android:checkableBehavior="single">
+    <item
             android:id="@+id/communityRules"
             android:icon="@drawable/rules_icon"
             android:iconTint="@color/gradient_purple"
