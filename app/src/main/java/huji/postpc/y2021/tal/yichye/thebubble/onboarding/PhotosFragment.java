@@ -1,22 +1,32 @@
 package huji.postpc.y2021.tal.yichye.thebubble.onboarding;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -25,11 +35,12 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
+import java.util.Map;
+
 import huji.postpc.y2021.tal.yichye.thebubble.R;
 
 public class PhotosFragment extends Fragment
 {
-
     private FragmentActivity activity;
     private ExtendedFloatingActionButton nextButton;
     ImageView profile_image_spot;
@@ -42,8 +53,7 @@ public class PhotosFragment extends Fragment
     ImageView rect3;
     ImageView current_picked = null;
 
-    public PhotosFragment()
-    {
+    public PhotosFragment() {
         super(R.layout.photos_screen);
     }
 
@@ -63,9 +73,6 @@ public class PhotosFragment extends Fragment
         nextButton.setOnClickListener(v -> {
             moveToNextFragment();
         });
-        setAllClickListeners(view);
-
-
     }
     private void moveToNextFragment()
     {
@@ -89,7 +96,7 @@ public class PhotosFragment extends Fragment
             @Override
             public void onClick(View v) {
                 current_picked = profile_image_spot;
-                selectImage(getActivity());
+                selectImage(profile_pic_plus, getActivity());
             }
         });
 
@@ -98,7 +105,7 @@ public class PhotosFragment extends Fragment
             public void onClick(View v) {
                 current_picked = rect1;
                 reg_plus1.setVisibility(View.GONE);
-                selectImage(getActivity());
+                selectImage(reg_plus1, getActivity());
             }
         });
 
@@ -107,7 +114,7 @@ public class PhotosFragment extends Fragment
             public void onClick(View v) {
                 current_picked = rect2;
                 reg_plus2.setVisibility(View.GONE);
-                selectImage(getActivity());
+                selectImage(reg_plus2, getActivity());
             }
         });
 
@@ -117,7 +124,7 @@ public class PhotosFragment extends Fragment
             public void onClick(View v) {
                 current_picked = rect3;
                 reg_plus3.setVisibility(View.GONE);
-                selectImage(getActivity());
+                selectImage(reg_plus3, getActivity());
             }
         });
 
@@ -125,7 +132,7 @@ public class PhotosFragment extends Fragment
 
 
 
-    private void selectImage(Context context) {
+    private void selectImage(ImageView reg_plus, Context context) {
         final CharSequence[] options = { "Take Photo", "Choose from Gallery","Cancel" };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -145,9 +152,7 @@ public class PhotosFragment extends Fragment
                     startActivityForResult(pickPhoto , 1);
 
                 } else if (options[item].equals("Cancel")) {
-                    reg_plus1.setVisibility(View.VISIBLE);
-                    reg_plus2.setVisibility(View.VISIBLE);
-                    reg_plus3.setVisibility(View.VISIBLE);
+                    reg_plus.setVisibility(View.VISIBLE);
                     dialog.dismiss();
 
                 }
@@ -162,7 +167,6 @@ public class PhotosFragment extends Fragment
         System.out.println("in on Activity result");
         super.onActivityResult(requestCode, resultCode, data);
 
-//        getActivity();
         if (resultCode != Activity.RESULT_CANCELED) {
             switch (requestCode) {
                 case 0:
@@ -194,7 +198,6 @@ public class PhotosFragment extends Fragment
                                 cursor.close();
                             }
                         }
-
                     }
                     break;
             }
