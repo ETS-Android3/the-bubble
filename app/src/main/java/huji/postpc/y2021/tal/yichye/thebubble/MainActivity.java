@@ -1,5 +1,7 @@
 package huji.postpc.y2021.tal.yichye.thebubble;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -48,10 +50,10 @@ import static com.google.firebase.components.Dependency.setOf;
 
 public class MainActivity extends AppCompatActivity {
 
+
     UserViewModel userViewModel ;
     SharedPreferences sp;
     ListenerRegistration listenerRegistration;
-
 
     private NavController sideNavController;
     private AppBarConfiguration appBarConfiguration;
@@ -60,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout bottomBarLinearView;
     private BottomNavigationView bottomNavigationView;
     private NavigationView sideBarNavigationView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                     setMainView();
                     attach_listener(personData);
-
 
                 };
                 personDataLiveData.observe(this,personDataObserver);
