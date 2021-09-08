@@ -108,6 +108,9 @@ public class ProfilePreviewFragment extends Fragment {
             citySpinner.setSelection(pos);
         });
 
+        userViewModel.getAboutMeLiveData().observe(getViewLifecycleOwner(), s ->
+                aboutMeEditText.setText(s));
+
         setImageView(profileImage, "profileImage");
 
         editButton.setOnClickListener(v -> {

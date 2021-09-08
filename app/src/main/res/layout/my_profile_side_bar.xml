@@ -129,7 +129,7 @@
             android:paddingEnd="10dp"
             android:background="@null"
             android:textColor="@drawable/enable_disable_edit_text"
-            android:text="Has 33 cats and love pizza, playing games all day and love music"/>
+            />
 
         <TextView
             android:layout_width="match_parent"
