@@ -69,6 +69,11 @@ public class UserViewModel extends ViewModel {
         return cityLiveData;
     }
 
+    public MutableLiveData<String> getAboutMeLiveData() {
+        return aboutMeLiveData;
+    }
+
+
     public void setGenderTendencyLiveData(ArrayList<PersonData.Gender> newTendencySet) {
         genderTendency.setValue(newTendencySet);
         usersDB.updateUserField(userNameLiveData.getValue(), "genderTendency", newTendencySet);
