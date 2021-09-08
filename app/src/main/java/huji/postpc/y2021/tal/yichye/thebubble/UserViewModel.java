@@ -110,7 +110,7 @@ public class UserViewModel extends ViewModel {
         aboutMeLiveData.setValue(newCity);
         usersDB.updateUserField(userNameLiveData.getValue(), "city", newCity);
     }
-
+git 
 
 
 

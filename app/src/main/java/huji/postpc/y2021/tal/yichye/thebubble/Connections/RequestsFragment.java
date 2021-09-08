@@ -70,8 +70,8 @@ public class RequestsFragment extends Fragment {
                     }
                 }
                 Collections.sort(current_array);
-                userViewModel.getRequestsLiveData().setValue(current_array);
-                adapter.setUserRequests(userViewModel.getRequestsLiveData().getValue());// set adapter without deleted item
+                userViewModel.getRequestsLiveData().setValue(current_array); // todo change to set firestore
+                adapter.setUserRequests(current_array);// set adapter without deleted item
 
                 //todo change whats shown on other user's requests
                 TheBubbleApplication.getInstance().getUsersDB().getUserByID(request.reqUserId).observe(getViewLifecycleOwner(), personData->
@@ -102,6 +102,7 @@ public class RequestsFragment extends Fragment {
 
 
     boolean checkIfOtherHasMyRequest(PersonData personData){
+        //todo change to delete from firebase
         String selfId = sp.getString("user_name", null);
         for (int i = 0; i < personData.requests.size() ; i++) {
             if (personData.requests.get(i).getReqUserId().equals(selfId)){
