@@ -1,23 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="160dp"
+    android:layout_height="170dp"
     android:background = "@color/background_gray"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-
-    <ImageView
-        android:id="@+id/pic_header"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:background="@drawable/user_icon"
+    <!-- Card View -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        app:cardElevation="16dp"
+        app:cardCornerRadius="25dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="40dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-    />
+        >
+
+        <ImageView
+            android:id="@+id/pic_header"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/user_icon"
+            />
+    </androidx.cardview.widget.CardView>
+
 
     <TextView
         android:id="@+id/logout_header"
@@ -36,7 +47,7 @@
         android:id="@+id/full_name_header"
         android:layout_width="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pic_header"
+        app:layout_constraintTop_toBottomOf="@+id/cardView"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:layout_marginStart="24dp"

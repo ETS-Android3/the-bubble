@@ -1,18 +1,14 @@
 package huji.postpc.y2021.tal.yichye.thebubble.onboarding;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -20,50 +16,69 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
-import java.util.Map;
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 
+import huji.postpc.y2021.tal.yichye.thebubble.GlideApp;
+import huji.postpc.y2021.tal.yichye.thebubble.ImageStorageDB;
 import huji.postpc.y2021.tal.yichye.thebubble.R;
+import huji.postpc.y2021.tal.yichye.thebubble.TheBubbleApplication;
 
 public class PhotosFragment extends Fragment
 {
     private FragmentActivity activity;
     private ExtendedFloatingActionButton nextButton;
-    ImageView profile_image_spot;
-    ImageView profile_pic_plus;
-    ImageView reg_plus1;
-    ImageView reg_plus2;
-    ImageView reg_plus3;
-    ImageView rect1;
-    ImageView rect2;
-    ImageView rect3;
-    ImageView current_picked = null;
+    private ImageView profile_image_spot;
+    private ImageView profile_pic_plus;
+    private ImageView reg_plus1;
+    private ImageView reg_plus2;
+    private ImageView reg_plus3;
+    private ImageView rect1;
+    private ImageView rect2;
+    private ImageView rect3;
+    private ImageView current_picked = null;
+    private String currentImageNamePicked;
+    int currentOption;
+    private NewUserViewModel newUserViewModel;
+    private ActivityResultLauncher<Intent> mLauncher;
+    private ImageStorageDB storageDB;
+
 
     public PhotosFragment() {
         super(R.layout.photos_screen);
+        storageDB = TheBubbleApplication.getInstance().getImageStorageDB();
+        mLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        selectAndUpload(result);
+                    }
+        });
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-        NewUserViewModel newUserViewModel =
-                new ViewModelProvider(requireActivity())
+        newUserViewModel = new ViewModelProvider(requireActivity())
                         .get(NewUserViewModel.class);
         newUserViewModel.progressLiveData.setValue(OnBoardingActivity.PHOTOS_FRAGMENT);
 
@@ -73,7 +88,12 @@ public class PhotosFragment extends Fragment
         nextButton.setOnClickListener(v -> {
             moveToNextFragment();
         });
+
+        nextButton.setEnabled(false);
+        setAllClickListeners(view);
+        setAllImageViews();
     }
+
     private void moveToNextFragment()
     {
         NavHostFragment navHostFragment = (NavHostFragment) activity.getSupportFragmentManager()
@@ -96,6 +116,7 @@ public class PhotosFragment extends Fragment
             @Override
             public void onClick(View v) {
                 current_picked = profile_image_spot;
+                currentImageNamePicked = "profileImage";
                 selectImage(profile_pic_plus, getActivity());
             }
         });
@@ -105,6 +126,7 @@ public class PhotosFragment extends Fragment
             public void onClick(View v) {
                 current_picked = rect1;
                 reg_plus1.setVisibility(View.GONE);
+                currentImageNamePicked = "firstImage";
                 selectImage(reg_plus1, getActivity());
             }
         });
@@ -114,22 +136,21 @@ public class PhotosFragment extends Fragment
             public void onClick(View v) {
                 current_picked = rect2;
                 reg_plus2.setVisibility(View.GONE);
+                currentImageNamePicked = "secondImage";
                 selectImage(reg_plus2, getActivity());
             }
         });
-
 
         reg_plus3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 current_picked = rect3;
                 reg_plus3.setVisibility(View.GONE);
+                currentImageNamePicked = "thirdImage";
                 selectImage(reg_plus3, getActivity());
             }
         });
-
     }
-
 
 
     private void selectImage(ImageView reg_plus, Context context) {
@@ -142,19 +163,17 @@ public class PhotosFragment extends Fragment
 
             @Override
             public void onClick(DialogInterface dialog, int item) {
-
                 if (options[item].equals("Take Photo")) {
                     Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(takePicture, 0);
-
+                    currentOption = 0;
+                    mLauncher.launch(takePicture);
                 } else if (options[item].equals("Choose from Gallery")) {
                     Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(pickPhoto , 1);
-
+                    currentOption = 1;
+                    mLauncher.launch(pickPhoto);
                 } else if (options[item].equals("Cancel")) {
                     reg_plus.setVisibility(View.VISIBLE);
                     dialog.dismiss();
-
                 }
             }
         });
@@ -162,20 +181,18 @@ public class PhotosFragment extends Fragment
     }
 
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void selectAndUpload(ActivityResult result) {
         System.out.println("in on Activity result");
-        super.onActivityResult(requestCode, resultCode, data);
-
+        int resultCode = result.getData().getIntExtra("resultCode", -1);
         if (resultCode != Activity.RESULT_CANCELED) {
-            switch (requestCode) {
+            Intent data = result.getData();
+            switch (currentOption) {
                 case 0:
                     if (resultCode == Activity.RESULT_OK && data != null) {
                         System.out.println("in case 0");
                         Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-
-                        BitmapDrawable selectedImage = new BitmapDrawable(getResources(), bitmap);
-                        current_picked.setBackground(selectedImage);
+                        // TODO: INSTEAD OF UPLOAD TO FIREBASE, NEED TO SAVE IN LIVEDATA
+                        uploadImageToFB(bitmap, currentImageNamePicked);
                     }
 
                     break;
@@ -193,15 +210,90 @@ public class PhotosFragment extends Fragment
                                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                                 String picturePath = cursor.getString(columnIndex);
                                 Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
-                                BitmapDrawable image = new BitmapDrawable(getResources(), bitmap);
-                                current_picked.setBackground(image);
                                 cursor.close();
+
+                                // TODO: INSTEAD OF UPLOAD TO FIREBASE, NEED TO SAVE IN LIVEDATA
+                                uploadImageToFB(bitmap, currentImageNamePicked);
                             }
                         }
                     }
                     break;
             }
         }
+    }
+
+    private void setAllImageViews()
+    {
+        setImageView(profile_image_spot, "profileImage");
+        setImageView(rect1, "firstImage");
+        setImageView(rect2, "secondImage");
+        setImageView(rect3, "thirdImage");
+    }
+
+
+    private void setImageView(ImageView imageView, String imageName)
+    {
+        try {
+            StorageReference imageRef = storageDB.createReference(newUserViewModel.userNameLiveData.getValue(), imageName);
+
+            imageRef.getBytes(2000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    GlideApp.with(requireActivity() /* context */)
+                            .load(imageRef)
+                            .into(imageView);
+                    if (imageName.equals("profileImage")) {
+                        nextButton.setEnabled(true);
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.d("photos fragment", "problem with downloading the image");
+                }
+            });
+        } catch (Exception e) {
+            Log.d("photos fragment", "problem with getting reference");
+            e.printStackTrace();
+        }
+    }
+
+    private void uploadImageToFB(Bitmap image, String imageName)
+    {
+        Log.d("login", "upload image");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        StorageReference ref = storageDB.createReference(newUserViewModel.userNameLiveData.getValue(), imageName);
+        UploadTask uploadTask = ref.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Toast.makeText(requireActivity(),
+                        "Problem with uploading image to Firebase", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                if (imageName.equals("profileImage")){
+                    nextButton.setEnabled(true);
+                }
+                Toast.makeText(requireActivity(),
+                        "Finish uploading image to Firebase", Toast.LENGTH_SHORT).show();
+
+                GlideApp.with(requireActivity() /* context */)
+                        .load(ref)
+                        .into(current_picked);
+
+                ArrayList<String> newArray = newUserViewModel.photosLiveData.getValue();
+                if (!newArray.contains(imageName) && !imageName.equals("profileImage"))
+                {
+                    newArray.add(imageName);
+                    newUserViewModel.photosLiveData.setValue(newArray);
+                }
+            }
+        });
     }
 
 }

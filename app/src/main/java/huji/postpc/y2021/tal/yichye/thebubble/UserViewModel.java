@@ -61,6 +61,10 @@ public class UserViewModel extends ViewModel {
         return genderTendency;
     }
 
+    public MutableLiveData<ArrayList<String>> getPhotosLiveData() {
+        return photosLiveData;
+    }
+
     public MutableLiveData<String> getCityLiveData() {
         return cityLiveData;
     }

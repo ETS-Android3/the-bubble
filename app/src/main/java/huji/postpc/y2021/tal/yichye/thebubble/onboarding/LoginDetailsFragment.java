@@ -118,6 +118,7 @@ public class LoginDetailsFragment extends Fragment {
 
     private void handleUserNameField(NewUserViewModel newUserViewModel)
     {
+        // TODO: CHECK IF THERE IS NO SUCH USER NAME
         newUserViewModel.userNameLiveData.observe(getViewLifecycleOwner(), s -> {
             Editable currText = userNameEditText.getText();
             if (!s.equals(currText.toString())) {
