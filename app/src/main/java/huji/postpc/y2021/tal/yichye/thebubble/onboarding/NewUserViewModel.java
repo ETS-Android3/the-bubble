@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 
@@ -21,13 +23,12 @@ public class NewUserViewModel extends ViewModel
     protected MutableLiveData<Integer> myGenderLiveData = new MutableLiveData<Integer>(1);
     protected MutableLiveData<String> cityLiveData = new MutableLiveData<>("");
 
-    protected MutableLiveData<String> photosLiveData = new MutableLiveData<>("");
-
     protected MutableLiveData<Integer> minAgePreferenceLiveData = new MutableLiveData<Integer>( 26);
     protected MutableLiveData<Integer> maxAgePreferenceLiveData = new MutableLiveData<Integer>( 40);
     protected MutableLiveData<HashSet<Integer>> genderTendencyLiveData = new MutableLiveData<>(new HashSet<>());
 
     protected MutableLiveData<String> aboutMeLiveData = new MutableLiveData<>("");
+    protected MutableLiveData<ArrayList<String>> photosLiveData = new MutableLiveData<ArrayList<String>>(new ArrayList<>());
 
     protected MutableLiveData<Integer> progressLiveData = new MutableLiveData<>(0);
 

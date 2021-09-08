@@ -17,6 +17,11 @@ public class TheBubbleApplication extends Application {
         return usersDB;
     }
 
+    public ImageStorageDB getImageStorageDB()
+    {
+        return ImageStorageDB.getInstance();
+    }
+
     public static TheBubbleApplication getInstance()
     {
         return instance;

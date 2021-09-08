@@ -61,9 +61,6 @@ public class AppNavigationFragment extends Fragment
         newUser.maxAgePreference = newUserViewModel.maxAgePreferenceLiveData.getValue();
         newUser.aboutMe = newUserViewModel.aboutMeLiveData.getValue();
 
-
-        LocalDate dateOfBirth = LocalDate.ofEpochDay(newUserViewModel.dataOfBirthLiveData.getValue());
-
         PersonData.Gender[] genderList = PersonData.Gender.values();
         newUser.gender = genderList[newUserViewModel.myGenderLiveData.getValue()];
 
@@ -73,7 +70,7 @@ public class AppNavigationFragment extends Fragment
         }
         newUser.genderTendency = tendencyList;
         newUser.requests = new ArrayList<Request>();
-
+        newUser.photos = newUserViewModel.photosLiveData.getValue();
 
         System.out.println(newUser);
 

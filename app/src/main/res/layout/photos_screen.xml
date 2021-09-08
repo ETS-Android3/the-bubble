@@ -17,23 +17,32 @@
         android:text="Time to pick \nyour photos !"
         />
 
-
-
-    <ImageView
-        android:id="@+id/userIcon"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        app:cardElevation="16dp"
+        app:cardCornerRadius="60dp"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/photoesPageTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/photoesPageTitle"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/user_icon"
-        />
+        >
+        <ImageView
+            android:id="@+id/userIcon"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            app:layout_constraintTop_toBottomOf="@id/photoesPageTitle"
+            android:scaleType="centerCrop"
+            android:background="@drawable/user_icon"
+            />
+    </androidx.cardview.widget.CardView>
+
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/userIcon"
+        app:layout_constraintTop_toBottomOf="@id/cardView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/this_will_be_your_profile_picture"
@@ -47,39 +56,39 @@
         android:layout_height="30dp"
         android:layout_marginStart="4dp"
         android:background="@drawable/plus_in_circle"
-        app:layout_constraintStart_toEndOf="@id/userIcon"
-        app:layout_constraintTop_toTopOf="@id/userIcon" />
-
+        app:layout_constraintStart_toEndOf="@id/cardView"
+        app:layout_constraintTop_toTopOf="@id/cardView" />
 
     <ImageView
         android:id="@+id/rect2"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="65dp"
-        android:background="@drawable/shape"
-        app:layout_constraintStart_toEndOf="@+id/rect1"
-        app:layout_constraintTop_toBottomOf="@id/userIcon" />
-
-    <ImageView
-        android:id="@+id/rect1"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="65dp"
         android:background="@drawable/shape"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/userIcon" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardView" />
 
     <ImageView
-        android:id="@+id/rect3"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:id="@+id/rect1"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="65dp"
         android:background="@drawable/shape"
+        app:layout_constraintEnd_toStartOf="@id/rect2"
+        app:layout_constraintTop_toBottomOf="@id/cardView" />
+
+    <ImageView
+        android:id="@+id/rect3"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="65dp"
+        android:background="@drawable/shape"
         app:layout_constraintStart_toEndOf="@+id/rect2"
-        app:layout_constraintTop_toBottomOf="@id/userIcon" />
+        app:layout_constraintTop_toBottomOf="@id/cardView" />
 
     <ImageView
         android:id="@+id/plus1"
@@ -100,7 +109,6 @@
         app:layout_constraintEnd_toEndOf="@+id/rect2"
         app:layout_constraintStart_toStartOf="@+id/rect2"
         app:layout_constraintTop_toTopOf="@+id/rect2" />
-
 
 
     <ImageView
