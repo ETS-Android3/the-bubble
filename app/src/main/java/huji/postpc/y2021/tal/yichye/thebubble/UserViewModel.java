@@ -107,7 +107,7 @@ public class UserViewModel extends ViewModel {
     }
 
     public void setCityLiveData(String newCity) {
-        aboutMeLiveData.setValue(newCity);
+        cityLiveData.setValue(newCity);
         usersDB.updateUserField(userNameLiveData.getValue(), "city", newCity);
     }
 
