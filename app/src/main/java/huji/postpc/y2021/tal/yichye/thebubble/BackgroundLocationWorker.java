@@ -7,12 +7,16 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Looper;
+import android.util.JsonWriter;
 import android.util.Log;
+
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.MutableLiveData;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
@@ -31,9 +35,15 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -109,7 +119,19 @@ public class BackgroundLocationWorker extends Worker {
 						latitude[0] = location.getLatitude();
 						longitude[0] = location.getLongitude();
 						Log.i(TAG, "MyLocation " + latitude[0] + " " + longitude[0] + " first if");
+						uploadFile("tal12", createJsonObject(latitude[0], longitude[0]));
 //						saveLocationToFS(location);
+
+
+						LocationRequest locationRequest = createLocationRequest();
+						LocationCallback locationCallback = new LocationCallback() {
+							@Override
+							public void onLocationResult(@NonNull LocationResult locationResult) {
+								super.onLocationResult(locationResult);
+							}
+						};
+						locationRequest.setNumUpdates(1);
+						fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
 					} else {
 						// Request location updates
 						LocationRequest locationRequest = createLocationRequest();
@@ -121,6 +143,7 @@ public class BackgroundLocationWorker extends Worker {
 								latitude[0] = location1.getLatitude();
 								longitude[0] = location1.getLongitude();
 								Log.i(TAG, "MyLocation " + latitude[0] + " " + longitude[0] + " callback");
+								uploadFile("tal12", createJsonObject(latitude[0], longitude[0]));
 //								saveLocationToFS(location);
 
 
@@ -174,10 +197,39 @@ public class BackgroundLocationWorker extends Worker {
 		return Result.success();
 
 	}
+//
+//	public void updateJsonFile(Location location, String userName) {
+//		StorageRefeference storageRefeference = storage
+//		JSONObject
+//	}
 
-	public void updateJsonFile(Location location, String userName) {
-		StorageRefeference storageRefeference = storage
-		JSONObject
+	public JSONObject createJsonObject(double latitude, double longitude){
+		// TODO: to add name of location associated with time
+		Map<String, Double> map = new HashMap<>();
+		map.put("latitude", latitude);
+		map.put("longitude", longitude);
+		return new JSONObject(map);
+	}
+	public StorageReference createLocationReference(String userName) {
+		return FirebaseStorage.getInstance().getReference().child(userName).child("locations_dir").child("locations");
+	}
+
+	public void uploadFile(String userName, JSONObject jsonObject) {
+//		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] sendData = null;
+		try {
+			sendData = jsonObject.toString().getBytes("utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+		StorageReference ref = this.createLocationReference(userName);
+		if (sendData != null) {
+			UploadTask uploadTask = ref.putBytes(sendData);
+
+			uploadTask.addOnFailureListener(exception -> Log.i(TAG, "MyLocation upload data to FS error: " + exception.getMessage()))
+					.addOnSuccessListener(taskSnapshot -> Log.i(TAG, "MyLocation added data to FS: " ));
+		}
 	}
 
 

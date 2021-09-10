@@ -52,6 +52,11 @@ public class UsersDB {
 		db.collection("users").document(id).delete();
 	}
 
+	public void updateUserField(String userId, String fieldToChange, Object newValue)
+	{
+		db.collection("users").document(userId).update(fieldToChange, newValue);
+
+	}
 	public FirebaseFirestore getDb() {
 		return db;
 	}

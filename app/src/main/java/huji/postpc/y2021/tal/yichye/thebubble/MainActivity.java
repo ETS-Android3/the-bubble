@@ -1,10 +1,13 @@
 package huji.postpc.y2021.tal.yichye.thebubble;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -17,13 +20,23 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -32,21 +45,25 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.storage.StorageReference;
+
+import org.w3c.dom.Text;
 
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.ConnectionsFragment;
 import io.grpc.internal.JsonUtil;
 
 import java.util.Set;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.google.firebase.components.Dependency.setOf;
 
 
 public class MainActivity extends AppCompatActivity {
 
+
     UserViewModel userViewModel ;
     SharedPreferences sp;
     ListenerRegistration listenerRegistration;
-
 
     private NavController sideNavController;
     private AppBarConfiguration appBarConfiguration;
@@ -54,6 +71,11 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private LinearLayout bottomBarLinearView;
     private BottomNavigationView bottomNavigationView;
+    private NavigationView sideBarNavigationView;
+    private ImageView profileImageView;
+    View headerView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         userViewModel =  new ViewModelProvider(this).get(UserViewModel.class);
         sp = TheBubbleApplication.getInstance().getSP();
         setUserViewModel();
+
     }
 
     private void setUserViewModel() {
@@ -70,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
             if (userName != null){
                 LiveData<PersonData> personDataLiveData = TheBubbleApplication.getInstance().getUsersDB().getUserByID(userName);
                 final Observer<PersonData> personDataObserver = personData -> {
+                    Log.d("main activity", "after get user by id");
                     if(personData != null){
                         System.out.println(personData);
                         updateUserViewModel(personData);
@@ -80,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                     setMainView();
                     attach_listener(personData);
-
 
                 };
                 personDataLiveData.observe(this,personDataObserver);
@@ -93,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         userViewModel.userNameLiveData.setValue(personData.userName);
         userViewModel.passwordLiveData.setValue(personData.password);
         userViewModel.phoneNumberLiveData.setValue(personData.phoneNumber);
-        userViewModel.ageLiveData.setValue(personData.age);
+        userViewModel.dateOfBirthLiveData.setValue(personData.dateOfBirth);
         userViewModel.myGenderLiveData.setValue(personData.gender);
         userViewModel.cityLiveData.setValue(personData.city);
         userViewModel.profilePicture.setValue(personData.profilePicture);
@@ -111,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
-        NavigationView sideBarNavigationView = findViewById(R.id.sideBarNavigationView);
+        sideBarNavigationView = findViewById(R.id.sideBarNavigationView);
         drawerLayout = findViewById(R.id.drawer_layout);
         bottomBarLinearView = findViewById(R.id.bottom_bar);
 
@@ -136,8 +159,57 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         sideBarNavigationView.setNavigationItemSelectedListener(sideBarNavListener);
 
+        createLiveDataListeners();
     }
 
+    private void createLiveDataListeners()
+    {
+        headerView = sideBarNavigationView.getHeaderView(0);
+        TextView fullNameTextView = (TextView) headerView.findViewById(R.id.full_name_header);
+        TextView userNameTextView = (TextView) headerView.findViewById(R.id.user_name_header);
+        profileImageView = (ImageView) headerView.findViewById(R.id.pic_header);
+        TextView logoutTextView = (TextView) headerView.findViewById(R.id.logout_header);
+
+        userViewModel.getFullNameLiveData().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                fullNameTextView.setText(s);
+            }
+        });
+
+        userViewModel.getUserNameLiveData().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                userNameTextView.setText(s);
+            }
+        });
+
+        setProfileImageView(profileImageView);
+
+        logoutTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TheBubbleApplication.getInstance().getSP().edit().remove("user_name").apply();
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class).
+                        setFlags(FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finishAfterTransition();
+            }
+        });
+
+    }
+
+    private void setProfileImageView(ImageView profileImageView)
+    {
+        ImageStorageDB storageDB = TheBubbleApplication.getInstance().getImageStorageDB();
+        StorageReference imageRef = storageDB.createReference(userViewModel.getUserNameLiveData().getValue(), "profileImage");
+        GlideApp.with(MainActivity.this /* context */)
+                .load(imageRef)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .centerCrop()
+                .into(profileImageView);
+    }
 
     /**
      * opening drawer layout when menu icon is clicked and handling the back button
@@ -151,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
         bottomBarLinearView.setVisibility(View.VISIBLE);
         bottomNavigationView.getMenu().setGroupEnabled(R.id.group_bottom_menu,true);
         bottomNavigationView.getMenu().setGroupCheckable(R.id.group_bottom_menu,true, true);
+        setProfileImageView(profileImageView);
         return NavigationUI.navigateUp(navControllerSideBar, appBarConfiguration) || super.onSupportNavigateUp();
     }
 
@@ -189,7 +262,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return true;
             };
-
 
 
 

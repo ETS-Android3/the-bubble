@@ -4,11 +4,14 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -18,7 +21,9 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 
+import huji.postpc.y2021.tal.yichye.thebubble.PersonData;
 import huji.postpc.y2021.tal.yichye.thebubble.R;
+import huji.postpc.y2021.tal.yichye.thebubble.TheBubbleApplication;
 
 public class LoginDetailsFragment extends Fragment {
 
@@ -118,6 +123,7 @@ public class LoginDetailsFragment extends Fragment {
 
     private void handleUserNameField(NewUserViewModel newUserViewModel)
     {
+        // TODO: CHECK IF THERE IS NO SUCH USER NAME
         newUserViewModel.userNameLiveData.observe(getViewLifecycleOwner(), s -> {
             Editable currText = userNameEditText.getText();
             if (!s.equals(currText.toString())) {
@@ -135,25 +141,40 @@ public class LoginDetailsFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String userName = s.toString();
                 newUserViewModel.userNameLiveData.setValue(userName);
-                if( !userName.matches("[a-zA-Z0-9]+") || userName.length() < 4)
-                {
+                if (s.length() != 0) {
+                    LiveData<PersonData> userByID = TheBubbleApplication.getInstance().getUsersDB().getUserByID(userName);
+                    userByID.observe(getViewLifecycleOwner(), personData -> {
+                        if (!userName.matches("[a-zA-Z0-9]+") || userName.length() < 4 || personData != null) {
+                            isUserNameValue = false;
+                            String error;
+                            if (personData != null) {
+                                error = "User name already exists";
+                            } else {
+                                error = "Must enter valid user name with at least 4 characters";
+                            }
+                            userNameTextView.setErrorEnabled(true);
+                            userNameTextView.setError(error);
+                            userNameTextView.setErrorIconDrawable(R.drawable.ic_baseline_clear_24);
+                        } else {
+                            isUserNameValue = true;
+                            userNameTextView.setErrorEnabled(false);
+                            userNameTextView.setEndIconMode(TextInputLayout.END_ICON_CUSTOM);
+                            userNameTextView.setEndIconDrawable(R.drawable.ic_baseline_check_24);
+                            userNameTextView.setHelperText("");
+                        }
+                        nextButton.setEnabled(isFullNameValid && isUserNameValue && isPasswordValid);
+
+                    });
+                }
+                else{
                     isUserNameValue = false;
                     String error = "Must enter valid user name with at least 4 characters";
                     userNameTextView.setErrorEnabled(true);
                     userNameTextView.setError(error);
                     userNameTextView.setErrorIconDrawable(R.drawable.ic_baseline_clear_24);
+                    nextButton.setEnabled(false);
                 }
-                else
-                {
-                    isUserNameValue = true;
-                    userNameTextView.setErrorEnabled(false);
-                    userNameTextView.setEndIconMode(TextInputLayout.END_ICON_CUSTOM);
-                    userNameTextView.setEndIconDrawable(R.drawable.ic_baseline_check_24);
-                    userNameTextView.setHelperText("");
-                }
-                nextButton.setEnabled(isFullNameValid && isUserNameValue && isPasswordValid);
             }
-
             @Override
             public void afterTextChanged(Editable s) {
             }

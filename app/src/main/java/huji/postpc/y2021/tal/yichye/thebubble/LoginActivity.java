@@ -1,17 +1,25 @@
 package huji.postpc.y2021.tal.yichye.thebubble;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.time.Duration;
+
 import huji.postpc.y2021.tal.yichye.thebubble.onboarding.OnBoardingActivity;
 
 public class LoginActivity extends AppCompatActivity {
@@ -21,10 +29,38 @@ public class LoginActivity extends AppCompatActivity {
     private Button signInButton;
     private TextView signUpTextView;
 
+    private boolean clickedOnSignIn;
+
+    private ActivityResultLauncher<String> requestPermissionToStorageLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestPermissionToStorageLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+            if (isGranted) {
+                if (clickedOnSignIn) {
+                    checkUserCredentials();
+                }
+                else {
+                    startActivity(new Intent(getApplicationContext(), OnBoardingActivity.class));
+                    finishAffinity();
+                }
+            } else {
+                Toast.makeText(this, "Can't use the application with storage permission", Toast.LENGTH_SHORT).show();
+            }
+        });
+        startLoginProcess();
+    }
+
+    private void startLoginProcess()
+    {
+        LoginActivity loginActivity = this;
+        if (TheBubbleApplication.getInstance().getSP().getString("user_name", null) != null)
+        {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            finishAffinity();
+        }
         setContentView(R.layout.login_screen);
         userNameEditText = findViewById(R.id.userNameTextInputEdit);
         passwordEditText = findViewById(R.id.passwordTextInputEdit);
@@ -33,14 +69,33 @@ public class LoginActivity extends AppCompatActivity {
 
         defineGradientColorToText(signInButton);
         signInButton.setOnClickListener(v -> {
-            checkUserCredentials();
+            clickedOnSignIn = true;
+            int hasPermission = ContextCompat.checkSelfPermission(loginActivity,
+                    Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (hasPermission == PackageManager.PERMISSION_GRANTED) {
+                checkUserCredentials();
+            }
+            else {
+                requestPermissionToStorageLauncher.launch(
+                        Manifest.permission.READ_EXTERNAL_STORAGE);
+            }
         });
 
         signUpTextView.setOnClickListener(v -> {
-            startActivity(new Intent(getApplicationContext(), OnBoardingActivity.class));
-            finishAffinity();
+            clickedOnSignIn = false;
+            int hasPermission = ContextCompat.checkSelfPermission(loginActivity,
+                    Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (hasPermission == PackageManager.PERMISSION_GRANTED) {
+                startActivity(new Intent(getApplicationContext(), OnBoardingActivity.class));
+                finishAffinity();
+            }
+            else {
+                requestPermissionToStorageLauncher.launch(
+                        Manifest.permission.READ_EXTERNAL_STORAGE);
+            }
         });
     }
+
 
     private void checkUserCredentials()
     {

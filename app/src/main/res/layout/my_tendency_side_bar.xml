@@ -7,24 +7,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/background_gray">
 
+    <TextView
+        android:id="@+id/looking_for_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="30sp"
+        style="@style/PageTitle"
+        android:text="I'm looking for"
+        android:layout_marginTop="15dp"
+        />
 
     <LinearLayout
         android:id="@+id/gendersLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/tendencyPageTitle"
+        app:layout_constraintTop_toBottomOf="@+id/looking_for_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         >
 
         <CheckBox
-            android:id="@+id/gender1"
+            android:id="@+id/gender1_side_bar"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:checked="true"
             android:text="@string/man"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/genderPageTitle"
@@ -32,7 +45,7 @@
             />
 
         <CheckBox
-            android:id="@+id/gender2"
+            android:id="@+id/gender2_side_bar"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:checked="false"
@@ -45,7 +58,7 @@
             />
 
         <CheckBox
-            android:id="@+id/gender3"
+            android:id="@+id/gender3_side_bar"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:checked="false"
@@ -58,7 +71,7 @@
             />
 
         <CheckBox
-            android:id="@+id/gender4"
+            android:id="@+id/gender4_side_bar"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:checked="false"
@@ -71,7 +84,7 @@
             />
 
         <CheckBox
-            android:id="@+id/gender5"
+            android:id="@+id/gender5_side_bar"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:checked="false"
@@ -93,6 +106,7 @@
         app:layout_constraintTop_toBottomOf="@id/gendersLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="30sp"
         style="@style/PageTitle"
         android:text="@string/age_range"
         />
@@ -120,6 +134,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="26-40"
+        android:textSize="20sp"
         android:textStyle="bold"
         />
 

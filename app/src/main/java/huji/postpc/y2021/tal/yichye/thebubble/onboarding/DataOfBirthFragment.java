@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -47,13 +48,20 @@ public class DataOfBirthFragment extends Fragment
             moveToNextFragment();
         });
 
-        newUserViewModel.dataOfBirthLiveData.observe(getViewLifecycleOwner(),
-                localDate -> datePicker.updateDate(
-                        localDate.getYear(), localDate.getMonthValue() - 1, localDate.getDayOfMonth()));
+
+        newUserViewModel.dataOfBirthLiveData.observe(getViewLifecycleOwner(), new Observer<Long>() {
+            @Override
+            public void onChanged(Long aLong) {
+                LocalDate localDate = LocalDate.ofEpochDay(aLong);
+                datePicker.updateDate(
+                        localDate.getYear(), localDate.getMonthValue() - 1, localDate.getDayOfMonth());
+            }
+        });
 
         datePicker.setOnDateChangedListener((view1, year, monthOfYear, dayOfMonth) -> {
             LocalDate newDate = LocalDate.of(year, monthOfYear + 1, dayOfMonth);
-            newUserViewModel.dataOfBirthLiveData.setValue(newDate);
+            newUserViewModel.dataOfBirthLiveData.setValue(newDate.toEpochDay());
+
         });
 
     }
