@@ -6,6 +6,8 @@ import androidx.viewpager.widget.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 
@@ -21,6 +23,7 @@ public class ViewPagerImagesAdapter extends PagerAdapter {
         this.context = context;
         this.imageRefs = imageRefs;
     }
+
 
     @Override
     public int getCount() {
@@ -38,12 +41,12 @@ public class ViewPagerImagesAdapter extends PagerAdapter {
         ImageView imageView = new ImageView(context);
         GlideApp.with(this.context)
                 .load(imageRefs.get(position))
-                .centerCrop()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(imageView);
 
         container.addView(imageView);
 
-        // TODO: add click listener for changing images
         return imageView;
     }
 

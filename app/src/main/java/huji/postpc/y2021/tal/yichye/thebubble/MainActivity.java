@@ -34,6 +34,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -71,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout bottomBarLinearView;
     private BottomNavigationView bottomNavigationView;
     private NavigationView sideBarNavigationView;
+    private ImageView profileImageView;
+    View headerView;
 
 
 
@@ -161,10 +164,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void createLiveDataListeners()
     {
-        View headerView = sideBarNavigationView.getHeaderView(0);
+        headerView = sideBarNavigationView.getHeaderView(0);
         TextView fullNameTextView = (TextView) headerView.findViewById(R.id.full_name_header);
         TextView userNameTextView = (TextView) headerView.findViewById(R.id.user_name_header);
-        ImageView profileImageView = (ImageView) headerView.findViewById(R.id.pic_header);
+        profileImageView = (ImageView) headerView.findViewById(R.id.pic_header);
         TextView logoutTextView = (TextView) headerView.findViewById(R.id.logout_header);
 
         userViewModel.getFullNameLiveData().observe(this, new Observer<String>() {
@@ -181,24 +184,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ImageStorageDB storageDB = TheBubbleApplication.getInstance().getImageStorageDB();
-        StorageReference imageRef = storageDB.createReference(userViewModel.getUserNameLiveData().getValue(), "profileImage");
-        imageRef.getBytes(2000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                GlideApp.with(MainActivity.this /* context */)
-                        .load(imageRef).centerCrop()
-                        .into(profileImageView);
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Log.d("main activity", "problem with downloading profile image");
-            }
-        });
-
-
+        setProfileImageView(profileImageView);
 
         logoutTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,6 +199,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void setProfileImageView(ImageView profileImageView)
+    {
+        ImageStorageDB storageDB = TheBubbleApplication.getInstance().getImageStorageDB();
+        StorageReference imageRef = storageDB.createReference(userViewModel.getUserNameLiveData().getValue(), "profileImage");
+        GlideApp.with(MainActivity.this /* context */)
+                .load(imageRef)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .centerCrop()
+                .into(profileImageView);
+    }
 
     /**
      * opening drawer layout when menu icon is clicked and handling the back button
@@ -226,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
         bottomBarLinearView.setVisibility(View.VISIBLE);
         bottomNavigationView.getMenu().setGroupEnabled(R.id.group_bottom_menu,true);
         bottomNavigationView.getMenu().setGroupCheckable(R.id.group_bottom_menu,true, true);
+        setProfileImageView(profileImageView);
         return NavigationUI.navigateUp(navControllerSideBar, appBarConfiguration) || super.onSupportNavigateUp();
     }
 

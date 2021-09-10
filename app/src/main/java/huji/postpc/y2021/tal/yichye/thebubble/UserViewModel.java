@@ -84,6 +84,10 @@ public class UserViewModel extends ViewModel {
         usersDB.updateUserField(userNameLiveData.getValue(), "dateOfBirth", newDate);
     }
 
+    public void setPhotosLiveData(ArrayList<String> newPhotosArray) {
+        photosLiveData.setValue(newPhotosArray);
+        usersDB.updateUserField(userNameLiveData.getValue(), "photos", newPhotosArray);
+    }
 
     public void setMinAgePreferenceLiveData(Integer newMinAge) {
         minAgePreferenceLiveData.setValue(newMinAge);
