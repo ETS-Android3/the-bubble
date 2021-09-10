@@ -10,12 +10,14 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Looper;
+import android.util.JsonReader;
 import android.util.JsonWriter;
 import android.util.Log;
 
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
@@ -38,23 +40,35 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class BackgroundLocationWorker extends Worker {
 
+	private final String LOCATIONS_FILE_NAME = "locations.json";
+	private final String LAST_LOCATION_FILE_NAME = "last_location.json";
 	Context context;
-
+	MutableLiveData<Boolean> downloadFinished;
 	public BackgroundLocationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
 		super(context, workerParams);
 		this.context = context;
+
+		this.downloadFinished = new MutableLiveData<>();
+
 	}
 
 	@NonNull
@@ -70,33 +84,6 @@ public class BackgroundLocationWorker extends Worker {
 
 
 			LocationRequest locationRequest = createLocationRequest();
-//			LocationCallback locationCallback = new LocationCallback() {
-//				@Override
-//				public void onLocationResult(@NonNull LocationResult locationResult) {
-//					super.onLocationResult(locationResult);
-//					Location location1 = locationResult.getLastLocation();
-//					latitude[0] = location1.getLatitude();
-//					longitude[0] = location1.getLongitude();
-//					Log.i(TAG, "MyLocation" + latitude[0] + " " + longitude[0]);
-//
-//				}
-//			};
-//			locationRequest.setNumUpdates(3);
-////			fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
-//			fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
-
-//			fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-//				@SuppressLint("MissingPermission")
-//				@Override
-//				public void onComplete(@NonNull Task<Location> task) {
-//					// Init location
-//					Location location = task.getResult();
-//					if (location != null) {
-//						latitude[0] = location.getLatitude();
-//						longitude[0] = location.getLongitude();
-//						Log.i(TAG, "MyLocation" + latitude[0] + " " + longitude[0]);
-//					}}});
-
 			// Code for rec
 			fusedLocationProviderClient.getCurrentLocation(locationRequest.getPriority(), new CancellationToken() {
 				@Override
@@ -119,11 +106,12 @@ public class BackgroundLocationWorker extends Worker {
 						latitude[0] = location.getLatitude();
 						longitude[0] = location.getLongitude();
 						Log.i(TAG, "MyLocation " + latitude[0] + " " + longitude[0] + " first if");
-						uploadFile("tal12", createJsonObject(latitude[0], longitude[0]));
+						updateFile("tal12", location);
+//						uploadFile("tal12", createJsonObject(location));
 //						saveLocationToFS(location);
 
 
-						LocationRequest locationRequest = createLocationRequest();
+//						LocationRequest locationRequest = createLocationRequest();
 						LocationCallback locationCallback = new LocationCallback() {
 							@Override
 							public void onLocationResult(@NonNull LocationResult locationResult) {
@@ -143,7 +131,10 @@ public class BackgroundLocationWorker extends Worker {
 								latitude[0] = location1.getLatitude();
 								longitude[0] = location1.getLongitude();
 								Log.i(TAG, "MyLocation " + latitude[0] + " " + longitude[0] + " callback");
-								uploadFile("tal12", createJsonObject(latitude[0], longitude[0]));
+
+								updateFile("tal12", location1);
+//								uploadFile("tal12", createJsonObject(location));
+//								downloadFinished.observe(Lifecycle.);
 //								saveLocationToFS(location);
 
 
@@ -203,18 +194,34 @@ public class BackgroundLocationWorker extends Worker {
 //		JSONObject
 //	}
 
-	public JSONObject createJsonObject(double latitude, double longitude){
+	public JSONObject createJsonObject(Location location){
 		// TODO: to add name of location associated with time
 		Map<String, Double> map = new HashMap<>();
-		map.put("latitude", latitude);
-		map.put("longitude", longitude);
-		return new JSONObject(map);
-	}
-	public StorageReference createLocationReference(String userName) {
-		return FirebaseStorage.getInstance().getReference().child(userName).child("locations_dir").child("locations");
+		map.put("latitude", location.getLatitude());
+		map.put("longitude", location.getLongitude());
+		JSONObject jsonObject = new JSONObject();
+		try {
+			jsonObject.put(Long.toString(location.getTime()), map);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return jsonObject;
 	}
 
-	public void uploadFile(String userName, JSONObject jsonObject) {
+	public JSONObject updateJsonObject(JSONObject jsonObject, Location location) throws JSONException {
+		Map<String, Double> map = new HashMap<>();
+		map.put("latitude", location.getLatitude());
+		map.put("longitude", location.getLongitude());
+		jsonObject.put(Long.toString(location.getTime()), map);
+		return jsonObject;
+	}
+
+
+	public StorageReference createLocationReference(String userName, String fileName) {
+		return FirebaseStorage.getInstance().getReference().child(userName).child("locations_dir").child(fileName);
+	}
+
+	public void uploadFile(String userName, String fileName, JSONObject jsonObject) {
 //		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		byte[] sendData = null;
 		try {
@@ -223,20 +230,49 @@ public class BackgroundLocationWorker extends Worker {
 			e.printStackTrace();
 		}
 
-		StorageReference ref = this.createLocationReference(userName);
+		StorageReference ref = this.createLocationReference(userName, fileName);
 		if (sendData != null) {
 			UploadTask uploadTask = ref.putBytes(sendData);
 
 			uploadTask.addOnFailureListener(exception -> Log.i(TAG, "MyLocation upload data to FS error: " + exception.getMessage()))
-					.addOnSuccessListener(taskSnapshot -> Log.i(TAG, "MyLocation added data to FS: " ));
+					.addOnSuccessListener(taskSnapshot -> Log.i(TAG, "MyLocation " + fileName +"added data to FS: " ));
 		}
+	}
+
+	public void updateFile(String userName, Location location) {
+		StorageReference ref = this.createLocationReference(userName, LOCATIONS_FILE_NAME);
+		ref.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+			@Override
+			public void onSuccess(byte[] bytes) {
+				InputStream inputStream = new ByteArrayInputStream(bytes);
+				try {
+//					JsonReader jsonReader = new JsonReader(new InputStreamReader(inputStream, "UTF-8"));
+					JSONObject jsonObject = new JSONObject(new JsonParser().parse(new InputStreamReader(inputStream, "UTF-8")).getAsJsonObject().toString());
+					uploadFile(userName, LOCATIONS_FILE_NAME, updateJsonObject(jsonObject, location));
+					uploadFile(userName, LAST_LOCATION_FILE_NAME, createJsonObject(location));
+				} catch (UnsupportedEncodingException | JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}).addOnFailureListener(new OnFailureListener() {
+			@Override
+			public void onFailure(@NonNull Exception e) {
+				// TODO
+				Log.i(TAG, "MyLocation can't update file: " + e.getMessage());
+				if (e.getMessage() != null && e.getMessage().equals("Object does not exist at location.")){
+					JSONObject jsonObject = createJsonObject(location);
+					uploadFile(userName, LOCATIONS_FILE_NAME, jsonObject);
+					uploadFile(userName, LAST_LOCATION_FILE_NAME, jsonObject);
+				}
+			}
+		});
 	}
 
 
 	public void saveLocationToFS(Location location) {
 		String userName = "tal01";
 		FirebaseFirestore db = FirebaseFirestore.getInstance();
-		DocumentReference locationsArray = db.collection("locations").document(userName);
+		DocumentReference locationsArray = db.collection("locations1").document(userName);
 		locationsArray.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 			@Override
 			public void onComplete(@NonNull Task<DocumentSnapshot> task) {
