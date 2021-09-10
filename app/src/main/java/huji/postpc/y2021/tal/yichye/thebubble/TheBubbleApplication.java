@@ -36,15 +36,15 @@ public class TheBubbleApplication extends Application {
         // TODO - ADD LOGOUT OPTION
         String userName = sp.getString("user_name", null);
         Intent intent;
-        if (userName != null) {
-            intent = new Intent(this, MainActivity.class).
-                    setFlags(FLAG_ACTIVITY_NEW_TASK);
-        }
-        else {
-            intent = new Intent(this, LoginActivity.class).
-                    setFlags(FLAG_ACTIVITY_NEW_TASK);
-        }
-        startActivity(intent);
+//        if (userName != null) {
+//            intent = new Intent(this, MainActivity2.class).//to return back
+//                    setFlags(FLAG_ACTIVITY_NEW_TASK);
+//        }
+//        else {
+//            intent = new Intent(this, LoginActivity.class).
+//                    setFlags(FLAG_ACTIVITY_NEW_TASK);
+//        }
+//        startActivity(intent);
 
     }
 
