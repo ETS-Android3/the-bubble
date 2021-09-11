@@ -118,8 +118,10 @@ public class BackgroundLocationWorker extends Worker {
 								super.onLocationResult(locationResult);
 							}
 						};
-						locationRequest.setNumUpdates(1);
-						fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+//						locationRequest.setNumUpdates(1);
+//						fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+						BackgroundLocationWorker.this.context.getCodeCacheDir().delete();
+
 					} else {
 						// Request location updates
 						LocationRequest locationRequest = createLocationRequest();
@@ -235,7 +237,7 @@ public class BackgroundLocationWorker extends Worker {
 			UploadTask uploadTask = ref.putBytes(sendData);
 
 			uploadTask.addOnFailureListener(exception -> Log.i(TAG, "MyLocation upload data to FS error: " + exception.getMessage()))
-					.addOnSuccessListener(taskSnapshot -> Log.i(TAG, "MyLocation " + fileName +"added data to FS: " ));
+					.addOnSuccessListener(taskSnapshot -> Log.i(TAG, "MyLocation " + fileName +" added data to FS: " ));
 		}
 	}
 

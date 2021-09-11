@@ -4,6 +4,7 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -34,6 +35,8 @@ public class MainActivity2 extends AppCompatActivity {
 
 	private final long UPDATE_INTERVAL = 10 * 1000;  /* 10 secs */
 	private final long FASTEST_INTERVAL = 2000; /* 2 sec */
+	private final int PERMISSION_ID = 44;
+
 	FusedLocationProviderClient fusedLocationProviderClient;
 
 	TextView localityView;
@@ -57,7 +60,7 @@ public class MainActivity2 extends AppCompatActivity {
 
 
 		WorkManager.getInstance(this).cancelAllWork();
-
+		// TODO: To ask also for coarse location
 		requestPermissionToForegroundLocation = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
 			if (isGranted) {
 				// everything is ok, continue
@@ -85,10 +88,30 @@ public class MainActivity2 extends AppCompatActivity {
 			startBackgroundWorker();
 		} else if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
 			Toast.makeText(MainActivity2.this, "The feature can't work without BACKGROUDN LOCATION", Toast.LENGTH_LONG).show();
-			requestPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
-
+//			requestPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+			ActivityCompat.requestPermissions(this, new String[]{
+					Manifest.permission.ACCESS_COARSE_LOCATION,
+					Manifest.permission.ACCESS_FINE_LOCATION,
+					Manifest.permission.ACCESS_BACKGROUND_LOCATION
+			}, PERMISSION_ID);
 		} else {
-			requestPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+//			requestPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+			ActivityCompat.requestPermissions(this, new String[]{
+					Manifest.permission.ACCESS_COARSE_LOCATION,
+					Manifest.permission.ACCESS_FINE_LOCATION,
+					Manifest.permission.ACCESS_BACKGROUND_LOCATION
+			}, PERMISSION_ID);
+		}
+	}
+
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+		if (requestCode == PERMISSION_ID) {
+			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+				startBackgroundWorker();
+			}
 		}
 	}
 
