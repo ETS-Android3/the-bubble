@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.Observer;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
@@ -26,6 +27,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity2 extends AppCompatActivity {
@@ -86,6 +88,14 @@ public class MainActivity2 extends AppCompatActivity {
 
 		if ((ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
 			startBackgroundWorker();
+			SearchAlgorithm algorithm = new SearchAlgorithm(this);
+			algorithm.SearchForPossibleMatches(this);
+			algorithm.getPossibleMatchesLiveData().observe(this, new Observer<ArrayList<String>>() {
+				@Override
+				public void onChanged(ArrayList<String> userNames) {
+					algorithm.searchInGivenRadius(SearchAlgorithm.DEFAULT_SEARCH_RADIUS);
+				}
+			});
 		} else if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
 			Toast.makeText(MainActivity2.this, "The feature can't work without BACKGROUDN LOCATION", Toast.LENGTH_LONG).show();
 //			requestPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
@@ -102,6 +112,7 @@ public class MainActivity2 extends AppCompatActivity {
 					Manifest.permission.ACCESS_BACKGROUND_LOCATION
 			}, PERMISSION_ID);
 		}
+
 	}
 
 
@@ -111,6 +122,14 @@ public class MainActivity2 extends AppCompatActivity {
 		if (requestCode == PERMISSION_ID) {
 			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 				startBackgroundWorker();
+				SearchAlgorithm algorithm = new SearchAlgorithm(this);
+				algorithm.SearchForPossibleMatches(this);
+				algorithm.getPossibleMatchesLiveData().observe(this, new Observer<ArrayList<String>>() {
+					@Override
+					public void onChanged(ArrayList<String> userNames) {
+						algorithm.searchInGivenRadius(SearchAlgorithm.DEFAULT_SEARCH_RADIUS);
+					}
+				});
 			}
 		}
 	}

@@ -59,8 +59,7 @@ import java.util.Map;
 
 public class BackgroundLocationWorker extends Worker {
 
-	private final String LOCATIONS_FILE_NAME = "locations.json";
-	private final String LAST_LOCATION_FILE_NAME = "last_location.json";
+
 	Context context;
 	MutableLiveData<Boolean> downloadFinished;
 	public BackgroundLocationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
@@ -219,9 +218,7 @@ public class BackgroundLocationWorker extends Worker {
 	}
 
 
-	public StorageReference createLocationReference(String userName, String fileName) {
-		return FirebaseStorage.getInstance().getReference().child(userName).child("locations_dir").child(fileName);
-	}
+
 
 	public void uploadFile(String userName, String fileName, JSONObject jsonObject) {
 //		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -232,7 +229,7 @@ public class BackgroundLocationWorker extends Worker {
 			e.printStackTrace();
 		}
 
-		StorageReference ref = this.createLocationReference(userName, fileName);
+		StorageReference ref = LocationHelper.createLocationReference(userName, fileName);
 		if (sendData != null) {
 			UploadTask uploadTask = ref.putBytes(sendData);
 
@@ -242,7 +239,7 @@ public class BackgroundLocationWorker extends Worker {
 	}
 
 	public void updateFile(String userName, Location location) {
-		StorageReference ref = this.createLocationReference(userName, LOCATIONS_FILE_NAME);
+		StorageReference ref = LocationHelper.createLocationReference(userName, LocationHelper.LOCATIONS_FILE_NAME);
 		ref.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
 			@Override
 			public void onSuccess(byte[] bytes) {
@@ -250,8 +247,9 @@ public class BackgroundLocationWorker extends Worker {
 				try {
 //					JsonReader jsonReader = new JsonReader(new InputStreamReader(inputStream, "UTF-8"));
 					JSONObject jsonObject = new JSONObject(new JsonParser().parse(new InputStreamReader(inputStream, "UTF-8")).getAsJsonObject().toString());
-					uploadFile(userName, LOCATIONS_FILE_NAME, updateJsonObject(jsonObject, location));
-					uploadFile(userName, LAST_LOCATION_FILE_NAME, createJsonObject(location));
+					Gson gson = new Gson();
+					uploadFile(userName, LocationHelper.LOCATIONS_FILE_NAME, updateJsonObject(jsonObject, location));
+					uploadFile(userName, LocationHelper.LAST_LOCATION_FILE_NAME, createJsonObject(location));
 				} catch (UnsupportedEncodingException | JSONException e) {
 					e.printStackTrace();
 				}
@@ -263,8 +261,8 @@ public class BackgroundLocationWorker extends Worker {
 				Log.i(TAG, "MyLocation can't update file: " + e.getMessage());
 				if (e.getMessage() != null && e.getMessage().equals("Object does not exist at location.")){
 					JSONObject jsonObject = createJsonObject(location);
-					uploadFile(userName, LOCATIONS_FILE_NAME, jsonObject);
-					uploadFile(userName, LAST_LOCATION_FILE_NAME, jsonObject);
+					uploadFile(userName, LocationHelper.LOCATIONS_FILE_NAME, jsonObject);
+					uploadFile(userName, LocationHelper.LAST_LOCATION_FILE_NAME, jsonObject);
 				}
 			}
 		});

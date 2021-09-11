@@ -29,12 +29,17 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class LocationHelper {
+
+	public static final String LOCATIONS_FILE_NAME = "locations.json";
+	public static final String LAST_LOCATION_FILE_NAME = "last_location.json";
 
 //	public void getLocation(){
 //		requestPermissionToForegroundLocation = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -119,6 +124,9 @@ public class LocationHelper {
 //		});
 //	}
 
+	public static StorageReference createLocationReference(String userName, String fileName) {
+		return FirebaseStorage.getInstance().getReference().child(userName).child("locations_dir").child(fileName);
+	}
 
 	public static LocationRequest createLocationRequest() {
 		LocationRequest locationRequest = LocationRequest.create();
