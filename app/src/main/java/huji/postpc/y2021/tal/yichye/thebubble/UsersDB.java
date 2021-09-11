@@ -16,6 +16,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 
+import java.util.ArrayList;
+
+import huji.postpc.y2021.tal.yichye.thebubble.Connections.Request;
+
 public class UsersDB {
 
 	private FirebaseFirestore db = null;
@@ -57,6 +61,19 @@ public class UsersDB {
 		db.collection("users").document(userId).update(fieldToChange, newValue);
 
 	}
+
+	public void addRequest(String userId, Request newRequest)
+	{
+		db.collection("users").document(userId).get()
+				.addOnSuccessListener(documentSnapshot -> {
+					if (documentSnapshot.exists()) {
+						PersonData user = documentSnapshot.toObject(PersonData.class);
+						user.requests.add(newRequest);
+						updateUserField(userId, "requests", user.requests);
+					}
+				});
+	}
+
 	public FirebaseFirestore getDb() {
 		return db;
 	}

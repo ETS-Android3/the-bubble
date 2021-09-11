@@ -11,13 +11,11 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -31,13 +29,9 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import huji.postpc.y2021.tal.yichye.thebubble.GlideApp;
@@ -162,7 +156,7 @@ public class PhotosFragment extends Fragment
 
 
     private void uploadAndUpdateView(ActivityResult result) {
-        int resultCode = result.getData().getIntExtra("resultCode", -1);
+        int resultCode = result.getResultCode();
         if (resultCode != Activity.RESULT_CANCELED) {
             Intent data = result.getData();
             switch (currentOption) {
@@ -239,20 +233,25 @@ public class PhotosFragment extends Fragment
 
     private void setImageView(ImageView imageView, String imageName)
     {
-        ArrayList<String> imagesArray = newUserViewModel.photosLiveData.getValue();
-        String profileImage = newUserViewModel.profilePhotoLiveData.getValue();
-        if (imagesArray.contains(imageName) || imageName.equals(profileImage)) {
-            StorageReference imageRef = storageDB.createReference(newUserViewModel.userNameLiveData.getValue(), imageName);
-            GlideApp.with(requireActivity() /* context */)
-                    .load(imageRef)
-                    .skipMemoryCache(true)
-                    .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .into(imageView);
+        try {
+            ArrayList<String> imagesArray = newUserViewModel.photosLiveData.getValue();
+            String profileImage = newUserViewModel.profilePhotoLiveData.getValue();
+            if (imagesArray.contains(imageName) || imageName.equals(profileImage)) {
+                StorageReference imageRef = storageDB.createReference(newUserViewModel.userNameLiveData.getValue(), imageName);
+                GlideApp.with(requireActivity() /* context */)
+                        .load(imageRef)
+                        .skipMemoryCache(true)
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .into(imageView);
 
-            if (imageName.equals("profileImage")) {
-                nextButton.setEnabled(true);
+                if (imageName.equals("profileImage")) {
+                    nextButton.setEnabled(true);
+                }
             }
+        }
+        catch (Exception e){
+            System.out.println("on catch");
         }
     }
 

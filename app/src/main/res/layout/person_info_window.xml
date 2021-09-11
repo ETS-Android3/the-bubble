@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingBottom="10dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:background="@drawable/person_popup_drawable">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            app:cardCornerRadius="25dp"
+            app:cardElevation="0dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/profileImagePopupView"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:src="@drawable/user_icon"/>
+        </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/fullNamePopupView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:text="long name to show"
+                app:layout_constraintStart_toEndOf="@id/cardView"
+                app:layout_constraintTop_toTopOf="@id/cardView"
+                android:textColor="@color/gradient_peach"
+                android:layout_marginStart="10dp"
+                />
+
+            <TextView
+                android:id="@+id/agePopupView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:enabled="false"
+                android:textColor="@color/black"
+                app:layout_constraintTop_toTopOf="@id/cardView"
+                app:layout_constraintStart_toEndOf="@id/fullNamePopupView"
+                android:layout_marginStart="10dp"
+                android:text="age"
+                />
+
+
+            <TextView
+                android:id="@+id/genderPopupView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:enabled="false"
+                android:textColor="@color/black"
+                app:layout_constraintTop_toBottomOf="@id/fullNamePopupView"
+                app:layout_constraintStart_toEndOf="@id/cardView"
+                android:layout_marginStart="10dp"
+                android:text="gender"
+                />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            app:layout_constraintTop_toBottomOf="@id/genderPopupView"
+            android:background="@color/background_gray"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="5dp"
+            />
+
+            <TextView
+                android:id="@+id/aboutMePopupView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                app:layout_constraintStart_toStartOf="@id/cardView"
+                app:layout_constraintTop_toBottomOf="@id/genderPopupView"
+                android:text="about me\nabout me 2 more text to show"
+                android:maxLength="30"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/black"
+                />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout1"
+        app:layout_constraintStart_toStartOf="@id/linearLayout1"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        >
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/sendRequestButton"
+            android:layout_width="160dp"
+            android:layout_height="40dp"
+            android:background="@null"
+            android:backgroundTint="@color/white_blue"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="Send Request"
+            android:textAlignment="viewStart"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            app:cornerRadius="10dp"
+
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="160dp"
+            android:layout_height="1dp"
+            android:background="@color/background_gray"
+            />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/viewProfileButton"
+            android:layout_width="160dp"
+            android:layout_height="40dp"
+            android:text="View Profile  "
+            android:textSize="15sp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/white_blue"
+            android:background="@null"
+            android:textAlignment="viewStart"
+            app:cornerRadius="10dp"
+            android:textStyle="bold"
+
+            />
+    </LinearLayout>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

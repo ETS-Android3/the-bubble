@@ -116,6 +116,16 @@ public class UserViewModel extends ViewModel {
     }
 
 
+    public void setRequestsLiveData(ArrayList<Request> newRequestArray) {
+        requestsLiveData.setValue(newRequestArray);
+        usersDB.updateUserField(userNameLiveData.getValue(), "requests", newRequestArray);
+    }
+
+    public MutableLiveData<PersonData.Gender> getGenderLiveData()
+    {
+        return myGenderLiveData;
+    }
+
 
 
 }

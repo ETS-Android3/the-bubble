@@ -78,6 +78,7 @@ public class ProfilePreviewFragment extends Fragment {
     private ImageView[] plusViews;
     private EditText aboutMeEditText;
     private EditText nameEditText;
+    private TextView genderTextView;
     private UserViewModel userViewModel;
     private EditText ageTextView;
     private ImageStorageDB storageDB;
@@ -107,6 +108,7 @@ public class ProfilePreviewFragment extends Fragment {
         aboutMeEditText = view.findViewById(R.id.aboutMeEditProfile);
         nameEditText = view.findViewById(R.id.nameEditProfile);
         ageTextView = view.findViewById(R.id.ageEditProfile);
+        genderTextView = view.findViewById(R.id.genderEditProfile);
 
         profileImage = view.findViewById(R.id.profileImageView);
         firstImage = view.findViewById(R.id.firstImageViewEditProfile);
@@ -143,6 +145,9 @@ public class ProfilePreviewFragment extends Fragment {
 
         userViewModel.getAboutMeLiveData().observe(getViewLifecycleOwner(), s ->
                 aboutMeEditText.setText(s));
+
+        userViewModel.getGenderLiveData().observe(getViewLifecycleOwner(), gender ->
+                genderTextView.setText(gender.toString().toLowerCase() + ""));
 
         editButton.setOnClickListener(v -> {
             setAllViewsEditable(true);
