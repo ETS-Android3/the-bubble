@@ -114,6 +114,7 @@ public class SearchAlgorithm {
 	}
 
 	private void getMyLocation(){
+		// TODO - CHECK WHICH PERMISSION IS NEEDED HERE
 		if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 			FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity);
 			LocationRequest locationRequest = createLocationRequest();
@@ -166,9 +167,9 @@ public class SearchAlgorithm {
 						searchInGivenRadiusHelper(location.getLatitude(), location.getLongitude(),
 								possibleMatches, radius);
 					}
+					myCurrentLocation.removeObservers((LifecycleOwner) activity);
 				}
 			});
-			myCurrentLocation.removeObservers((LifecycleOwner) activity);
 		}
 	}
 
@@ -210,7 +211,6 @@ public class SearchAlgorithm {
 				}
 			});
 		}
-
 	}
 
 	private void updatePossibleMatchesInRadius(String userNameToAdd){
