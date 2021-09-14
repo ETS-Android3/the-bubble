@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Looper;
+import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -51,8 +52,8 @@ public class SearchAlgorithm {
 
 	public static final double DEFAULT_SEARCH_RADIUS = 200;
 
-	public MutableLiveData<ArrayList<String>> possibleMatchesLiveData = new MutableLiveData<>();
-	public MutableLiveData<ArrayList<String>> possibleMatchesInRadiusLiveData = new MutableLiveData<>();
+	public MutableLiveData<ArrayList<PersonData>> possibleMatchesLiveData = new MutableLiveData<>();
+	public MutableLiveData<ArrayList<Pair<PersonData, HashMap<String, Double>>>> possibleMatchesInRadiusLiveData = new MutableLiveData<>();
 	MutableLiveData<Location> myCurrentLocation = new MutableLiveData<>();
 	public MutableLiveData<Boolean> radiusSearchFinished = new MutableLiveData<>();
 	public AtomicInteger numOfUsersChecked = new AtomicInteger(0);
@@ -64,7 +65,7 @@ public class SearchAlgorithm {
 	}
 
 	public void SearchForPossibleMatches(ViewModelStoreOwner viewModelStoreOwner) {
-		ArrayList<String> possibleMatches = new ArrayList<>();
+		ArrayList<PersonData> possibleMatches = new ArrayList<>();
 		FirebaseFirestore db = FirebaseFirestore.getInstance();
 		db.collection("users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
 			@Override
@@ -76,7 +77,7 @@ public class SearchAlgorithm {
 						String userName = otherUser.getId();
 						if (!userName.equals(userViewModel.getUserNameLiveData().getValue())){
 							if (checkMatch(userViewModel, otherUser)){
-								possibleMatches.add(otherUser.getId());
+								possibleMatches.add(otherUser);
 							}
 						}
 					}
@@ -154,7 +155,7 @@ public class SearchAlgorithm {
 	}
 
 	public void searchInGivenRadius(double radius) {
-		ArrayList<String> possibleMatches = this.getPossibleMatchesLiveData().getValue();
+		ArrayList<PersonData> possibleMatches = this.getPossibleMatchesLiveData().getValue();
 		getRadiusSearchFinished().setValue(false);
 		getPossibleMatchesInRadiusLiveData().setValue(new ArrayList<>());
 		if (possibleMatches != null && possibleMatches.size() != 0) {
@@ -174,10 +175,11 @@ public class SearchAlgorithm {
 	}
 
 	private void searchInGivenRadiusHelper(double myLatitude, double myLongitude,
-										   ArrayList<String> possibleMatches, double radius){
+										   ArrayList<PersonData> possibleMatches, double radius){
 		Gson gson = new Gson();
-		for (String userName : possibleMatches) {
-			StorageReference ref = LocationHelper.createLocationReference(userName, LocationHelper.LOCATIONS_FILE_NAME);
+		for (PersonData user : possibleMatches) {
+			String userName = user.getUserName();
+			StorageReference ref = LocationHelper.createLocationReference(userName, LocationHelper.LAST_LOCATION_FILE_NAME);
 			ref.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
 				@Override
 				public void onSuccess(byte[] bytes) {
@@ -190,7 +192,7 @@ public class SearchAlgorithm {
 						Double otherLongitude = locationMap.get("longitude");
 						if (otherLatitude != null && otherLongitude != null) {
 							if (distance(myLatitude, otherLatitude, myLongitude, otherLongitude, 0 ,0) <= radius) {
-								updatePossibleMatchesInRadius(userName);
+								updatePossibleMatchesInRadius(user, locationMap);
 							}
 						}
 					} catch (UnsupportedEncodingException | JSONException e) {
@@ -213,15 +215,15 @@ public class SearchAlgorithm {
 		}
 	}
 
-	private void updatePossibleMatchesInRadius(String userNameToAdd){
-		ArrayList<String> possibleMatchesInRadius = getPossibleMatchesInRadiusLiveData().getValue();
+	private void updatePossibleMatchesInRadius(PersonData userToAdd, HashMap<String, Double> locationMap){
+		ArrayList<Pair<PersonData, HashMap<String, Double>>> possibleMatchesInRadius = getPossibleMatchesInRadiusLiveData().getValue();
 		if (possibleMatchesInRadius != null) {
-			possibleMatchesInRadius.add(userNameToAdd);
+			possibleMatchesInRadius.add(new Pair<>(userToAdd, locationMap));
 			getPossibleMatchesInRadiusLiveData().setValue(possibleMatchesInRadius);
 		}
 	}
 
-	public MutableLiveData<ArrayList<String>> getPossibleMatchesLiveData() {
+	public MutableLiveData<ArrayList<PersonData>> getPossibleMatchesLiveData() {
 		return possibleMatchesLiveData;
 	}
 
@@ -229,7 +231,7 @@ public class SearchAlgorithm {
 		return radiusSearchFinished;
 	}
 
-	public MutableLiveData<ArrayList<String>> getPossibleMatchesInRadiusLiveData() {
+	public MutableLiveData<ArrayList<Pair<PersonData, HashMap<String, Double>>>> getPossibleMatchesInRadiusLiveData() {
 		return possibleMatchesInRadiusLiveData;
 	}
 

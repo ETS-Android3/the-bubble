@@ -40,6 +40,10 @@ public class PersonData implements Serializable {
 		return fullName;
 	}
 
+	public String getUserName() {
+		return userName;
+	}
+
 	public String getAboutMe() {
 		return aboutMe;
 	}

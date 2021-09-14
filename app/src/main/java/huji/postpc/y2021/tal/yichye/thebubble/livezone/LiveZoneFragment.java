@@ -26,6 +26,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
+import huji.postpc.y2021.tal.yichye.thebubble.PersonData;
 import huji.postpc.y2021.tal.yichye.thebubble.R;
 import huji.postpc.y2021.tal.yichye.thebubble.SearchAlgorithm;
 import huji.postpc.y2021.tal.yichye.thebubble.TheBubbleApplication;
@@ -46,9 +47,9 @@ public class LiveZoneFragment extends Fragment {
 		containerGroup = container;
 		algorithm = new SearchAlgorithm(requireActivity());
 		algorithm.SearchForPossibleMatches(requireActivity());
-		algorithm.getPossibleMatchesLiveData().observe(getViewLifecycleOwner(), new Observer<ArrayList<String>>() {
+		algorithm.getPossibleMatchesLiveData().observe(getViewLifecycleOwner(), new Observer<ArrayList<PersonData>>() {
 			@Override
-			public void onChanged(ArrayList<String> userNames) {
+			public void onChanged(ArrayList<PersonData> userNames) {
 				algorithm.searchInGivenRadius(SearchAlgorithm.DEFAULT_SEARCH_RADIUS);
 			}
 		});

@@ -1,18 +1,11 @@
 package huji.postpc.y2021.tal.yichye.thebubble;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -28,9 +21,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -41,8 +31,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -53,17 +41,10 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.storage.StorageReference;
 
-import org.w3c.dom.Text;
-
-import huji.postpc.y2021.tal.yichye.thebubble.Connections.ConnectionsFragment;
-import io.grpc.internal.JsonUtil;
-
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static com.google.firebase.components.Dependency.setOf;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -82,8 +63,9 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView sideBarNavigationView;
     private ImageView profileImageView;
     private View headerView;
-    private final int PERMISSION_ID = 44;
-    private final int LIVE_ZONE_PERMISSION_ID = 45;
+    private final int WORKER_FOREGROUND_PERMISSION_ID = 40;
+    private final int WORKER_BACKGROUND_GROUND_PERMISSION_ID = 42;
+    private final int LIVE_ZONE_FOREGROUND_PERMISSION_ID = 44;
 
 
     @Override
@@ -96,9 +78,11 @@ public class MainActivity extends AppCompatActivity {
         sp = TheBubbleApplication.getInstance().getSP();
         setUserViewModel();
 
-        if (checkLocationPermission(PERMISSION_ID))
+        if (checkLocationPermission(WORKER_FOREGROUND_PERMISSION_ID, Manifest.permission.ACCESS_FINE_LOCATION))
         {
-            startBackgroundWorker();
+            if (checkLocationPermission(WORKER_BACKGROUND_GROUND_PERMISSION_ID, Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+                startBackgroundWorker();
+            }
         }
 
     }
@@ -289,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.liveZone:
                         //TODO CHECK IF NEED TO CHANGE LAYOUT OF LIVE ZONE BUTTON
-                        if (checkLocationPermission(LIVE_ZONE_PERMISSION_ID)) {
+                        if (checkLocationPermission(LIVE_ZONE_FOREGROUND_PERMISSION_ID, Manifest.permission.ACCESS_FINE_LOCATION)) {
                             enableBottomNavigationView();
                             navController.navigate(R.id.liveZone);
                         }
@@ -313,24 +297,18 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private boolean checkLocationPermission(int permissionId)
+    private boolean checkLocationPermission(int permissionId, String permission)
     {
-        if ((ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+        if ((ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED)) {
             return true;
-        } else if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+        } else if (shouldShowRequestPermissionRationale(permission)) {
             // TODO - CHANGE TEXT MESSAGE
             // TODO - CHECK WHICH PERMISSION IS NEEDED
             Toast.makeText(MainActivity.this, "Must allow location permission", Toast.LENGTH_LONG).show();
-            ActivityCompat.requestPermissions(this, new String[]{
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_BACKGROUND_LOCATION}, permissionId);
+            ActivityCompat.requestPermissions(this, new String[]{permission}, permissionId);
             return false;
         } else {
-            ActivityCompat.requestPermissions(this, new String[]{
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_BACKGROUND_LOCATION}, permissionId);
+            ActivityCompat.requestPermissions(this, new String[]{permission}, permissionId);
             return false;
         }
     }
@@ -416,16 +394,24 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // TODO MAYBE CHECK ALL RESULT IN GRANT RESULT ARRAY
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if (requestCode == PERMISSION_ID) {
+            if (requestCode == WORKER_FOREGROUND_PERMISSION_ID) {
+                checkLocationPermission(WORKER_BACKGROUND_GROUND_PERMISSION_ID, Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+            }
+            else if (requestCode == WORKER_BACKGROUND_GROUND_PERMISSION_ID) {
                 startBackgroundWorker();
             }
-            else if (requestCode == LIVE_ZONE_PERMISSION_ID) {
+            else if (requestCode == LIVE_ZONE_FOREGROUND_PERMISSION_ID) {
                 NavHostFragment navHostFragment = (NavHostFragment)
                         getSupportFragmentManager().findFragmentById(R.id.fragment_container_main);
                 NavController navController = navHostFragment.getNavController();
                 enableBottomNavigationView();
                 navController.navigate(R.id.liveZone);
             }
+        } else {
+            // TODO change message
+            Toast.makeText(MainActivity.this,
+                    "Must allow location permission" + permissions[0],
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
