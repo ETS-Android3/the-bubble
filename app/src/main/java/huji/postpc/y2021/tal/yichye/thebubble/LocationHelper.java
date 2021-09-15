@@ -164,16 +164,6 @@ public class LocationHelper {
 								Log.i(TAG, "MyLocation upload data to FS error: " + e.getMessage());
 							}
 						});
-//								addOnCompleteListener(new OnCompleteListener<Void>() {
-//							@Override
-//							public void onComplete(@NonNull Task<Void> task) {
-//								if (task.isSuccessful()) {
-//									Log.i(TAG, "MyLocation data added to FS");
-//								} else {
-//									Log.i(TAG, "MyLocation upload data to FS error: " + task.getException());
-//								}
-//							}
-//						});
 					}
 
 				} else {

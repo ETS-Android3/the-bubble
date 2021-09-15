@@ -53,13 +53,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 
 public class BackgroundLocationWorker extends Worker {
 
+	private final int WEEK = 7;
 
 	Context context;
 	MutableLiveData<Boolean> downloadFinished;
@@ -90,7 +96,6 @@ public class BackgroundLocationWorker extends Worker {
 					public boolean isCancellationRequested() {
 						return false;
 					}
-
 					@NonNull
 					@Override
 					public CancellationToken onCanceledRequested(@NonNull OnTokenCanceledListener onTokenCanceledListener) {
@@ -123,18 +128,15 @@ public class BackgroundLocationWorker extends Worker {
 								}
 							};
 							locationRequest.setNumUpdates(1);
-							fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+//							locationRequest.setExpirationDuration(1000 * 10);
+							fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
 						}
 					}
 				});
-			} else {
 			}
 		}
 		Log.i(TAG, "MyLocation worker ends");
-
-
 		return Result.success();
-
 	}
 
 
@@ -143,6 +145,7 @@ public class BackgroundLocationWorker extends Worker {
 		Map<String, Double> map = new HashMap<>();
 		map.put("latitude", location.getLatitude());
 		map.put("longitude", location.getLongitude());
+		map.put("count", 0.0);
 		JSONObject jsonObject = new JSONObject();
 		try {
 			jsonObject.put(Long.toString(location.getTime()), map);
@@ -152,15 +155,53 @@ public class BackgroundLocationWorker extends Worker {
 		return jsonObject;
 	}
 
-	public JSONObject updateJsonObject(JSONObject jsonObject, Location location) throws JSONException {
-		Map<String, Double> map = new HashMap<>();
-		map.put("latitude", location.getLatitude());
-		map.put("longitude", location.getLongitude());
-		jsonObject.put(Long.toString(location.getTime()), map);
-		return jsonObject;
+	public JSONObject updateJsonObject(JSONObject oldJsonObject, Location location) throws JSONException {
+		JSONObject updatedJsonObject = new JSONObject();
+		double similarityDist = 100;
+		Gson gson = new Gson();
+		boolean foundSimilarLocation = false;
+		Iterator<String> keysIterator = oldJsonObject.keys();
+		while (keysIterator.hasNext()) {
+			// To go over keys and check if location exists, if yes, then replace with new time
+			String timeStr = keysIterator.next();
+			long timeLong = Long.parseLong(timeStr);
+			HashMap<String, Double> locationMap = gson.fromJson(oldJsonObject.get(timeStr).toString(), HashMap.class);
+			Double otherLatitude = locationMap.get("latitude");
+			Double otherLongitude = locationMap.get("longitude");
+			Double count = locationMap.get("count");
+			if (otherLatitude != null && otherLongitude != null && count != null) {
+				if (SearchAlgorithm.distance(location.getLatitude(), otherLatitude,
+						location.getLongitude(), otherLongitude, 0 ,0) <= similarityDist
+						&& !foundSimilarLocation) {
+					Map<String, Double> map = new HashMap<>();
+					map.put("latitude", location.getLatitude());
+					map.put("longitude", location.getLongitude());
+					map.put("count", count + 1);
+					timeLong = location.getTime();
+					timeStr = Long.toString(timeLong);
+					updatedJsonObject.put(timeStr, map);
+					foundSimilarLocation = true;
+				}
+				else if (daysFrom(timeLong) <= WEEK) {
+					// Keeps a location if it was sampled not more than before a week
+					updatedJsonObject.put(timeStr, oldJsonObject.get(timeStr));
+				}
+			}
+		}
+		if (!foundSimilarLocation) {
+			Map<String, Double> map = new HashMap<>();
+			map.put("latitude", location.getLatitude());
+			map.put("longitude", location.getLongitude());
+			map.put("count", 0.0);
+			updatedJsonObject.put(Long.toString(location.getTime()), map);
+		}
+		return updatedJsonObject;
 	}
 
-
+	private int daysFrom(Long epochDate) {
+		LocalDate date = Instant.ofEpochMilli(epochDate).atZone(ZoneId.systemDefault()).toLocalDate();
+		return Period.between(date, LocalDate.now()).getDays();
+	}
 
 
 	public void uploadFile(String userName, String fileName, JSONObject jsonObject) {
@@ -200,7 +241,6 @@ public class BackgroundLocationWorker extends Worker {
 		}).addOnFailureListener(new OnFailureListener() {
 			@Override
 			public void onFailure(@NonNull Exception e) {
-				// TODO
 				Log.i(TAG, "MyLocation can't update file: " + e.getMessage());
 				if (e.getMessage() != null && e.getMessage().equals("Object does not exist at location.")){
 					JSONObject jsonObject = createJsonObject(location);
@@ -211,6 +251,9 @@ public class BackgroundLocationWorker extends Worker {
 		});
 	}
 
+//	private boolean isLocationSimilar(HashMap<String, HashMap<String, Double>> clusterLocations) {
+//
+//	}
 
 //	public void saveLocationToFS(Location location) {
 //		String userName = "tal01";
