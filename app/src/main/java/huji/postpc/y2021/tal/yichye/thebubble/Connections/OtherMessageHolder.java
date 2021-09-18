@@ -19,7 +19,7 @@ public class OtherMessageHolder extends RecyclerView.ViewHolder {
 
     public OtherMessageHolder(@NonNull View itemView) {
         super(itemView);
-        date =itemView.findViewById(R.id.text_gchat_date_other);
+        date =itemView.findViewById(R.id.text_date_other);
         time = itemView.findViewById(R.id.text_timestamp_other);
         msgCard = itemView.findViewById(R.id.card_message_other);
         msgText = itemView.findViewById(R.id.text_message_other);

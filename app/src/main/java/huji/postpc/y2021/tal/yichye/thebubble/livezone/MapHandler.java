@@ -26,6 +26,7 @@ import org.osmdroid.views.overlay.Marker;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import huji.postpc.y2021.tal.yichye.thebubble.Connections.ChatInfo;
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.Request;
 import huji.postpc.y2021.tal.yichye.thebubble.GlideApp;
 import huji.postpc.y2021.tal.yichye.thebubble.ImageStorageDB;
@@ -77,6 +78,7 @@ public class MapHandler {
     }
 
     public void showMarkerOnMap(Drawable profileImage, Pair<PersonData, HashMap<String, Double>> match, boolean isCenter) {
+        // TODO NEED TO CHECK ALSO CHATINFO
         if (!isCenter && checkRequestBetweenUsers(match.first)){
             return;
         }
@@ -115,6 +117,11 @@ public class MapHandler {
     {
         for (Request request: userViewModel.getRequestsLiveData().getValue()) {
             if (request.getReqUserId().equals(otherPerson.getId())){
+                return true;
+            }
+        }
+        for (ChatInfo chatInfo: userViewModel.getChatsLiveData().getValue()){
+            if (chatInfo.getChatWith().equals(otherPerson.getId())){
                 return true;
             }
         }
