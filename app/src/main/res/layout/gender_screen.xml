@@ -9,7 +9,7 @@
 
 
     <TextView
-        android:id="@+id/genderPageTitle"
+        android:id="@+id/cityPageTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,7 +23,7 @@
         android:id="@+id/genderRadioGroup"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/genderPageTitle"
+        app:layout_constraintTop_toBottomOf="@+id/cityPageTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         >
@@ -37,7 +37,7 @@
             android:layout_marginTop="40dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/genderPageTitle"
+            app:layout_constraintTop_toBottomOf="@+id/cityPageTitle"
             style="@style/GenderRadioButton"
             />
 

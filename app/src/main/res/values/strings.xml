@@ -16,7 +16,7 @@
     <string name="genderqueer">Genderqueer</string>
     <string name="city">My City</string>
     <string name="nav_bar_connections">Connections</string>
-    <string name="nav_bar_live">LIVE</string>
+    <string name="nav_bar_live">Live</string>
     <string name="nav_bar_Agent">Agent</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -34,4 +34,7 @@
     <string name="this_will_be_your_profile_picture">This will be your profile picture</string>
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
+    <string name="live_search_description">Live search for matches nearby</string>
+    <string name="connections_description">Chats and match requests</string>
+    <string name="agent_description">Search for matches using \ncommon location history</string>
 </resources>
