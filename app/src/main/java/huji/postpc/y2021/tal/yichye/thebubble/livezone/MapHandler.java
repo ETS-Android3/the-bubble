@@ -2,8 +2,9 @@ package huji.postpc.y2021.tal.yichye.thebubble.livezone;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.storage.StorageReference;
@@ -20,8 +23,8 @@ import org.osmdroid.library.BuildConfig;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.Request;
 import huji.postpc.y2021.tal.yichye.thebubble.GlideApp;
@@ -29,6 +32,7 @@ import huji.postpc.y2021.tal.yichye.thebubble.ImageStorageDB;
 import huji.postpc.y2021.tal.yichye.thebubble.PersonData;
 import huji.postpc.y2021.tal.yichye.thebubble.R;
 import huji.postpc.y2021.tal.yichye.thebubble.TheBubbleApplication;
+import huji.postpc.y2021.tal.yichye.thebubble.UserViewModel;
 import huji.postpc.y2021.tal.yichye.thebubble.UsersDB;
 import huji.postpc.y2021.tal.yichye.thebubble.sidebar.ViewPagerImagesAdapter;
 
@@ -36,20 +40,24 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class MapHandler {
 
-    private double DEFAULT_ZOOM = 18;
+    private double DEFAULT_ZOOM = 19;
     private MapView mapView;
     private GeoPoint centerLocation;
     private ImageStorageDB storageDB;
     private PersonData currentUser;
     private UsersDB usersDB;
+    private PopupWindow[] openedPopupWindow;
+    private UserViewModel userViewModel;
 
-    public MapHandler(MapView map)
+    public MapHandler(MapView map, UserViewModel userViewModel)
     {
         this.mapView = map;
         this.usersDB = TheBubbleApplication.getInstance().getUsersDB();
         this.storageDB = TheBubbleApplication.getInstance().getImageStorageDB();
         this.currentUser = null;
         this.centerLocation = null;
+        this.openedPopupWindow =  new PopupWindow[]{null, null};
+        this.userViewModel = userViewModel;
 
         Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
         IMapController mapController = mapView.getController();
@@ -58,68 +66,63 @@ public class MapHandler {
         mapView.setMinZoomLevel(DEFAULT_ZOOM);
         mapController.setZoom(DEFAULT_ZOOM);
         mapController.stopAnimation(true);
-    }
 
-    public void setMyLocationOnMap(Bitmap profileImage)
-    {
-        MyLocationNewOverlay myLocationOverlay = new MyLocationNewOverlay(mapView);
-        myLocationOverlay.enableFollowLocation();
-        myLocationOverlay.enableMyLocation();
-        myLocationOverlay.setDirectionArrow(profileImage, profileImage);
-
-        mapView.getOverlays().add(myLocationOverlay);
-//        mapController.setCenter(myLocationoverlay.getMyLocation());
-//        mapView.setScrollableAreaLimitDouble(mapView.getBoundingBox());
     }
 
     public void setCenter()
     {
-        // TODO UPDATE CENTER ACCORDING TO THIS.CENTERLOCATION
-        GeoPoint myLocation = new GeoPoint(31.7698, 35.2174);
-        mapView.setExpectedCenter(myLocation);
+        mapView.setScrollableAreaLimitDouble(null);
+        mapView.getController().setCenter(centerLocation);
         mapView.setScrollableAreaLimitDouble(mapView.getBoundingBox());
-//        centerLocation = myLocation;
-//        GeoPoint personLocation = getPersonLocation(personData);
-//        GeoPoint myLocation = new GeoPoint(personLocation.getLatitude(), personLocation.getLongitude());
-
-        // final code
-//        mapView.setExpectedCenter(centerLocation);
-//        mapView.setScrollableAreaLimitDouble(mapView.getBoundingBox());
-//
-
     }
 
-    public void showMarkerOnMap(Drawable profileImage, PersonData person, boolean isCenter) {
-        GeoPoint personLocation = getPersonLocation(isCenter);
-        GeoPoint location = new GeoPoint(personLocation.getLatitude(), personLocation.getLongitude());
-
-        if (isCenter){
-            this.currentUser = person;
-            this.centerLocation = location;
+    public void showMarkerOnMap(Drawable profileImage, Pair<PersonData, HashMap<String, Double>> match, boolean isCenter) {
+        if (!isCenter && checkRequestBetweenUsers(match.first)){
+            return;
         }
 
-        setCenter();
+        double latitude = match.second.get("latitude");
+        double longitude = match.second.get("longitude");
+        GeoPoint location = new GeoPoint(latitude, longitude);
+
+        if (isCenter){
+            this.currentUser = match.first;
+            this.centerLocation = location;
+            setCenter();
+        }
+
         Marker myMarker = new Marker(mapView);
         myMarker.setPosition(location);
-        myMarker.setTitle(person.getId());
+        myMarker.setTitle(match.first.getId());
         myMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
 
         myMarker.setIcon(profileImage);
-        myMarker.setId(person.getId());
+        myMarker.setId(match.first.getId());
 
         myMarker.setOnMarkerClickListener((marker, mapView) -> {
             if (!isCenter) {
-                showPopupOnMap(person);
+                showPopupOnMap(myMarker, match.first);
             }
             return true;
         });
 
         mapView.getOverlays().add(myMarker);
+        mapView.invalidate();
     }
 
 
+    private boolean checkRequestBetweenUsers(PersonData otherPerson)
+    {
+        for (Request request: userViewModel.getRequestsLiveData().getValue()) {
+            if (request.getReqUserId().equals(otherPerson.getId())){
+                return true;
+            }
+        }
+        return false;
+    }
+
     @SuppressLint("ClickableViewAccessibility")
-    private void showPopupOnMap(PersonData personData)
+    private void showPopupOnMap(Marker currentMarker, PersonData personData)
     {
         Context context = mapView.getContext();
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -131,15 +134,17 @@ public class MapHandler {
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
         popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
 
+        openedPopupWindow[0] = popupWindow;
         popupView.setOnTouchListener((v, event) -> {
+            openedPopupWindow[0] = null;
             popupWindow.dismiss();
             return true;
         });
 
-        updatePopupViews(popupView, personData);
+        updatePopupViews(popupView, personData, currentMarker);
     }
 
-    private void updatePopupViews(View popUpView, PersonData personData)
+    private void updatePopupViews(View popUpView, PersonData personData, Marker currentMarker)
     {
         TextView fullNameView = popUpView.findViewById(R.id.fullNamePopupView);
         TextView ageView = popUpView.findViewById(R.id.agePopupView);
@@ -166,17 +171,34 @@ public class MapHandler {
                 .centerCrop()
                 .into(profileImageView);
 
+        if (checkRequestBetweenUsers(personData)){
+            sendRequestButton.setEnabled(false);
+            sendRequestButton.setText("Request sent !");
+            sendRequestButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(mapView.getContext(), R.color.disable_gray)));
+//            Drawable icon = currentMarker.getIcon();
+//            icon.setAlpha(255);
+//
+//            mapView.getOverlays().remove(currentMarker);
+//            currentMarker.setIcon(icon);
+//            mapView.getOverlays().add(currentMarker);
+            mapView.invalidate();
+        }
 
         sendRequestButton.setOnClickListener(v -> {
-            Request requestIn = new Request(currentUser.getId(), currentUser.getName(), true);
+            Request requestIn = new Request(userViewModel.getUserNameLiveData().getValue(),
+                    userViewModel.getFullNameLiveData().getValue(), true);
             Request requestOut = new Request(personData.getId(), personData.getName(), false);
             usersDB.addRequest(currentUser.getId(), requestOut);
             usersDB.addRequest(personData.getId(), requestIn);
+
+            sendRequestButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(mapView.getContext(), R.color.disable_gray)));
+            sendRequestButton.setEnabled(false);
+            Toast.makeText(this.mapView.getContext(), "Request was sent", Toast.LENGTH_LONG).show();
         });
 
         viewProfileButton.setOnClickListener(v -> showFullPopupOnMap(personData, profileImageRef));
-
     }
+
 
     @SuppressLint("ClickableViewAccessibility")
     private void showFullPopupOnMap(PersonData personData, StorageReference profileImageRef)
@@ -190,8 +212,10 @@ public class MapHandler {
         boolean focusable = true;
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
 
+        openedPopupWindow[1] = popupWindow;
         popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
         popupView.setOnTouchListener((v, event) -> {
+            openedPopupWindow[1] = null;
             popupWindow.dismiss();
             return true;
         });
@@ -228,18 +252,13 @@ public class MapHandler {
         GlideApp.with(popUpView.getContext()).load(profileImageRef).centerCrop().into(profileImage);
     }
 
-    public void removeAllMarkers()
+    public void cleanupMap()
     {
         mapView.getOverlays().clear();
-    }
-
-    private GeoPoint getPersonLocation(boolean isCenter)
-    {
-        // TODO GET LOCATION FROM FIREBASE STORAGE
-        if (isCenter){
-            return new GeoPoint(31.7698, 35.2174);
+        for (PopupWindow popup: openedPopupWindow)
+        if (popup != null){
+            popup.dismiss();
         }
-        return new GeoPoint(31.7708, 35.2172);
     }
 
 }
