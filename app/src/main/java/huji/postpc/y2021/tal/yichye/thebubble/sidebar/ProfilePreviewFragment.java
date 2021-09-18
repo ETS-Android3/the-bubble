@@ -156,9 +156,9 @@ public class ProfilePreviewFragment extends Fragment {
         checkedButton.setOnClickListener(v -> {
             if (allValidValues()) {
                 setAllViewsEditable(false);
-                userViewModel.setFullNameLiveData(nameEditText.getText().toString());
-                userViewModel.setAboutMeLiveData(aboutMeEditText.getText().toString());
-                userViewModel.setCityLiveData(citySpinner.getSelectedItem().toString());
+                userViewModel.setFullNameLiveData(nameEditText.getText().toString(), null);
+                userViewModel.setAboutMeLiveData(aboutMeEditText.getText().toString(), null);
+                userViewModel.setCityLiveData(citySpinner.getSelectedItem().toString(), null);
                 setViewPagerImages(view);
             }
         });

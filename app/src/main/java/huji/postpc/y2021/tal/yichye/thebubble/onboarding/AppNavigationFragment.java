@@ -73,9 +73,6 @@ public class AppNavigationFragment extends Fragment
         newUser.requests = new ArrayList<>();
         newUser.chatInfos = new ArrayList<>();
 
-        //TODO DANIEL DELETE!!!!!!!!!!!!!!!!!!!!!!!
-        newUser.chatInfos.add(new ChatInfo("D1234-D12345"));
-        newUser.requests.add(new Request("Ilia1", true));
         newUser.photos = newUserViewModel.photosLiveData.getValue();
 
         System.out.println(newUser);

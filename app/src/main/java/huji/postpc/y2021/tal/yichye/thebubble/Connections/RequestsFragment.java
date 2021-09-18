@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -66,6 +67,7 @@ public class RequestsFragment extends Fragment {
         adapter.XclickedCallable = new RequestsAdapter.OnXClicked() {
             @Override
             public void onClickedX(Request request, String forToast) {
+                System.out.println("TRYING TO DELETE REQUEST FOR OTHER USER " + request.reqUserId);
                 ArrayList<Request> current_array = userViewModel.getRequestsLiveData().getValue();
                 for (int i = 0; i < current_array.size(); i++) {
                     if (current_array.get(i).getReqUserId().equals(request.getReqUserId())){

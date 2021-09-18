@@ -66,6 +66,8 @@ public class ChatInfo implements Serializable, Comparable<ChatInfo> {
     @Override
     public int compareTo(ChatInfo o) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        String d1 = o.dateLastSentMsg + " " + o.timeLastSentMsg;
+        String d2 = dateLastSentMsg + " " + timeLastSentMsg;
         if(lastSentMsg == null ){
             System.out.println("IN COMPARE TO LASTMSG NULL");
             if(o.lastSentMsg == null)
@@ -78,9 +80,8 @@ public class ChatInfo implements Serializable, Comparable<ChatInfo> {
             return 1;
         }
         else{
-
             try{
-                if(sdf.parse(o.getDateLastSentMsg()).before(sdf.parse(dateLastSentMsg))){
+                if(sdf.parse(d1).before(sdf.parse(d2))){
                     return -1;
                 }
                 return 1;

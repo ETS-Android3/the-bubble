@@ -48,7 +48,7 @@ public class ContactsFragment extends Fragment {
         userViewModel.getChatsLiveData().observe(getViewLifecycleOwner(), personDataArr->
         {
             if (personDataArr != null) {
-                System.out.println("IN OBSERVE for changes in chatsLiveData " + personDataArr.get(0).getChatWith() );
+                System.out.println("@@@@@@@@@@@IN OBSERVE for changes in chatsLiveData " + personDataArr.get(0).getChatWith() );
                 adapter.setChatInfos(personDataArr);
             } else {
                 Toast.makeText(requireContext(),

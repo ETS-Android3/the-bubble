@@ -25,6 +25,67 @@ public class PersonData implements Serializable {
 	public String city;
 	public String phoneNumber; // TODO: phone number should be private and saved in othe place
 	public String profilePicture;
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+
+	public void setDateOfBirth(long dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public void setAboutMe(String aboutMe) {
+		this.aboutMe = aboutMe;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public void setProfilePicture(String profilePicture) {
+		this.profilePicture = profilePicture;
+	}
+
+	public void setPhotos(ArrayList<String> photos) {
+		this.photos = photos;
+	}
+
+	public void setMinAgePreference(int minAgePreference) {
+		this.minAgePreference = minAgePreference;
+	}
+
+	public void setMaxAgePreference(int maxAgePreference) {
+		this.maxAgePreference = maxAgePreference;
+	}
+
+	public void setGenderTendency(ArrayList<Gender> genderTendency) {
+		this.genderTendency = genderTendency;
+	}
+
+	public void setRequests(ArrayList<Request> requests) {
+		this.requests = requests;
+	}
+
+	public void setChatInfos(ArrayList<ChatInfo> chatInfos) {
+		this.chatInfos = chatInfos;
+	}
+
 	public ArrayList<String> photos;
 	public int minAgePreference;
 	public int maxAgePreference;
