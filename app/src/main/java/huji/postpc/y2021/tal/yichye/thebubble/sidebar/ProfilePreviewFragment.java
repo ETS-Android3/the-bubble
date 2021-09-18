@@ -1,45 +1,22 @@
 package huji.postpc.y2021.tal.yichye.thebubble.sidebar;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.StorageReference;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 import huji.postpc.y2021.tal.yichye.thebubble.GlideApp;
@@ -125,15 +102,15 @@ public class ProfilePreviewFragment extends Fragment {
             setAllViewsAsEnable(false);
 
             // TODO UPDATE VIEW MODEL WITH THE NEW VALUES
-            userViewModel.setFullNameLiveData(nameEditText.getText().toString());
-            userViewModel.setAboutMeLiveData(aboutMeEditText.getText().toString());
-            userViewModel.setCityLiveData(citySpinner.getSelectedItem().toString());
+            userViewModel.setFullNameLiveData(nameEditText.getText().toString(), null);
+            userViewModel.setAboutMeLiveData(aboutMeEditText.getText().toString(), null);
+            userViewModel.setCityLiveData(citySpinner.getSelectedItem().toString(), null);
         });
     }
 
     private void setViewPagerImages(View view)
     {
-        String userName = userViewModel.getUserNameLiveData().getValue();
+        String userName = userViewModel.getUserNameIdLiveData().getValue();
         ArrayList<StorageReference> imagesRefs = new ArrayList<>();
         for (String imageName: userViewModel.getPhotosLiveData().getValue()) {
             imagesRefs.add(storageDB.createReference(userName, imageName));
@@ -155,7 +132,7 @@ public class ProfilePreviewFragment extends Fragment {
 
     private void setImageView(ImageView imageView, String imageName)
     {
-        StorageReference imageRef = storageDB.createReference(userViewModel.getUserNameLiveData().getValue(), imageName);
+        StorageReference imageRef = storageDB.createReference(userViewModel.getUserNameIdLiveData().getValue(), imageName);
 
         imageRef.getBytes(2000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override

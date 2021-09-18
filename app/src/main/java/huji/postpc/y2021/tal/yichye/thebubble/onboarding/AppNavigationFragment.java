@@ -15,6 +15,7 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import huji.postpc.y2021.tal.yichye.thebubble.Connections.ChatInfo;
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.Request;
 import huji.postpc.y2021.tal.yichye.thebubble.PersonData;
 import huji.postpc.y2021.tal.yichye.thebubble.R;
@@ -69,7 +70,12 @@ public class AppNavigationFragment extends Fragment
             tendencyList.add(genderList[genderIndex]);
         }
         newUser.genderTendency = tendencyList;
-        newUser.requests = new ArrayList<Request>();
+        newUser.requests = new ArrayList<>();
+        newUser.chatInfos = new ArrayList<>();
+
+        //TODO DANIEL DELETE!!!!!!!!!!!!!!!!!!!!!!!
+        newUser.chatInfos.add(new ChatInfo("D1234-D12345"));
+        newUser.requests.add(new Request("Ilia1", true));
         newUser.photos = newUserViewModel.photosLiveData.getValue();
 
         System.out.println(newUser);

@@ -8,8 +8,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.HashSet;
 
+import huji.postpc.y2021.tal.yichye.thebubble.Connections.ChatInfo;
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.Request;
 
 
@@ -29,7 +29,7 @@ public class PersonData implements Serializable {
 	public int maxAgePreference;
 	public ArrayList<Gender> genderTendency;
 	public ArrayList<Request> requests;
-//	public ArrayList<String> matches;
+	public ArrayList<ChatInfo> chatInfos;
 
 
 	public String getId() {
@@ -44,6 +44,9 @@ public class PersonData implements Serializable {
 		return gender;
 	}
 
+	public ArrayList<Request> getRequests() {
+		return requests;
+	}
 
 	@RequiresApi(api = Build.VERSION_CODES.O)
 	public static int calcAge(Long epochDate) {

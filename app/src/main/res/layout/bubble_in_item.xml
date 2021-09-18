@@ -4,15 +4,29 @@
     android:layout_height="80dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
-        android:id="@+id/userReqIcon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@drawable/user_icon"
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        app:cardElevation="0dp"
+        app:cardCornerRadius="30dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginStart="30dp"
+
+        android:layout_gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+
+        >
+        <ImageView
+            android:id="@+id/userReqIcon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            />
+    </androidx.cardview.widget.CardView>
 
     <ImageView
         android:id="@+id/reject"
@@ -52,9 +66,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="user name"
-        app:layout_constraintStart_toEndOf="@id/userReqIcon"
-        app:layout_constraintTop_toTopOf="@id/userReqIcon"
-        app:layout_constraintBottom_toBottomOf="@id/userReqIcon"
+        app:layout_constraintStart_toEndOf="@id/cardView"
+        app:layout_constraintTop_toTopOf="@id/cardView"
+        app:layout_constraintBottom_toBottomOf="@id/cardView"
         android:layout_marginStart="20dp"
         />
      <View

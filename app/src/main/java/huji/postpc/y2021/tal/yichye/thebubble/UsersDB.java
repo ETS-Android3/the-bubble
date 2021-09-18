@@ -16,6 +16,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 
+import java.util.ArrayList;
+
+import huji.postpc.y2021.tal.yichye.thebubble.Connections.ChatInfo;
+import huji.postpc.y2021.tal.yichye.thebubble.Connections.Message;
+
 public class UsersDB {
 
 	private FirebaseFirestore db = null;
@@ -54,10 +59,33 @@ public class UsersDB {
 
 	public void updateUserField(String userId, String fieldToChange, Object newValue)
 	{
+		System.out.println("IN USER DB UPDATE FOR "+ userId);
 		db.collection("users").document(userId).update(fieldToChange, newValue);
-
 	}
+
 	public FirebaseFirestore getDb() {
 		return db;
 	}
+
+	public void updateChatInfoByIdAndMsg(Message message, String idChatWith, String idSelf){
+		db.collection("users").document(idSelf).get()
+				.addOnSuccessListener(documentSnapshot -> {
+					if (documentSnapshot.exists()) {
+						PersonData user = documentSnapshot.toObject(PersonData.class);
+						for (int i = 0; i < user.chatInfos.size() ; i++) {
+							ChatInfo c = user.chatInfos.get(i);
+							if (c.getChatWith().equals(idChatWith)){
+								c.setLastSentMsg(message.getContent());
+								c.setTimeLastSentMsg(message.getTimeSent());
+								c.setDateLastSentMsg(message.getDateSent());
+							}
+					}
+						updateUserField(idSelf, "chatInfos", user.chatInfos);
+					}
+					else {
+						System.err.println("couldnt find matching chat info ---updateChatInfoByIdAndMsg");
+					}
+				});
+	}
+
 }

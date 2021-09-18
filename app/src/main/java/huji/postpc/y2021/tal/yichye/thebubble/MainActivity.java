@@ -1,17 +1,10 @@
 package huji.postpc.y2021.tal.yichye.thebubble;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -22,9 +15,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -46,15 +36,9 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.storage.StorageReference;
 
-import org.w3c.dom.Text;
-
-import huji.postpc.y2021.tal.yichye.thebubble.Connections.ConnectionsFragment;
-import io.grpc.internal.JsonUtil;
-
 import java.util.Set;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static com.google.firebase.components.Dependency.setOf;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -110,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateUserViewModel(PersonData personData){
         userViewModel.fullNameLiveData.setValue(personData.fullName);
-        userViewModel.userNameLiveData.setValue(personData.userName);
+        userViewModel.userNameIdLiveData.setValue(personData.userName);
         userViewModel.passwordLiveData.setValue(personData.password);
         userViewModel.phoneNumberLiveData.setValue(personData.phoneNumber);
         userViewModel.dateOfBirthLiveData.setValue(personData.dateOfBirth);
@@ -123,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         userViewModel.genderTendency.setValue(personData.genderTendency);
         userViewModel.requestsLiveData.setValue(personData.requests);
         userViewModel.aboutMeLiveData.setValue(personData.aboutMe);
+        userViewModel.chatsLiveData.setValue(personData.chatInfos);
     }
 
 
@@ -174,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        userViewModel.getUserNameLiveData().observe(this, new Observer<String>() {
+        userViewModel.getUserNameIdLiveData().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
                 userNameTextView.setText(s);
@@ -182,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         ImageStorageDB storageDB = TheBubbleApplication.getInstance().getImageStorageDB();
-        StorageReference imageRef = storageDB.createReference(userViewModel.getUserNameLiveData().getValue(), "profileImage");
+        StorageReference imageRef = storageDB.createReference(userViewModel.getUserNameIdLiveData().getValue(), "profileImage");
         imageRef.getBytes(2000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
@@ -341,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         System.out.println(userViewModel.fullNameLiveData.getValue());
                         System.out.println(userViewModel.requestsLiveData.getValue());
-                        System.out.println(userViewModel.userNameLiveData.getValue());
+                        System.out.println(userViewModel.userNameIdLiveData.getValue());
                         System.out.println(userViewModel.passwordLiveData.getValue());
 
                     }
@@ -351,6 +336,9 @@ public class MainActivity extends AppCompatActivity {
     private void detachListener(){
         if(listenerRegistration != null)        listenerRegistration.remove();
     }
+
+
+
 
 
     @Override

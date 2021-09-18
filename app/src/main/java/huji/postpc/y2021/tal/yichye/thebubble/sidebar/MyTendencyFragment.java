@@ -58,8 +58,8 @@ public class MyTendencyFragment extends Fragment {
             public void onStopTrackingTouch(@NonNull RangeSlider slider) {
                 Float minValue = slider.getValues().get(0);
                 Float maxValue = slider.getValues().get(1);
-                userViewModel.setMinAgePreferenceLiveData(minValue.intValue());
-                userViewModel.setMaxAgePreferenceLiveData(maxValue.intValue());
+                userViewModel.setMinAgePreferenceLiveData(minValue.intValue(), null);
+                userViewModel.setMaxAgePreferenceLiveData(maxValue.intValue(), null);
             }
         });
 
@@ -77,7 +77,7 @@ public class MyTendencyFragment extends Fragment {
                 } else {
                     currentGenderTendencyList.remove(PersonData.Gender.values()[num]);
                 }
-                userViewModel.setGenderTendencyLiveData(currentGenderTendencyList);
+                userViewModel.setGenderTendencyLiveData(currentGenderTendencyList, null);
 
             });
 

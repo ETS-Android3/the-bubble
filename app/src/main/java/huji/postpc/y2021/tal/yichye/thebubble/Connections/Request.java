@@ -7,16 +7,13 @@ public class Request implements Comparable<Request>, Serializable {
     boolean inRequest;
     long timeStamp;
     String reqUserId;
-    String reqUserName;
-
     public Request(){}
 
-    public Request(String id, String name,  boolean requestIsIncoming){
+    public Request(String id, boolean requestIsIncoming){
         System.out.println(requestIsIncoming + "IN REQ CONSTRUCTOR");
         inRequest = requestIsIncoming;
         timeStamp = System.currentTimeMillis();
         reqUserId = id;
-        reqUserName = name;
     }
 
     public long getTimeStamp() {
@@ -31,9 +28,9 @@ public class Request implements Comparable<Request>, Serializable {
         return inRequest;
     }
 
-    public String getReqUserName() {
-        return reqUserName;
-    }
+//    public String getReqUserName() {
+//        return reqUserName;
+//    }
 
 
     @Override

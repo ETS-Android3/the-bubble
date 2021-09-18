@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        app:cardElevation="0dp"
+        app:cardCornerRadius="29dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="30dp"
+
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+        >
+        <ImageView
+            android:id="@+id/userContactIcon"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            />
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:id="@+id/layoutForClick"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@+id/cardView"
+        app:layout_constraintTop_toTopOf="@+id/cardView"
+        app:layout_constraintBottom_toBottomOf="@+id/cardView">
+
+        <TextView
+            android:id="@+id/userNameContact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text = "@string/user_name"
+            android:layout_marginStart="30dp"
+        />
+
+        <TextView
+            android:id="@+id/lastMessageText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text = "last message"
+        android:layout_marginStart="30dp"
+        android:textSize="15sp"
+        />
+        </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/dateLastMessageText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="01/01/2001"
+        android:textSize="15sp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/timeLastMessageText"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/timeLastMessageText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="40dp"
+        android:text="15:25"
+        android:textSize="15sp"
+        />
+
+
+    <ImageView
+        android:id="@+id/deleteChat"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:background="@drawable/delete_icon"
+        app:layout_constraintStart_toEndOf="@id/timeLastMessageText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/timeLastMessageText"
+        app:layout_constraintBottom_toBottomOf="@id/timeLastMessageText"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@color/background_gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
