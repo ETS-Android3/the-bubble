@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.ChatInfo;
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.Request;
@@ -40,13 +41,27 @@ public class PersonData implements Serializable {
 		return fullName;
 	}
 
+	public String getUserName() {
+		return userName;
+	}
+
+	public String getAboutMe() {
+		return aboutMe;
+	}
+
 	public Gender getGender() {
 		return gender;
+	}
+
+	public int getAge()
+	{
+		return calcAge(dateOfBirth);
 	}
 
 	public ArrayList<Request> getRequests() {
 		return requests;
 	}
+
 
 	@RequiresApi(api = Build.VERSION_CODES.O)
 	public static int calcAge(Long epochDate) {
@@ -65,7 +80,7 @@ public class PersonData implements Serializable {
 				", aboutMe='" + aboutMe + '\'' +
 				", city='" + city + '\'' +
 				", phoneNumber='" + phoneNumber + '\'' +
-				", avatar=" + profilePicture +
+//				", avatar=" + profilePicture +
 				", profilePhotos=" + photos +
 				", minAgePreference=" + minAgePreference +
 				", maxAgePreference=" + maxAgePreference +

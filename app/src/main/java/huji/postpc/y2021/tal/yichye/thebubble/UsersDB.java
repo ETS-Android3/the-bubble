@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.ChatInfo;
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.Message;
+import huji.postpc.y2021.tal.yichye.thebubble.Connections.Request;
 
 public class UsersDB {
 
@@ -59,13 +60,25 @@ public class UsersDB {
 
 	public void updateUserField(String userId, String fieldToChange, Object newValue)
 	{
-		System.out.println("IN USER DB UPDATE FOR "+ userId);
 		db.collection("users").document(userId).update(fieldToChange, newValue);
-	}
 
+	}
 	public FirebaseFirestore getDb() {
 		return db;
 	}
+
+	public void addRequest(String userId, Request newRequest)
+	{
+		db.collection("users").document(userId).get()
+				.addOnSuccessListener(documentSnapshot -> {
+					if (documentSnapshot.exists()) {
+						PersonData user = documentSnapshot.toObject(PersonData.class);
+						user.requests.add(newRequest);
+						updateUserField(userId, "requests", user.requests);
+					}
+				});
+	}
+
 
 	public void updateChatInfoByIdAndMsg(Message message, String idChatWith, String idSelf){
 		db.collection("users").document(idSelf).get()

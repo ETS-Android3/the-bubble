@@ -31,7 +31,7 @@
         android:label="Connections" />
     <fragment
         android:id="@+id/liveZone"
-        android:name="huji.postpc.y2021.tal.yichye.thebubble.LiveZoneFragment"
+        android:name="huji.postpc.y2021.tal.yichye.thebubble.livezone.LiveZoneFragment"
         android:label="Live Zone"/>
 
 
