@@ -119,11 +119,8 @@ public class SearchAlgorithm {
 		// checks age preference
 		int myAge = PersonData.calcAge(myDateOfBirth);
 		int otherUserAge = PersonData.calcAge(otherUser.dateOfBirth); //todo to use getter
-		if (otherUserAge < myMinAge || otherUserAge > myMaxAge ||
-				myAge < otherUser.minAgePreference || myAge > otherUser.maxAgePreference) {
-			return false;
-		}
-		return true;
+		return otherUserAge >= myMinAge && otherUserAge <= myMaxAge &&
+				myAge >= otherUser.minAgePreference && myAge <= otherUser.maxAgePreference;
 	}
 
 	private void getMyLocation(){

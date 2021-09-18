@@ -41,8 +41,6 @@ public class LiveZoneFragment extends Fragment {
 
 	private MapHandler mapHandler;
 	private UserViewModel userViewModel;
-	private LayoutInflater layoutInflater;
-	private ViewGroup containerGroup;
 	private SearchAlgorithm algorithm;
 	private CountDownTimer timeCounter = null;
 	private MapView mapView;
