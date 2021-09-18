@@ -81,6 +81,7 @@ public class ConversationFragment extends Fragment {
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                chatsViewModel.setLastChatPickedLiveData(null);
                 listenerForBackArrow.onPressed();
             }
         });

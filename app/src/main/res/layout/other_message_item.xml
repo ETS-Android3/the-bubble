@@ -7,36 +7,18 @@
     android:layout_marginTop="16dp">
 
 
-
-    <ImageView
-        android:id="@+id/image_gchat_profile_other"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:contentDescription="User Icon"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_gchat_date_other" />
-
-    <TextView
-        android:id="@+id/text_gchat_user_other"
-        android:layout_width="1dp"
-        android:layout_height="1dp"
-        android:layout_marginStart="8dp"
-        android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@+id/image_gchat_profile_other"
-        app:layout_constraintTop_toBottomOf="@+id/text_gchat_date_other" />
-
     <androidx.cardview.widget.CardView
         android:id="@+id/card_message_other"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="#eef1f6"
         app:cardCornerRadius="12dp"
-        app:cardElevation="0dp"
         app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true"
-        app:layout_constraintStart_toEndOf="@+id/image_gchat_profile_other"
-        app:layout_constraintTop_toBottomOf="@+id/text_gchat_user_other">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:cardElevation="0dp"
+        app:cardMaxElevation="0dp">
 
         <LinearLayout
             android:id="@+id/layout_gchat_container_other"
@@ -68,17 +50,19 @@
         android:text="8:00"
         android:textColor="#706D6D"
         android:textSize="12sp"
+        android:layout_marginStart="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/card_message_other"
         app:layout_constraintStart_toEndOf="@+id/card_message_other" />
 
     <TextView
-        android:id="@+id/text_gchat_date_other"
+        android:id="@+id/text_date_other"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:textSize="12sp"
         android:text="June 10"
         android:textColor="#706D6D"
+        android:layout_marginStart="5dp"
         app:layout_constraintBottom_toTopOf="@id/text_timestamp_other"
         app:layout_constraintStart_toEndOf="@id/card_message_other"
         />
