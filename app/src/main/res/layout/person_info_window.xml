@@ -118,21 +118,20 @@
             android:id="@+id/sendRequestButton"
             android:layout_width="160dp"
             android:layout_height="40dp"
-            android:background="@null"
             android:backgroundTint="@color/white_blue"
+            android:background="@null"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:text="Send Request"
             android:textAlignment="viewStart"
             android:textColor="@color/black"
             android:textSize="15sp"
-            app:cornerRadius="10dp"
-
-            android:textStyle="bold"/>
+            app:cornerRadius="9dp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="160dp"
-            android:layout_height="1dp"
+            android:layout_height="2dp"
             android:background="@color/background_gray"
             />
         <com.google.android.material.button.MaterialButton
@@ -147,7 +146,7 @@
             android:backgroundTint="@color/white_blue"
             android:background="@null"
             android:textAlignment="viewStart"
-            app:cornerRadius="10dp"
+            app:cornerRadius="9dp"
             android:textStyle="bold"
 
             />

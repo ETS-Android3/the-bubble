@@ -2,21 +2,21 @@ package huji.postpc.y2021.tal.yichye.thebubble.livezone;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.location.Location;
 import android.media.ThumbnailUtils;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +24,13 @@ import android.widget.Toast;
 
 import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import huji.postpc.y2021.tal.yichye.thebubble.MainActivity;
 import huji.postpc.y2021.tal.yichye.thebubble.PersonData;
 import huji.postpc.y2021.tal.yichye.thebubble.R;
 import huji.postpc.y2021.tal.yichye.thebubble.SearchAlgorithm;
@@ -39,21 +44,13 @@ public class LiveZoneFragment extends Fragment {
 	private LayoutInflater layoutInflater;
 	private ViewGroup containerGroup;
 	private SearchAlgorithm algorithm;
+	private CountDownTimer timeCounter = null;
+	private MapView mapView;
+
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
 							 @Nullable Bundle savedInstanceState) {
-		layoutInflater = inflater;
-		containerGroup = container;
-		algorithm = new SearchAlgorithm(requireActivity());
-		algorithm.SearchForPossibleMatches();
-		algorithm.getPossibleMatchesLiveData().observe(getViewLifecycleOwner(), new Observer<ArrayList<PersonData>>() {
-			@Override
-			public void onChanged(ArrayList<PersonData> userNames) {
-				algorithm.searchInGivenRadius(SearchAlgorithm.DEFAULT_SEARCH_RADIUS);
-			}
-		});
-
 		return inflater.inflate(R.layout.live_zone_fragment, container, false);
 	}
 
@@ -61,46 +58,70 @@ public class LiveZoneFragment extends Fragment {
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
-		mapHandler = new MapHandler(view.findViewById(R.id.map));
 		userViewModel =  new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+		mapView = view.findViewById(R.id.map);
+		mapHandler = new MapHandler(mapView, userViewModel);
+
+		timeCounter = new CountDownTimer(40000, 5000) {
+			public void onTick(long millisUntilFinished) {
+				Toast.makeText(view.getContext(), "seconds remaining: " + millisUntilFinished / 1000, Toast.LENGTH_SHORT).show();
+			}
+
+			public void onFinish() {
+				Toast.makeText(view.getContext(), "Refresh", Toast.LENGTH_LONG).show();
+				timeCounter.start();
+				runLiveZoneSearch();
+			}
+		}.start();
+
+		runLiveZoneSearch();
+	}
+
+	private void runLiveZoneSearch() {
+		algorithm = new SearchAlgorithm(requireActivity());
+		algorithm.SearchForPossibleMatches();
+		algorithm.getPossibleMatchesLiveData().observe(requireActivity(),
+				userNames -> algorithm.searchInGivenRadius(SearchAlgorithm.DEFAULT_SEARCH_RADIUS));
+
 		String userId = userViewModel.getUserNameLiveData().getValue();
 
-		TheBubbleApplication.getInstance().getUsersDB().getUserByID(userId).observe(getViewLifecycleOwner(), personData -> {
-			Drawable personDrawable = ContextCompat.getDrawable(requireActivity(), R.drawable.person);
-			mapHandler.showMarkerOnMap(personDrawable, personData, true);
-//					mapHandler.setMyLocationOnMap(bitmap);
-//					mapHandler.setCenter(personData);
-		});
-		showMatchesOnMap();
+		algorithm.getRadiusSearchFinished().observe(getViewLifecycleOwner(), isFinish -> {
+			if (isFinish) {
+				System.out.println("is finish");
+				mapHandler.cleanupMap();
+				HashMap<String, Double> personLocationMap = getUserLocationHashMap();
 
-		algorithm.getRadiusSearchFinished().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-			@Override
-			public void onChanged(Boolean aBoolean) {
-				if (aBoolean){
-					System.out.println(algorithm.possibleMatchesInRadiusLiveData.getValue());
-					System.out.println(aBoolean);
+				TheBubbleApplication.getInstance().getUsersDB().getUserByID(userId).
+						observe(getViewLifecycleOwner(), personData -> {
+					Drawable personDrawable = ContextCompat.getDrawable(requireActivity(), R.drawable.person);
+					mapHandler.showMarkerOnMap(personDrawable, new Pair<>(personData, personLocationMap), true);
 					algorithm.getRadiusSearchFinished().setValue(false);
-//					showMatchesOnMap();
-
-				}
+					showMatchesOnMap(algorithm.possibleMatchesInRadiusLiveData.getValue());
+				});
 			}
 		});
 	}
 
-	public void showMatchesOnMap()
-	{
-		// TODO GET ARRAY OF ALL MATCHES (ACCORDING TO LOCATION AND TENDENCY)
-		//  AND UPDATE MAP WITH MARKER FOR EACH MATCH
-		StorageReference reference = TheBubbleApplication.getInstance()
-				.getImageStorageDB().createReference("testf", "profileImage");
+	private HashMap<String, Double> getUserLocationHashMap(){
+		GeoPoint geoPoint = algorithm.myLocation.getValue();
+		HashMap<String, Double> personLocationMap = new HashMap<>();
+		personLocationMap.put("longitude", geoPoint.getLongitude());
+		personLocationMap.put("latitude", geoPoint.getLatitude());
+		return personLocationMap;
+	}
 
-		reference.getBytes(5000000).addOnSuccessListener(bytes -> {
-			Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-			RoundedBitmapDrawable circularDrawable = getCircularDrawable(bitmap);
-			TheBubbleApplication.getInstance().getUsersDB().getUserByID("testf").
-					observe(getViewLifecycleOwner(), personData ->
-							mapHandler.showMarkerOnMap(circularDrawable, personData, false));
-		});
+	public void showMatchesOnMap(ArrayList<Pair<PersonData, HashMap<String, Double>>> matches)
+	{
+		for (Pair<PersonData, HashMap<String, Double>> match: matches) {
+			StorageReference reference = TheBubbleApplication.getInstance()
+					.getImageStorageDB().createReference(match.first.getId(), "profileImage");
+
+			reference.getBytes(500000).addOnSuccessListener(requireActivity(), bytes -> {
+				Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+				RoundedBitmapDrawable circularDrawable = getCircularDrawable(bitmap);
+				mapHandler.showMarkerOnMap(circularDrawable, match, false);
+			});
+		}
 	}
 
 	private RoundedBitmapDrawable getCircularDrawable(Bitmap bitmap) {
@@ -114,4 +135,11 @@ public class LiveZoneFragment extends Fragment {
 		return roundedBitmapDrawable;
 	}
 
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		if (timeCounter != null) {
+			timeCounter.cancel();
+		}
+	}
 }

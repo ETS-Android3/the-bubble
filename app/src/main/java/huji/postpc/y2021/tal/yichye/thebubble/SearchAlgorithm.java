@@ -41,6 +41,7 @@ import com.google.gson.JsonParser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.util.GeoPoint;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -59,7 +60,7 @@ public class SearchAlgorithm {
 	public MutableLiveData<ArrayList<PersonData>> possibleMatchesAgentLiveData = new MutableLiveData<>();
 
 	public MutableLiveData<ArrayList<Pair<PersonData, HashMap<String, Double>>>> possibleMatchesInRadiusLiveData = new MutableLiveData<>();
-	MutableLiveData<Location> myCurrentLocation = new MutableLiveData<>();
+	public MutableLiveData<Location> myCurrentLocation = new MutableLiveData<>();
 	public MutableLiveData<Boolean> radiusSearchFinished = new MutableLiveData<>();
 	public MutableLiveData<Boolean> agentSearchFinished = new MutableLiveData<>();
 	public AtomicInteger numOfUsersCheckedRadiusSearch = new AtomicInteger(0);
@@ -68,6 +69,7 @@ public class SearchAlgorithm {
 	private final UserViewModel userViewModel;
 	private final Gson gson;
 
+	public MutableLiveData<GeoPoint> myLocation = new MutableLiveData<>();
 
 	public SearchAlgorithm(Activity activity) {
 		this.activity = activity;
@@ -166,6 +168,7 @@ public class SearchAlgorithm {
 
 	public void searchInGivenRadius(double radius) {
 		ArrayList<PersonData> possibleMatches = this.getPossibleMatchesLiveData().getValue();
+		getRadiusSearchFinished().setValue(false);
 		getPossibleMatchesInRadiusLiveData().setValue(new ArrayList<>());
 		if (possibleMatches != null && possibleMatches.size() != 0) {
 			//TODO get my current location
@@ -209,6 +212,7 @@ public class SearchAlgorithm {
 					}
 					SearchAlgorithm.this.numOfUsersCheckedRadiusSearch.addAndGet(1);
 					if (SearchAlgorithm.this.numOfUsersCheckedRadiusSearch.get() == possibleMatches.size()) {
+						myLocation.setValue(new GeoPoint(myLatitude, myLongitude));
 						getRadiusSearchFinished().setValue(true);
 					}
 				}
@@ -379,5 +383,4 @@ public class SearchAlgorithm {
 
 		return Math.sqrt(distance);
 	}
-
 }
