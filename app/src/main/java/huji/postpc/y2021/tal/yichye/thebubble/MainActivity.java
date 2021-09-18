@@ -41,6 +41,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -146,7 +147,10 @@ public class MainActivity extends AppCompatActivity {
 
         // set of all top-level fragments. top level means the menu icon will appear instead of back arrow
         // and when pressing back on android it will exit from application
-        Set<Integer> topLevelDest = Set.of(R.id.connections, R.id.agent, R.id.liveZone);
+        HashSet<Integer> topLevelDest = new HashSet<>();
+        topLevelDest.add(R.id.connections);
+        topLevelDest.add(R.id.agent);
+        topLevelDest.add(R.id.liveZone);
         appBarConfiguration = new AppBarConfiguration.
                 Builder(topLevelDest).setOpenableLayout(drawerLayout).build();
 

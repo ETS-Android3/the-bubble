@@ -46,7 +46,7 @@ public class LiveZoneFragment extends Fragment {
 		layoutInflater = inflater;
 		containerGroup = container;
 		algorithm = new SearchAlgorithm(requireActivity());
-		algorithm.SearchForPossibleMatches(requireActivity());
+		algorithm.SearchForPossibleMatches();
 		algorithm.getPossibleMatchesLiveData().observe(getViewLifecycleOwner(), new Observer<ArrayList<PersonData>>() {
 			@Override
 			public void onChanged(ArrayList<PersonData> userNames) {

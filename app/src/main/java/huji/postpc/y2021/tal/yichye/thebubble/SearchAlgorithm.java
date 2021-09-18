@@ -1,5 +1,6 @@
 package huji.postpc.y2021.tal.yichye.thebubble;
 
+import static android.content.ContentValues.TAG;
 import static huji.postpc.y2021.tal.yichye.thebubble.LocationHelper.createLocationRequest;
 
 import android.Manifest;
@@ -9,6 +10,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Looper;
+import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -46,6 +48,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SearchAlgorithm {
@@ -53,24 +56,31 @@ public class SearchAlgorithm {
 	public static final double DEFAULT_SEARCH_RADIUS = 200;
 
 	public MutableLiveData<ArrayList<PersonData>> possibleMatchesLiveData = new MutableLiveData<>();
+	public MutableLiveData<ArrayList<PersonData>> possibleMatchesAgentLiveData = new MutableLiveData<>();
+
 	public MutableLiveData<ArrayList<Pair<PersonData, HashMap<String, Double>>>> possibleMatchesInRadiusLiveData = new MutableLiveData<>();
 	MutableLiveData<Location> myCurrentLocation = new MutableLiveData<>();
 	public MutableLiveData<Boolean> radiusSearchFinished = new MutableLiveData<>();
-	public AtomicInteger numOfUsersChecked = new AtomicInteger(0);
+	public MutableLiveData<Boolean> agentSearchFinished = new MutableLiveData<>();
+	public AtomicInteger numOfUsersCheckedRadiusSearch = new AtomicInteger(0);
+	public AtomicInteger numOfUsersCheckedAgentSearch = new AtomicInteger(0);
 	public Context activity;
+	private final UserViewModel userViewModel;
+	private final Gson gson;
 
 
 	public SearchAlgorithm(Activity activity) {
 		this.activity = activity;
+		this.userViewModel =  new ViewModelProvider((ViewModelStoreOwner) activity).get(UserViewModel.class);
+		this.gson = new Gson();
 	}
 
-	public void SearchForPossibleMatches(ViewModelStoreOwner viewModelStoreOwner) {
+	public void SearchForPossibleMatches() {
 		ArrayList<PersonData> possibleMatches = new ArrayList<>();
 		FirebaseFirestore db = FirebaseFirestore.getInstance();
 		db.collection("users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
 			@Override
 			public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-				UserViewModel userViewModel =  new ViewModelProvider(viewModelStoreOwner).get(UserViewModel.class);
 				for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
 					PersonData otherUser = document.toObject(PersonData.class);
 					if (otherUser != null) {
@@ -156,7 +166,6 @@ public class SearchAlgorithm {
 
 	public void searchInGivenRadius(double radius) {
 		ArrayList<PersonData> possibleMatches = this.getPossibleMatchesLiveData().getValue();
-		getRadiusSearchFinished().setValue(false);
 		getPossibleMatchesInRadiusLiveData().setValue(new ArrayList<>());
 		if (possibleMatches != null && possibleMatches.size() != 0) {
 			//TODO get my current location
@@ -176,7 +185,7 @@ public class SearchAlgorithm {
 
 	private void searchInGivenRadiusHelper(double myLatitude, double myLongitude,
 										   ArrayList<PersonData> possibleMatches, double radius){
-		Gson gson = new Gson();
+		numOfUsersCheckedRadiusSearch.set(0);
 		for (PersonData user : possibleMatches) {
 			String userName = user.getUserName();
 			StorageReference ref = LocationHelper.createLocationReference(userName, LocationHelper.LAST_LOCATION_FILE_NAME);
@@ -198,16 +207,16 @@ public class SearchAlgorithm {
 					} catch (UnsupportedEncodingException | JSONException e) {
 						e.printStackTrace();
 					}
-					SearchAlgorithm.this.numOfUsersChecked.addAndGet(1);
-					if (SearchAlgorithm.this.numOfUsersChecked.get() == possibleMatches.size()) {
+					SearchAlgorithm.this.numOfUsersCheckedRadiusSearch.addAndGet(1);
+					if (SearchAlgorithm.this.numOfUsersCheckedRadiusSearch.get() == possibleMatches.size()) {
 						getRadiusSearchFinished().setValue(true);
 					}
 				}
 			}).addOnFailureListener(new OnFailureListener() {
 				@Override
 				public void onFailure(@NonNull Exception e) {
-					SearchAlgorithm.this.numOfUsersChecked.addAndGet(1);
-					if (SearchAlgorithm.this.numOfUsersChecked.get() == possibleMatches.size()) {
+					SearchAlgorithm.this.numOfUsersCheckedRadiusSearch.addAndGet(1);
+					if (SearchAlgorithm.this.numOfUsersCheckedRadiusSearch.get() == possibleMatches.size()) {
 						getRadiusSearchFinished().setValue(true);
 					}
 				}
@@ -223,17 +232,123 @@ public class SearchAlgorithm {
 		}
 	}
 
+	private void updatePossibleMatchesAgent(PersonData userToAdd){
+		ArrayList<PersonData> possibleMatchesAgent = getPossibleMatchesAgentLiveData().getValue();
+		if (possibleMatchesAgent != null) {
+			possibleMatchesAgent.add(userToAdd);
+			getPossibleMatchesAgentLiveData().setValue(possibleMatchesAgent);
+		}
+	}
+
 	public MutableLiveData<ArrayList<PersonData>> getPossibleMatchesLiveData() {
 		return possibleMatchesLiveData;
+	}
+
+	public MutableLiveData<ArrayList<PersonData>> getPossibleMatchesAgentLiveData() {
+		return possibleMatchesAgentLiveData;
 	}
 
 	public MutableLiveData<Boolean> getRadiusSearchFinished() {
 		return radiusSearchFinished;
 	}
 
+	public MutableLiveData<Boolean> getAgentSearchFinished() {
+		return agentSearchFinished;
+	}
+
 	public MutableLiveData<ArrayList<Pair<PersonData, HashMap<String, Double>>>> getPossibleMatchesInRadiusLiveData() {
 		return possibleMatchesInRadiusLiveData;
 	}
+
+
+	public void activateAgentSearch() {
+		numOfUsersCheckedAgentSearch.set(0);
+		getPossibleMatchesAgentLiveData().setValue(new ArrayList<>());
+		double similarityDist = 100;
+		String myUserName = userViewModel.getUserNameLiveData().getValue();
+		StorageReference myUserRef = LocationHelper.createLocationReference(myUserName, LocationHelper.LOCATIONS_FILE_NAME);
+		myUserRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+			@Override
+			public void onSuccess(byte[] MyBytes) {
+				InputStream myInputStream = new ByteArrayInputStream(MyBytes);
+				try {
+					JSONObject myJsonObject = new JSONObject(new JsonParser().parse(new InputStreamReader(myInputStream, "UTF-8")).getAsJsonObject().toString());
+
+					ArrayList<PersonData> possibleMatches = getPossibleMatchesLiveData().getValue();
+					if (possibleMatches != null) {
+						for (PersonData possibleMatch : possibleMatches) {
+							String otherUserName = possibleMatch.getUserName();
+							StorageReference otherUserRef = LocationHelper.createLocationReference(otherUserName, LocationHelper.LOCATIONS_FILE_NAME);
+							otherUserRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+								@Override
+								public void onSuccess(byte[] otherBytes) {
+									InputStream otherInputStream = new ByteArrayInputStream(otherBytes);
+									try {
+										JSONObject otherJsonObject = new JSONObject(new JsonParser().parse(new InputStreamReader(otherInputStream, "UTF-8")).getAsJsonObject().toString());
+
+										Iterator<String> otherKeys = otherJsonObject.keys();
+										while (otherKeys.hasNext()) {
+											String otherKey = otherKeys.next();
+											Iterator<String> myKeys = myJsonObject.keys();
+											boolean matchFound = false;
+											while (myKeys.hasNext()){
+												String myKey = myKeys.next();
+
+												HashMap<String, Double> myLocationMap = gson.fromJson(myJsonObject.get(myKey).toString(), HashMap.class);
+												Double myLatitude = myLocationMap.get("latitude");
+												Double myLongitude = myLocationMap.get("longitude");
+												Double myCount = myLocationMap.get("count");
+
+												HashMap<String, Double> otherLocationMap = gson.fromJson(otherJsonObject.get(otherKey).toString(), HashMap.class);
+												Double otherLatitude = otherLocationMap.get("latitude");
+												Double otherLongitude = otherLocationMap.get("longitude");
+												Double otherCount = otherLocationMap.get("count");
+
+												if (myLatitude != null && myLongitude != null && myCount != null &&
+												otherLatitude != null && otherLongitude != null && otherCount != null) {
+													if (myCount > 1 && otherCount > 1 &&
+															distance(myLatitude, otherLatitude, myLongitude, otherLongitude, 0 ,0) <= similarityDist) {
+														matchFound = true;
+														break;
+													}
+												}
+											}
+											if (matchFound) {
+												updatePossibleMatchesAgent(possibleMatch);
+												break;
+											}
+										}
+									} catch (JSONException | UnsupportedEncodingException e) {
+										e.printStackTrace();
+									}
+									numOfUsersCheckedAgentSearch.addAndGet(1);
+									if (numOfUsersCheckedAgentSearch.get() == possibleMatches.size()) {
+										agentSearchFinished.setValue(true);
+									}
+								}
+							}).addOnFailureListener(new OnFailureListener() {
+								@Override
+								public void onFailure(@NonNull Exception e) {
+									numOfUsersCheckedAgentSearch.addAndGet(1);
+									if (numOfUsersCheckedAgentSearch.get() == possibleMatches.size()) {
+										agentSearchFinished.setValue(true);
+									}
+								}
+							});
+						}
+					}
+				} catch (UnsupportedEncodingException | JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}).addOnFailureListener(new OnFailureListener() {
+			@Override
+			public void onFailure(@NonNull Exception e) {
+				Log.i(TAG, "SearchAlgorithm: activateAgentSearch. Can't download myUser locations: " + e.getMessage());
+			}
+		});
+	}
+
 
 
 	/**
