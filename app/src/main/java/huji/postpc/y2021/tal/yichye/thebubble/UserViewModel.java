@@ -84,6 +84,10 @@ public class UserViewModel extends ViewModel {
         usersDB.updateUserField(userNameLiveData.getValue(), "dateOfBirth", newDate);
     }
 
+    public void setPhotosLiveData(ArrayList<String> newPhotosArray) {
+        photosLiveData.setValue(newPhotosArray);
+        usersDB.updateUserField(userNameLiveData.getValue(), "photos", newPhotosArray);
+    }
 
     public void setMinAgePreferenceLiveData(Integer newMinAge) {
         minAgePreferenceLiveData.setValue(newMinAge);
@@ -107,10 +111,20 @@ public class UserViewModel extends ViewModel {
     }
 
     public void setCityLiveData(String newCity) {
-        aboutMeLiveData.setValue(newCity);
+        cityLiveData.setValue(newCity);
         usersDB.updateUserField(userNameLiveData.getValue(), "city", newCity);
     }
 git 
+
+    public void setRequestsLiveData(ArrayList<Request> newRequestArray) {
+        requestsLiveData.setValue(newRequestArray);
+        usersDB.updateUserField(userNameLiveData.getValue(), "requests", newRequestArray);
+    }
+
+    public MutableLiveData<PersonData.Gender> getGenderLiveData()
+    {
+        return myGenderLiveData;
+    }
 
 
 

@@ -1,17 +1,11 @@
 package huji.postpc.y2021.tal.yichye.thebubble;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.core.view.GravityCompat;
+import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,12 +13,14 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -34,8 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -46,23 +41,19 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.storage.StorageReference;
 
-import org.w3c.dom.Text;
-
-import huji.postpc.y2021.tal.yichye.thebubble.Connections.ConnectionsFragment;
-import io.grpc.internal.JsonUtil;
-
+import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static com.google.firebase.components.Dependency.setOf;
 
 
 public class MainActivity extends AppCompatActivity {
 
 
-    UserViewModel userViewModel ;
-    SharedPreferences sp;
-    ListenerRegistration listenerRegistration;
+    private UserViewModel userViewModel ;
+    private SharedPreferences sp;
+    private ListenerRegistration listenerRegistration;
 
     private NavController sideNavController;
     private AppBarConfiguration appBarConfiguration;
@@ -71,16 +62,29 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout bottomBarLinearView;
     private BottomNavigationView bottomNavigationView;
     private NavigationView sideBarNavigationView;
-
+    private ImageView profileImageView;
+    private View headerView;
+    private final int WORKER_FOREGROUND_PERMISSION_ID = 40;
+    private final int WORKER_BACKGROUND_GROUND_PERMISSION_ID = 42;
+    private final int LIVE_ZONE_FOREGROUND_PERMISSION_ID = 44;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading_screen);
+
+        WorkManager.getInstance(this).cancelAllWork();
         userViewModel =  new ViewModelProvider(this).get(UserViewModel.class);
         sp = TheBubbleApplication.getInstance().getSP();
         setUserViewModel();
+
+        if (checkLocationPermission(WORKER_FOREGROUND_PERMISSION_ID, Manifest.permission.ACCESS_FINE_LOCATION))
+        {
+            if (checkLocationPermission(WORKER_BACKGROUND_GROUND_PERMISSION_ID, Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+                startBackgroundWorker();
+            }
+        }
 
     }
 
@@ -143,7 +147,10 @@ public class MainActivity extends AppCompatActivity {
 
         // set of all top-level fragments. top level means the menu icon will appear instead of back arrow
         // and when pressing back on android it will exit from application
-        Set<Integer> topLevelDest = Set.of(R.id.connections, R.id.agent, R.id.liveZone);
+        HashSet<Integer> topLevelDest = new HashSet<>();
+        topLevelDest.add(R.id.connections);
+        topLevelDest.add(R.id.agent);
+        topLevelDest.add(R.id.liveZone);
         appBarConfiguration = new AppBarConfiguration.
                 Builder(topLevelDest).setOpenableLayout(drawerLayout).build();
 
@@ -161,10 +168,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void createLiveDataListeners()
     {
-        View headerView = sideBarNavigationView.getHeaderView(0);
+        headerView = sideBarNavigationView.getHeaderView(0);
         TextView fullNameTextView = (TextView) headerView.findViewById(R.id.full_name_header);
         TextView userNameTextView = (TextView) headerView.findViewById(R.id.user_name_header);
-        ImageView profileImageView = (ImageView) headerView.findViewById(R.id.pic_header);
+        profileImageView = (ImageView) headerView.findViewById(R.id.pic_header);
         TextView logoutTextView = (TextView) headerView.findViewById(R.id.logout_header);
 
         userViewModel.getFullNameLiveData().observe(this, new Observer<String>() {
@@ -181,24 +188,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ImageStorageDB storageDB = TheBubbleApplication.getInstance().getImageStorageDB();
-        StorageReference imageRef = storageDB.createReference(userViewModel.getUserNameLiveData().getValue(), "profileImage");
-        imageRef.getBytes(2000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                GlideApp.with(MainActivity.this /* context */)
-                        .load(imageRef).centerCrop()
-                        .into(profileImageView);
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Log.d("main activity", "problem with downloading profile image");
-            }
-        });
-
-
+        setProfileImageView(profileImageView);
 
         logoutTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,6 +203,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void setProfileImageView(ImageView profileImageView)
+    {
+        ImageStorageDB storageDB = TheBubbleApplication.getInstance().getImageStorageDB();
+        StorageReference imageRef = storageDB.createReference(userViewModel.getUserNameLiveData().getValue(), "profileImage");
+        GlideApp.with(MainActivity.this /* context */)
+                .load(imageRef)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .centerCrop()
+                .into(profileImageView);
+    }
 
     /**
      * opening drawer layout when menu icon is clicked and handling the back button
@@ -226,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
         bottomBarLinearView.setVisibility(View.VISIBLE);
         bottomNavigationView.getMenu().setGroupEnabled(R.id.group_bottom_menu,true);
         bottomNavigationView.getMenu().setGroupCheckable(R.id.group_bottom_menu,true, true);
+        setProfileImageView(profileImageView);
         return NavigationUI.navigateUp(navControllerSideBar, appBarConfiguration) || super.onSupportNavigateUp();
     }
 
@@ -274,8 +276,16 @@ public class MainActivity extends AppCompatActivity {
                 NavController navController = navHostFragment.getNavController();
                 switch (item.getItemId()) {
                     case R.id.liveZone:
-                        enableBottomNavigationView();
-                        navController.navigate(R.id.liveZone);
+                        //TODO CHECK IF NEED TO CHANGE LAYOUT OF LIVE ZONE BUTTON
+                        if (checkLocationPermission(LIVE_ZONE_FOREGROUND_PERMISSION_ID, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                            enableBottomNavigationView();
+                            navController.navigate(R.id.liveZone);
+                        }
+                        else{
+                            Toast.makeText(MainActivity.this,
+                                    "Must allow location permissions before running live zone",
+                                    Toast.LENGTH_SHORT).show();
+                        }
                         break;
                     case R.id.agent:
                         enableBottomNavigationView();
@@ -288,6 +298,24 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return true;
             };
+
+
+
+    private boolean checkLocationPermission(int permissionId, String permission)
+    {
+        if ((ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED)) {
+            return true;
+        } else if (shouldShowRequestPermissionRationale(permission)) {
+            // TODO - CHANGE TEXT MESSAGE
+            // TODO - CHECK WHICH PERMISSION IS NEEDED
+            Toast.makeText(MainActivity.this, "Must allow location permission", Toast.LENGTH_LONG).show();
+            ActivityCompat.requestPermissions(this, new String[]{permission}, permissionId);
+            return false;
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{permission}, permissionId);
+            return false;
+        }
+    }
 
     @Override
     public void onBackPressed() {
@@ -350,6 +378,45 @@ public class MainActivity extends AppCompatActivity {
 
     private void detachListener(){
         if(listenerRegistration != null)        listenerRegistration.remove();
+    }
+
+
+    private void startBackgroundWorker(){
+        WorkManager workManager = WorkManager.getInstance(this);
+        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(BackgroundLocationWorker.class,
+                15, TimeUnit.MINUTES)
+                .addTag("background")
+                .build();
+        workManager.enqueueUniquePeriodicWork(
+                "background",
+                ExistingPeriodicWorkPolicy.KEEP,
+                periodicWorkRequest); // run worker every 15 min
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // TODO MAYBE CHECK ALL RESULT IN GRANT RESULT ARRAY
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (requestCode == WORKER_FOREGROUND_PERMISSION_ID) {
+                checkLocationPermission(WORKER_BACKGROUND_GROUND_PERMISSION_ID, Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+            }
+            else if (requestCode == WORKER_BACKGROUND_GROUND_PERMISSION_ID) {
+                startBackgroundWorker();
+            }
+            else if (requestCode == LIVE_ZONE_FOREGROUND_PERMISSION_ID) {
+                NavHostFragment navHostFragment = (NavHostFragment)
+                        getSupportFragmentManager().findFragmentById(R.id.fragment_container_main);
+                NavController navController = navHostFragment.getNavController();
+                enableBottomNavigationView();
+                navController.navigate(R.id.liveZone);
+            }
+        } else {
+            // TODO change message
+            Toast.makeText(MainActivity.this,
+                    "Must allow location permission" + permissions[0],
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
 

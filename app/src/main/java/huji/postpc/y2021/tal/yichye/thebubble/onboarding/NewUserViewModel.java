@@ -29,6 +29,7 @@ public class NewUserViewModel extends ViewModel
 
     protected MutableLiveData<String> aboutMeLiveData = new MutableLiveData<>("");
     protected MutableLiveData<ArrayList<String>> photosLiveData = new MutableLiveData<ArrayList<String>>(new ArrayList<>());
+    protected MutableLiveData<String> profilePhotoLiveData = new MutableLiveData<String>();
 
     protected MutableLiveData<Integer> progressLiveData = new MutableLiveData<>(0);
 
