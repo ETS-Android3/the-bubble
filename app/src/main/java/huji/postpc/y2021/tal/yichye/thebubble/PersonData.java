@@ -40,10 +40,22 @@ public class PersonData implements Serializable {
 		return fullName;
 	}
 
+	public String getUserName() {
+		return userName;
+	}
+
+	public String getAboutMe() {
+		return aboutMe;
+	}
+
 	public Gender getGender() {
 		return gender;
 	}
 
+	public int getAge()
+	{
+		return calcAge(dateOfBirth);
+	}
 
 	@RequiresApi(api = Build.VERSION_CODES.O)
 	public static int calcAge(Long epochDate) {
@@ -62,7 +74,7 @@ public class PersonData implements Serializable {
 				", aboutMe='" + aboutMe + '\'' +
 				", city='" + city + '\'' +
 				", phoneNumber='" + phoneNumber + '\'' +
-				", avatar=" + profilePicture +
+//				", avatar=" + profilePicture +
 				", profilePhotos=" + photos +
 				", minAgePreference=" + minAgePreference +
 				", maxAgePreference=" + maxAgePreference +

@@ -19,7 +19,7 @@ public class ViewPagerImagesAdapter extends PagerAdapter {
     private ArrayList<StorageReference> imageRefs;
 
 
-    ViewPagerImagesAdapter(Context context, ArrayList<StorageReference> imageRefs) {
+    public ViewPagerImagesAdapter(Context context, ArrayList<StorageReference> imageRefs) {
         this.context = context;
         this.imageRefs = imageRefs;
     }
