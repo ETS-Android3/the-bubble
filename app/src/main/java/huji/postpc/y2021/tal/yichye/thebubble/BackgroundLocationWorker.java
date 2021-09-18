@@ -235,7 +235,7 @@ public class BackgroundLocationWorker extends Worker {
 					uploadFile(userName, LocationHelper.LOCATIONS_FILE_NAME, updateJsonObject(jsonObject, location));
 					uploadFile(userName, LocationHelper.LAST_LOCATION_FILE_NAME, createJsonObject(location));
 				} catch (UnsupportedEncodingException | JSONException e) {
-					e.printStackTrace();
+//					e.printStackTrace();
 				}
 			}
 		}).addOnFailureListener(new OnFailureListener() {
