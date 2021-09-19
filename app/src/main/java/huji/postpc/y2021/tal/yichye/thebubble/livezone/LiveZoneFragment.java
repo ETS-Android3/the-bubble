@@ -44,6 +44,7 @@ public class LiveZoneFragment extends Fragment {
 	private SearchAlgorithm algorithm;
 	private CountDownTimer timeCounter = null;
 	private MapView mapView;
+	private static final long REFRESH_TIME_MILLISECONDS = 300000;
 
 	@Nullable
 	@Override
@@ -60,9 +61,8 @@ public class LiveZoneFragment extends Fragment {
 		mapView = view.findViewById(R.id.map);
 		mapHandler = new MapHandler(mapView, userViewModel);
 
-		timeCounter = new CountDownTimer(40000, 5000) {
+		timeCounter = new CountDownTimer(REFRESH_TIME_MILLISECONDS, REFRESH_TIME_MILLISECONDS) {
 			public void onTick(long millisUntilFinished) {
-				Toast.makeText(view.getContext(), "seconds remaining: " + millisUntilFinished / 1000, Toast.LENGTH_SHORT).show();
 			}
 
 			public void onFinish() {
