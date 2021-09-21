@@ -72,8 +72,6 @@ public class AppNavigationFragment extends Fragment
         newUser.requests = new ArrayList<Request>();
         newUser.photos = newUserViewModel.photosLiveData.getValue();
 
-        System.out.println(newUser);
-
         TheBubbleApplication application = TheBubbleApplication.getInstance();
         SharedPreferences sp = application.getSP();
         sp.edit().putString("user_name", newUser.userName).apply();

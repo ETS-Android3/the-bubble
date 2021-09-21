@@ -85,7 +85,6 @@ public class LiveZoneFragment extends Fragment {
 
 		algorithm.getRadiusSearchFinished().observe(getViewLifecycleOwner(), isFinish -> {
 			if (isFinish) {
-				System.out.println("is finish");
 				mapHandler.cleanupMap();
 				HashMap<String, Double> personLocationMap = getUserLocationHashMap();
 
