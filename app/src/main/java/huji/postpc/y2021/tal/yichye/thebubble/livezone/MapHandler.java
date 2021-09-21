@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -220,11 +221,6 @@ public class MapHandler {
 
         openedPopupWindow[1] = popupWindow;
         popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
-        popupView.setOnTouchListener((v, event) -> {
-            openedPopupWindow[1] = null;
-            popupWindow.dismiss();
-            return true;
-        });
 
         updateFullPopupViews(popupView, personData, profileImageRef);
     }
@@ -238,6 +234,8 @@ public class MapHandler {
         TextView cityView = popUpView.findViewById(R.id.city);
         TextView genderView = popUpView.findViewById(R.id.genderEditProfile);
         ImageView profileImage = popUpView.findViewById(R.id.profileImageView);
+
+        aboutMeView.setMovementMethod(new ScrollingMovementMethod());
 
         String userName = personData.userName;
         ArrayList<StorageReference> imagesRefs = new ArrayList<>();

@@ -6,7 +6,7 @@
     <item
         android:id="@+id/connections"
         android:enabled="true"
-        android:icon="@drawable/connections_icon"
+        android:icon="@drawable/connections_icon1"
         android:title="@string/nav_bar_connections"/>
     <item
         android:id="@+id/liveZone"

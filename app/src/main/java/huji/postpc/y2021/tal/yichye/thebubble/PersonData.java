@@ -92,7 +92,8 @@ public class PersonData implements Serializable {
 	public ArrayList<Gender> genderTendency;
 	public ArrayList<Request> requests;
 	public ArrayList<ChatInfo> chatInfos;
-
+	public ArrayList<String> ignoreList;
+//	public ArrayList<String> matches;
 
 	public String getId() {
 		return userName;

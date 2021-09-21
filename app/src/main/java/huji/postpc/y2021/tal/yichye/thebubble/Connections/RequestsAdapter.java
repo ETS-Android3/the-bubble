@@ -37,7 +37,6 @@ public class RequestsAdapter  extends RecyclerView.Adapter<RequestHolder> {
 
     public RequestsAdapter(){
         super();
-        System.out.println("ADAPTER CREATED");
     }
 
 
@@ -63,7 +62,8 @@ public class RequestsAdapter  extends RecyclerView.Adapter<RequestHolder> {
     public void onBindViewHolder(@NonNull RequestHolder holder, int position) {
         Request request = userRequests.get(position);
         //todo set sender image
-        System.out.println(request.inRequest);
+
+
         holder.getReqUserName().setText(request.getReqUserId());
 
         StorageReference imageRef = TheBubbleApplication

@@ -61,6 +61,7 @@ public class AppNavigationFragment extends Fragment
         newUser.minAgePreference = newUserViewModel.minAgePreferenceLiveData.getValue();
         newUser.maxAgePreference = newUserViewModel.maxAgePreferenceLiveData.getValue();
         newUser.aboutMe = newUserViewModel.aboutMeLiveData.getValue();
+        newUser.ignoreList = newUserViewModel.ignoreListLiveData.getValue();
 
         PersonData.Gender[] genderList = PersonData.Gender.values();
         newUser.gender = genderList[newUserViewModel.myGenderLiveData.getValue()];
@@ -74,8 +75,6 @@ public class AppNavigationFragment extends Fragment
         newUser.chatInfos = new ArrayList<>();
 
         newUser.photos = newUserViewModel.photosLiveData.getValue();
-
-        System.out.println(newUser);
 
         TheBubbleApplication application = TheBubbleApplication.getInstance();
         SharedPreferences sp = application.getSP();

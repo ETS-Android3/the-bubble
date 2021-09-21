@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 import android.util.Log;
@@ -122,13 +123,15 @@ public class BackgroundLocationWorker extends Worker {
 									Location location1 = locationResult.getLastLocation();
 									latitude[0] = location1.getLatitude();
 									longitude[0] = location1.getLongitude();
-									Log.i(TAG, "MyLocation " + latitude[0] + " " + longitude[0] + " callback");
+									long timePassed = (Instant.now().toEpochMilli() - location1.getTime()) / 1000;
+									Log.i(TAG, "MyLocation " + latitude[0] + " " + longitude[0] + " callback, " + timePassed);
 
+//									if ((Instant.now().toEpochMilli() - location1.getTime()) / 1000 < 60) {
+//									}
 									updateFile(userName, location1);
 								}
 							};
 							locationRequest.setNumUpdates(1);
-//							locationRequest.setExpirationDuration(1000 * 10);
 							fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
 						}
 					}
@@ -251,56 +254,7 @@ public class BackgroundLocationWorker extends Worker {
 		});
 	}
 
-//	private boolean isLocationSimilar(HashMap<String, HashMap<String, Double>> clusterLocations) {
-//
-//	}
 
-//	public void saveLocationToFS(Location location) {
-//		String userName = "tal01";
-//		FirebaseFirestore db = FirebaseFirestore.getInstance();
-//		DocumentReference locationsArray = db.collection("locations1").document(userName);
-//		locationsArray.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//			@Override
-//			public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//				if (task.isSuccessful()) {
-//					DocumentSnapshot documentSnapshot = task.getResult();
-//					if (!documentSnapshot.exists()){
-//						Map<String, Object> dataDocument = new HashMap<>();
-//						ArrayList<Location> locationArrayList = new ArrayList<>();
-//						locationArrayList.add(location);
-//						dataDocument.put("locationArray", locationArrayList);
-//						locationsArray.set(dataDocument);
-//					} else {
-//						locationsArray.update("locationArray", FieldValue.arrayUnion(location)).addOnSuccessListener(new OnSuccessListener<Void>() {
-//							@Override
-//							public void onSuccess(Void unused) {
-//								Log.i(TAG, "MyLocation data added to FS");
-//
-//							}
-//						}).addOnFailureListener(new OnFailureListener() {
-//							@Override
-//							public void onFailure(@NonNull Exception e) {
-//								Log.i(TAG, "MyLocation upload data to FS error: " + e.getMessage());
-//							}
-//						});
-////								addOnCompleteListener(new OnCompleteListener<Void>() {
-////							@Override
-////							public void onComplete(@NonNull Task<Void> task) {
-////								if (task.isSuccessful()) {
-////									Log.i(TAG, "MyLocation data added to FS");
-////								} else {
-////									Log.i(TAG, "MyLocation upload data to FS error: " + task.getException());
-////								}
-////							}
-////						});
-//					}
-//
-//				} else {
-//					Log.i(TAG, "MyLocation FS error " + task.getException());
-//				}
-//			}
-//		});
-//	}
 
 
 }

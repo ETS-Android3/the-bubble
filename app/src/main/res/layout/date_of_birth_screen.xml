@@ -8,7 +8,7 @@
 
 
     <TextView
-        android:id="@+id/phoneNumberPageTitle"
+        android:id="@+id/dateOfBirthPageTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -27,11 +27,20 @@
         android:datePickerMode="spinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/phoneNumberPageTitle"
+        app:layout_constraintTop_toBottomOf="@+id/dateOfBirthPageTitle"
         android:layout_marginTop="40dp"
         android:maxDate="12/31/2003"
         android:minDate="12/31/1920"
         />
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/calendar_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dateOfBirthPicker"
+        android:layout_marginTop="70dp"/>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/extended_fab"

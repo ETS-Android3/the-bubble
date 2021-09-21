@@ -20,8 +20,10 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.storage.StorageReference;
 
 import org.osmdroid.util.GeoPoint;
@@ -44,6 +46,7 @@ public class LiveZoneFragment extends Fragment {
 	private SearchAlgorithm algorithm;
 	private CountDownTimer timeCounter = null;
 	private MapView mapView;
+	private static final long REFRESH_TIME_MILLISECONDS = 300000;
 
 	@Nullable
 	@Override
@@ -59,10 +62,10 @@ public class LiveZoneFragment extends Fragment {
 		userViewModel =  new ViewModelProvider(requireActivity()).get(UserViewModel.class);
 		mapView = view.findViewById(R.id.map);
 		mapHandler = new MapHandler(mapView, userViewModel);
+		mapView.setVisibility(View.GONE);
 
-		timeCounter = new CountDownTimer(40000, 5000) {
+		timeCounter = new CountDownTimer(REFRESH_TIME_MILLISECONDS, REFRESH_TIME_MILLISECONDS) {
 			public void onTick(long millisUntilFinished) {
-				Toast.makeText(view.getContext(), "seconds remaining: " + millisUntilFinished / 1000, Toast.LENGTH_SHORT).show();
 			}
 
 			public void onFinish() {
@@ -85,7 +88,11 @@ public class LiveZoneFragment extends Fragment {
 
 		algorithm.getRadiusSearchFinished().observe(getViewLifecycleOwner(), isFinish -> {
 			if (isFinish) {
-				System.out.println("is finish");
+				CircularProgressIndicator loadingView = getView().findViewById(R.id.loading);
+				TextView loadingTextView = getView().findViewById(R.id.loadingText);
+				loadingView.setVisibility(View.GONE);
+				loadingTextView.setVisibility(View.GONE);
+				mapView.setVisibility(View.VISIBLE);
 				mapHandler.cleanupMap();
 				HashMap<String, Double> personLocationMap = getUserLocationHashMap();
 

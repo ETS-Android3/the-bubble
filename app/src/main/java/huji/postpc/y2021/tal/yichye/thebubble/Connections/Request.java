@@ -9,8 +9,8 @@ public class Request implements Comparable<Request>, Serializable {
     String reqUserId;
     public Request(){}
 
-    public Request(String id, boolean requestIsIncoming){
-        System.out.println(requestIsIncoming + "IN REQ CONSTRUCTOR");
+
+    public Request(String id, String name,  boolean requestIsIncoming){
         inRequest = requestIsIncoming;
         timeStamp = System.currentTimeMillis();
         reqUserId = id;

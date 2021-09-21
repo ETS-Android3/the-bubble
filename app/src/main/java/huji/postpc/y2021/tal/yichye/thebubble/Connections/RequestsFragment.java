@@ -43,8 +43,6 @@ public class RequestsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        System.out.println("before calling user view model");
-
 
         userViewModel =  new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         chatsViewModel = new ViewModelProvider(requireActivity()).get(ChatsViewModel.class);
