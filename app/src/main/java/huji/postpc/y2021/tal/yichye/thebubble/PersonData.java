@@ -29,6 +29,7 @@ public class PersonData implements Serializable {
 	public int maxAgePreference;
 	public ArrayList<Gender> genderTendency;
 	public ArrayList<Request> requests;
+	public ArrayList<String> ignoreList;
 //	public ArrayList<String> matches;
 
 

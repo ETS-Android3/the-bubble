@@ -44,7 +44,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 else {
                     startActivity(new Intent(getApplicationContext(), OnBoardingActivity.class));
-                    finishAffinity();
                 }
             } else {
                 Toast.makeText(this, "Can't use the application with storage permission", Toast.LENGTH_SHORT).show();
@@ -59,7 +58,6 @@ public class LoginActivity extends AppCompatActivity {
         if (TheBubbleApplication.getInstance().getSP().getString("user_name", null) != null)
         {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            finishAffinity();
         }
         setContentView(R.layout.login_screen);
         userNameEditText = findViewById(R.id.userNameTextInputEdit);
@@ -87,7 +85,6 @@ public class LoginActivity extends AppCompatActivity {
                     Manifest.permission.READ_EXTERNAL_STORAGE);
             if (hasPermission == PackageManager.PERMISSION_GRANTED) {
                 startActivity(new Intent(getApplicationContext(), OnBoardingActivity.class));
-                finishAffinity();
             }
             else {
                 requestPermissionToStorageLauncher.launch(
@@ -110,7 +107,6 @@ public class LoginActivity extends AppCompatActivity {
                     TheBubbleApplication.getInstance().getSP().edit().
                             putString("user_name", userName1).apply();
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    finishAffinity();
                 } else {
                     Toast.makeText(getBaseContext(),
                             "Invalid credentials", Toast.LENGTH_SHORT).show();

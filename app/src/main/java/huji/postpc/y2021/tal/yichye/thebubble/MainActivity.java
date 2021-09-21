@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
         userViewModel.genderTendency.setValue(personData.genderTendency);
         userViewModel.requestsLiveData.setValue(personData.requests);
         userViewModel.aboutMeLiveData.setValue(personData.aboutMe);
+        userViewModel.ignoreListLiveData.setValue(personData.ignoreList);
     }
 
 

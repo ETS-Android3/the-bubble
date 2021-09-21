@@ -74,6 +74,17 @@ public class UsersDB {
 				});
 	}
 
+	public void addToIgnoreList(String userId, String ignoredUserId) {
+		db.collection("users").document(userId).get()
+				.addOnSuccessListener(documentSnapshot -> {
+					if (documentSnapshot.exists()) {
+						PersonData user = documentSnapshot.toObject(PersonData.class);
+						user.ignoreList.add(ignoredUserId);
+						updateUserField(userId, "ignoreList", user.ignoreList);
+					}
+				});
+	}
+
 	public FirebaseFirestore getDb() {
 		return db;
 	}
