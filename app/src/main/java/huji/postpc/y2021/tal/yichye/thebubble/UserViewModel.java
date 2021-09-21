@@ -21,6 +21,7 @@ public class UserViewModel extends ViewModel {
 
     protected MutableLiveData<String> profilePicture = new MutableLiveData<>("");
     protected MutableLiveData<ArrayList<String>> photosLiveData = new MutableLiveData<>(new ArrayList<>());
+    protected MutableLiveData<ArrayList<String>> ignoreListLiveData = new MutableLiveData<>(new ArrayList<>());
 
     protected MutableLiveData<Integer> minAgePreferenceLiveData = new MutableLiveData<Integer>( 26);
     protected MutableLiveData<Integer> maxAgePreferenceLiveData = new MutableLiveData<>(40);
@@ -32,6 +33,9 @@ public class UserViewModel extends ViewModel {
 
     protected MutableLiveData<ArrayList<Request>> requestsLiveData = new MutableLiveData<>(new ArrayList<>());
 
+    public MutableLiveData<ArrayList<String>> getIgnoreListLiveData() {
+        return ignoreListLiveData;
+    }
 
     public MutableLiveData<ArrayList<Request>> getRequestsLiveData() {
         return requestsLiveData;

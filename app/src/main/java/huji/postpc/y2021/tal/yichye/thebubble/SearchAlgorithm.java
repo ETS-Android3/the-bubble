@@ -52,6 +52,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import huji.postpc.y2021.tal.yichye.thebubble.Connections.Request;
+
 public class SearchAlgorithm {
 
 	public static final double DEFAULT_SEARCH_RADIUS = 200;
@@ -276,66 +278,91 @@ public class SearchAlgorithm {
 					JSONObject myJsonObject = new JSONObject(new JsonParser().parse(new InputStreamReader(myInputStream, "UTF-8")).getAsJsonObject().toString());
 
 					ArrayList<PersonData> possibleMatches = getPossibleMatchesLiveData().getValue();
+					ArrayList<String> ignoreList = userViewModel.getIgnoreListLiveData().getValue();
+					ArrayList<Request> requests = userViewModel.getRequestsLiveData().getValue();
+
 					if (possibleMatches != null) {
 						for (PersonData possibleMatch : possibleMatches) {
 							String otherUserName = possibleMatch.getUserName();
-							StorageReference otherUserRef = LocationHelper.createLocationReference(otherUserName, LocationHelper.LOCATIONS_FILE_NAME);
-							otherUserRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-								@Override
-								public void onSuccess(byte[] otherBytes) {
-									InputStream otherInputStream = new ByteArrayInputStream(otherBytes);
-									try {
-										JSONObject otherJsonObject = new JSONObject(new JsonParser().parse(new InputStreamReader(otherInputStream, "UTF-8")).getAsJsonObject().toString());
+							boolean inRequests = false;
+							if (requests != null) {
+								for (Request request : requests) {
+									if (request.getReqUserId().equals(otherUserName)) {
+										inRequests = true;
+										break;
+									}
+								}
+							}
+							boolean inIgnore = false;
+							if (ignoreList != null && ignoreList.contains(otherUserName)) {
+								inIgnore = true;
+							}
+							if (!inRequests && !inIgnore) {
+								StorageReference otherUserRef = LocationHelper.createLocationReference(otherUserName, LocationHelper.LOCATIONS_FILE_NAME);
+								otherUserRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+									@Override
+									public void onSuccess(byte[] otherBytes) {
+										InputStream otherInputStream = new ByteArrayInputStream(otherBytes);
+										try {
+											JSONObject otherJsonObject = new JSONObject(new JsonParser().parse(new InputStreamReader(otherInputStream, "UTF-8")).getAsJsonObject().toString());
 
-										Iterator<String> otherKeys = otherJsonObject.keys();
-										while (otherKeys.hasNext()) {
-											String otherKey = otherKeys.next();
-											Iterator<String> myKeys = myJsonObject.keys();
-											boolean matchFound = false;
-											while (myKeys.hasNext()){
-												String myKey = myKeys.next();
+											Iterator<String> otherKeys = otherJsonObject.keys();
+											while (otherKeys.hasNext()) {
+												String otherKey = otherKeys.next();
+												Iterator<String> myKeys = myJsonObject.keys();
+												boolean matchFound = false;
+												while (myKeys.hasNext()){
+													String myKey = myKeys.next();
 
-												HashMap<String, Double> myLocationMap = gson.fromJson(myJsonObject.get(myKey).toString(), HashMap.class);
-												Double myLatitude = myLocationMap.get("latitude");
-												Double myLongitude = myLocationMap.get("longitude");
-												Double myCount = myLocationMap.get("count");
+													HashMap<String, Double> myLocationMap = gson.fromJson(myJsonObject.get(myKey).toString(), HashMap.class);
+													Double myLatitude = myLocationMap.get("latitude");
+													Double myLongitude = myLocationMap.get("longitude");
+													Double myCount = myLocationMap.get("count");
 
-												HashMap<String, Double> otherLocationMap = gson.fromJson(otherJsonObject.get(otherKey).toString(), HashMap.class);
-												Double otherLatitude = otherLocationMap.get("latitude");
-												Double otherLongitude = otherLocationMap.get("longitude");
-												Double otherCount = otherLocationMap.get("count");
+													HashMap<String, Double> otherLocationMap = gson.fromJson(otherJsonObject.get(otherKey).toString(), HashMap.class);
+													Double otherLatitude = otherLocationMap.get("latitude");
+													Double otherLongitude = otherLocationMap.get("longitude");
+													Double otherCount = otherLocationMap.get("count");
 
-												if (myLatitude != null && myLongitude != null && myCount != null &&
-												otherLatitude != null && otherLongitude != null && otherCount != null) {
-													if (myCount > 1 && otherCount > 1 &&
-															distance(myLatitude, otherLatitude, myLongitude, otherLongitude, 0 ,0) <= similarityDist) {
-														matchFound = true;
-														break;
+													if (myLatitude != null && myLongitude != null && myCount != null &&
+															otherLatitude != null && otherLongitude != null && otherCount != null) {
+														if (myCount > 1 && otherCount > 1 &&
+																distance(myLatitude, otherLatitude, myLongitude, otherLongitude, 0 ,0) <= similarityDist) {
+															matchFound = true;
+															break;
+														}
 													}
 												}
+												if (matchFound) {
+													updatePossibleMatchesAgent(possibleMatch);
+													break;
+												}
 											}
-											if (matchFound) {
-												updatePossibleMatchesAgent(possibleMatch);
-												break;
-											}
+										} catch (JSONException | UnsupportedEncodingException e) {
+											e.printStackTrace();
 										}
-									} catch (JSONException | UnsupportedEncodingException e) {
-										e.printStackTrace();
+										numOfUsersCheckedAgentSearch.addAndGet(1);
+										if (numOfUsersCheckedAgentSearch.get() == possibleMatches.size()) {
+											agentSearchFinished.setValue(true);
+										}
 									}
-									numOfUsersCheckedAgentSearch.addAndGet(1);
-									if (numOfUsersCheckedAgentSearch.get() == possibleMatches.size()) {
-										agentSearchFinished.setValue(true);
+								}).addOnFailureListener(new OnFailureListener() {
+									@Override
+									public void onFailure(@NonNull Exception e) {
+										numOfUsersCheckedAgentSearch.addAndGet(1);
+										if (numOfUsersCheckedAgentSearch.get() == possibleMatches.size()) {
+											agentSearchFinished.setValue(true);
+										}
 									}
+								});
+							} else {
+								numOfUsersCheckedAgentSearch.addAndGet(1);
+								if (numOfUsersCheckedAgentSearch.get() == possibleMatches.size()) {
+									agentSearchFinished.setValue(true);
 								}
-							}).addOnFailureListener(new OnFailureListener() {
-								@Override
-								public void onFailure(@NonNull Exception e) {
-									numOfUsersCheckedAgentSearch.addAndGet(1);
-									if (numOfUsersCheckedAgentSearch.get() == possibleMatches.size()) {
-										agentSearchFinished.setValue(true);
-									}
-								}
-							});
+							}
+
+
 						}
 					}
 				} catch (UnsupportedEncodingException | JSONException e) {

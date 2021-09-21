@@ -32,5 +32,6 @@ public class NewUserViewModel extends ViewModel
     protected MutableLiveData<String> profilePhotoLiveData = new MutableLiveData<String>();
 
     protected MutableLiveData<Integer> progressLiveData = new MutableLiveData<>(0);
+    protected MutableLiveData<ArrayList<String>> ignoreListLiveData = new MutableLiveData<>(new ArrayList<>());
 
 }

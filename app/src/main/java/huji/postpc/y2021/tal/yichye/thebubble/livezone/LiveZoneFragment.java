@@ -20,8 +20,10 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.storage.StorageReference;
 
 import org.osmdroid.util.GeoPoint;
@@ -59,7 +61,7 @@ public class LiveZoneFragment extends Fragment {
 		userViewModel =  new ViewModelProvider(requireActivity()).get(UserViewModel.class);
 		mapView = view.findViewById(R.id.map);
 		mapHandler = new MapHandler(mapView, userViewModel);
-
+		mapView.setVisibility(View.GONE);
 		timeCounter = new CountDownTimer(40000, 5000) {
 			public void onTick(long millisUntilFinished) {
 				Toast.makeText(view.getContext(), "seconds remaining: " + millisUntilFinished / 1000, Toast.LENGTH_SHORT).show();
@@ -85,6 +87,11 @@ public class LiveZoneFragment extends Fragment {
 
 		algorithm.getRadiusSearchFinished().observe(getViewLifecycleOwner(), isFinish -> {
 			if (isFinish) {
+				CircularProgressIndicator loadingView = getView().findViewById(R.id.loading);
+				TextView loadingTextView = getView().findViewById(R.id.loadingText);
+				loadingView.setVisibility(View.GONE);
+				loadingTextView.setVisibility(View.GONE);
+				mapView.setVisibility(View.VISIBLE);
 				System.out.println("is finish");
 				mapHandler.cleanupMap();
 				HashMap<String, Double> personLocationMap = getUserLocationHashMap();
