@@ -63,9 +63,6 @@ public class UsersDB {
 		db.collection("users").document(userId).update(fieldToChange, newValue);
 
 	}
-	public FirebaseFirestore getDb() {
-		return db;
-	}
 
 	public void addRequest(String userId, Request newRequest)
 	{
@@ -80,25 +77,25 @@ public class UsersDB {
 	}
 
 
-	public void updateChatInfoByIdAndMsg(Message message, String idChatWith, String idSelf){
+	public void updateChatInfoByIdAndMsg(Message message, String idChatWith, String idSelf) {
 		db.collection("users").document(idSelf).get()
 				.addOnSuccessListener(documentSnapshot -> {
 					if (documentSnapshot.exists()) {
 						PersonData user = documentSnapshot.toObject(PersonData.class);
-						for (int i = 0; i < user.chatInfos.size() ; i++) {
+						for (int i = 0; i < user.chatInfos.size(); i++) {
 							ChatInfo c = user.chatInfos.get(i);
-							if (c.getChatWith().equals(idChatWith)){
+							if (c.getChatWith().equals(idChatWith)) {
 								c.setLastSentMsg(message.getContent());
 								c.setTimeLastSentMsg(message.getTimeSent());
 								c.setDateLastSentMsg(message.getDateSent());
 							}
-					}
+						}
 						updateUserField(idSelf, "chatInfos", user.chatInfos);
-					}
-					else {
+					} else {
 						System.err.println("couldnt find matching chat info ---updateChatInfoByIdAndMsg");
 					}
 				});
+	}
 
 	public void addToIgnoreList(String userId, String ignoredUserId) {
 		db.collection("users").document(userId).get()

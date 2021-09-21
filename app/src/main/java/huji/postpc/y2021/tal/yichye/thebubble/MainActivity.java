@@ -119,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
         userViewModel.dateOfBirthLiveData.setValue(personData.dateOfBirth);
         userViewModel.myGenderLiveData.setValue(personData.gender);
         userViewModel.cityLiveData.setValue(personData.city);
-        userViewModel.profilePicture.setValue(personData.profilePicture);
         userViewModel.photosLiveData.setValue(personData.photos);
         userViewModel.minAgePreferenceLiveData.setValue(personData.minAgePreference);
         userViewModel.maxAgePreferenceLiveData.setValue(personData.maxAgePreference);

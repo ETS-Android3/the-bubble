@@ -24,7 +24,6 @@ public class PersonData implements Serializable {
 	public String aboutMe;
 	public String city;
 	public String phoneNumber; // TODO: phone number should be private and saved in othe place
-	public String profilePicture;
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
@@ -58,9 +57,6 @@ public class PersonData implements Serializable {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public void setProfilePicture(String profilePicture) {
-		this.profilePicture = profilePicture;
-	}
 
 	public void setPhotos(ArrayList<String> photos) {
 		this.photos = photos;

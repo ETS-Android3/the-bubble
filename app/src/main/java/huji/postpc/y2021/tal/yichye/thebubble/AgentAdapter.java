@@ -102,9 +102,8 @@ public class AgentAdapter extends RecyclerView.Adapter<AgentAdapter.AgentPagerVi
 
 
 		bubbleInButton.setOnClickListener(v -> {
-			Request requestIn = new Request(userViewModel.getUserNameLiveData().getValue(),
-					userViewModel.getFullNameLiveData().getValue(), true);
-			Request requestOut = new Request(personData.getId(), personData.getName(), false);
+			Request requestIn = new Request(userViewModel.getUserNameLiveData().getValue(), true);
+			Request requestOut = new Request(personData.getId(), false);
 			usersDB.addRequest(userViewModel.getUserNameLiveData().getValue(), requestOut);
 			usersDB.addRequest(personData.getId(), requestIn);
 			this.possibleMatches.remove(position);

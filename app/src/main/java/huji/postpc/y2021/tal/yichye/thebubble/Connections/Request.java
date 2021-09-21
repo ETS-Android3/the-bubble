@@ -10,7 +10,7 @@ public class Request implements Comparable<Request>, Serializable {
     public Request(){}
 
 
-    public Request(String id, String name,  boolean requestIsIncoming){
+    public Request(String id, boolean requestIsIncoming){
         inRequest = requestIsIncoming;
         timeStamp = System.currentTimeMillis();
         reqUserId = id;

@@ -73,7 +73,6 @@ public class AppNavigationFragment extends Fragment
         newUser.genderTendency = tendencyList;
         newUser.requests = new ArrayList<>();
         newUser.chatInfos = new ArrayList<>();
-
         newUser.photos = newUserViewModel.photosLiveData.getValue();
 
         TheBubbleApplication application = TheBubbleApplication.getInstance();
