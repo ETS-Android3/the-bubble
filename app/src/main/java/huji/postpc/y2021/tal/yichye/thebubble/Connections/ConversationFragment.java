@@ -81,6 +81,7 @@ public class ConversationFragment extends Fragment {
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                chatsViewModel.setLastChatPickedLiveData(null);
                 listenerForBackArrow.onPressed();
             }
         });
@@ -133,6 +134,7 @@ public class ConversationFragment extends Fragment {
             Observer<ArrayList<Message>> observer = messages -> {
                 if (messages != null){
                     adapter.setMessages(messages);
+                    conversationRecycler.smoothScrollToPosition(messages.size()-1);
                 }
                 else {
                     System.err.println("error in observer conversation frag");
@@ -147,7 +149,9 @@ public class ConversationFragment extends Fragment {
 
         conversationRecycler = view.findViewById(R.id.recyclerConversation);
         conversationRecycler.setAdapter(adapter);
-        conversationRecycler.setLayoutManager(new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL,false)); // check if  require activity is ok
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL,false);
+        linearLayoutManager.setStackFromEnd(true);
+        conversationRecycler.setLayoutManager(linearLayoutManager); // check if  require activity is ok
     }
 
 

@@ -1,6 +1,5 @@
 package huji.postpc.y2021.tal.yichye.thebubble.Connections;
 
-import android.media.Image;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,8 +15,8 @@ public class ContactHolder extends RecyclerView.ViewHolder {
     ImageView userIcon;
     TextView userName;
     TextView lastMsg;
-    TextView lastMsgTime;
-    TextView lastMsgDate;
+    TextView lastMsgTimeOrDate;
+//    TextView lastMsgDate;
     ImageView deleteIcon;
     LinearLayout nameAndMsgLayout;
 
@@ -28,10 +27,10 @@ public class ContactHolder extends RecyclerView.ViewHolder {
         userIcon = itemView.findViewById(R.id.userContactIcon);
         userName = itemView.findViewById(R.id.userNameContact);
         lastMsg = itemView.findViewById(R.id.lastMessageText);
-        lastMsgTime = itemView.findViewById(R.id.timeLastMessageText);
+        lastMsgTimeOrDate = itemView.findViewById(R.id.timeOrDateLastMessageText);
         deleteIcon = itemView.findViewById(R.id.deleteChat);
         nameAndMsgLayout = itemView.findViewById(R.id.layoutForClick);
-        lastMsgDate = itemView.findViewById(R.id.dateLastMessageText);
+//        lastMsgDate = itemView.findViewById(R.id.dateLastMessageText);
     }
 
 
@@ -43,8 +42,8 @@ public class ContactHolder extends RecyclerView.ViewHolder {
         return lastMsg;
     }
 
-    public TextView getLastMsgTime() {
-        return lastMsgTime;
+    public TextView getLastMsgTimeOrDate() {
+        return lastMsgTimeOrDate;
     }
 
     public TextView getUserName() {
@@ -57,8 +56,8 @@ public class ContactHolder extends RecyclerView.ViewHolder {
         return nameAndMsgLayout;
     }
 
-    public TextView getLastMsgDate() {
-        return lastMsgDate;
-    }
+//    public TextView getLastMsgDate() {
+//        return lastMsgDate;
+//    }
 }
 

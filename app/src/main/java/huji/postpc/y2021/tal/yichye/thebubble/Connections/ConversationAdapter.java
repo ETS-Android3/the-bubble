@@ -39,7 +39,6 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             view = LayoutInflater.from(context)
                     .inflate(R.layout.other_message_item, parent, false);
             return new OtherMessageHolder(view);
-
         }
     }
 

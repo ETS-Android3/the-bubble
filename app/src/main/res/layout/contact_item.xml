@@ -35,7 +35,7 @@
         app:layout_constraintStart_toEndOf="@+id/cardView"
         app:layout_constraintTop_toTopOf="@+id/cardView"
         app:layout_constraintBottom_toBottomOf="@+id/cardView"
-        app:layout_constraintEnd_toStartOf="@id/dateLastMessageText">
+        app:layout_constraintEnd_toStartOf="@id/timeOrDateLastMessageText">
 
             <TextView
                 android:id="@+id/userNameContact"
@@ -54,19 +54,19 @@
         </LinearLayout>
 
 
-    <TextView
-        android:id="@+id/dateLastMessageText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="01/01/2001"
-        android:textSize="15sp"
-        android:layout_marginEnd="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/timeLastMessageText"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <TextView-->
+<!--        android:id="@+id/dateLastMessageText"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="01/01/2001"-->
+<!--        android:textSize="15sp"-->
+<!--        android:layout_marginEnd="10dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toStartOf="@id/timeLastMessageText"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <TextView
-        android:id="@+id/timeLastMessageText"
+        android:id="@+id/timeOrDateLastMessageText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -83,10 +83,10 @@
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:background="@drawable/delete_icon"
-        app:layout_constraintStart_toEndOf="@id/timeLastMessageText"
+        app:layout_constraintStart_toEndOf="@id/timeOrDateLastMessageText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/timeLastMessageText"
-        app:layout_constraintBottom_toBottomOf="@id/timeLastMessageText"
+        app:layout_constraintTop_toTopOf="@id/timeOrDateLastMessageText"
+        app:layout_constraintBottom_toBottomOf="@id/timeOrDateLastMessageText"
         />
     <View
         android:layout_width="match_parent"

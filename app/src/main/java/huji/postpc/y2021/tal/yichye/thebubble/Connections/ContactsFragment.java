@@ -37,8 +37,6 @@ public class ContactsFragment extends Fragment {
         chatsViewModel = new ViewModelProvider(requireActivity()).get(ChatsViewModel.class);
 
         ContactsAdapter adapter = new ContactsAdapter();
-//        System.out.println("TRYING T CREATE CONTACTS AGAIN ()()()()()");
-//        System.out.println(userViewModel.getChatsLiveData().getValue().get(0).getDateLastSentMsg());
         adapter.setChatInfos(userViewModel.getChatsLiveData().getValue());
         chatsRecycler = view.findViewById(R.id.contactsRecycler);
         chatsRecycler.setAdapter(adapter);
@@ -48,7 +46,6 @@ public class ContactsFragment extends Fragment {
         userViewModel.getChatsLiveData().observe(getViewLifecycleOwner(), personDataArr->
         {
             if (personDataArr != null) {
-//                System.out.println("@@@@@@@@@@@IN OBSERVE for changes in chatsLiveData " + personDataArr.get(0).getChatWith() );
                 adapter.setChatInfos(personDataArr);
             } else {
                 Toast.makeText(requireContext(),

@@ -12,6 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.storage.StorageReference;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -69,13 +72,12 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactHolder> {
         if (chatInfo.getLastSentMsg() == null){
             holder.getLastMsg().setText("NEW CONTACT");
             holder.getLastMsg().setTextColor(Color.parseColor("#CA7CC8"));
-            holder.getLastMsgTime().setText("");
-            holder.getLastMsgDate().setText("");
+            holder.getLastMsgTimeOrDate().setText("");
         }
         else {
-            holder.getLastMsg().setText(chatInfo.getLastSentMsg());
-            holder.getLastMsgTime().setText(chatInfo.getTimeLastSentMsg());
-            holder.getLastMsgDate().setText(chatInfo.getDateLastSentMsg());
+            holder.getLastMsg().setText(makeMessageSuitableLength(chatInfo.getLastSentMsg()));
+            String res = getDateOrTimeForItem(chatInfo.getDateLastSentMsg(),chatInfo.getTimeLastSentMsg());
+            holder.getLastMsgTimeOrDate().setText(res);
         }
         holder.getUserName().setText(withId);
         //todo set text for i image - at the moment
@@ -102,5 +104,24 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactHolder> {
     @Override
     public int getItemCount() {
         return chatInfos.size();
+    }
+
+    private String makeMessageSuitableLength(String msg){
+        if (msg.length() < 20) return msg;
+        else {
+            return msg.substring(0,17) + "...";
+
+        }
+    }
+
+    private String getDateOrTimeForItem(String date, String time){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.parse(date+ " "+ time,formatter);
+        if(dateTime.toLocalDate().equals(LocalDate.now())){
+            return time;
+        }
+        else {
+            return date;
+        }
     }
 }
