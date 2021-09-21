@@ -251,7 +251,7 @@ public class PhotosFragment extends Fragment
             }
         }
         catch (Exception e){
-            System.out.println("on catch");
+            return;
         }
     }
 

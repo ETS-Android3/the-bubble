@@ -32,7 +32,6 @@ public class RequestsAdapter  extends RecyclerView.Adapter<RequestHolder> {
 
     public RequestsAdapter(){
         super();
-        System.out.println("ADAPTER CREATED");
     }
 
 
@@ -57,12 +56,10 @@ public class RequestsAdapter  extends RecyclerView.Adapter<RequestHolder> {
     public void onBindViewHolder(@NonNull RequestHolder holder, int position) {
         Request request = userRequests.get(position);
         //todo set sender image
-        System.out.println(request.inRequest);
         holder.getReqUserName().setText(request.getReqUserName());
 
         if (request.inRequest){
             //todo set sender image
-            System.out.println("IS IN REQUEST");
             holder.getCancelRequestButton().setVisibility(View.GONE);
             holder.getApproveIcon().setVisibility(View.VISIBLE);
             holder.getRejectIcon().setVisibility(View.VISIBLE);
@@ -84,7 +81,6 @@ public class RequestsAdapter  extends RecyclerView.Adapter<RequestHolder> {
 
         else
         {
-            System.out.println("IS OUT REQUEST");
             holder.cancelRequestButton.setVisibility(View.VISIBLE);
             holder.approveIcon.setVisibility(View.GONE);
             holder.rejectIcon.setVisibility(View.GONE);

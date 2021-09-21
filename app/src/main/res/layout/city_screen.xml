@@ -9,7 +9,7 @@
 
 
     <TextView
-        android:id="@+id/genderPageTitle"
+        android:id="@+id/cityPageTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -26,11 +26,20 @@
         android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/genderPageTitle"
+        app:layout_constraintTop_toBottomOf="@+id/cityPageTitle"
         android:spinnerMode="dialog"
         android:backgroundTint="@android:color/white"
         />
 
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/cityscape_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinner"
+        android:layout_marginTop="70dp"/>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/extended_fab"

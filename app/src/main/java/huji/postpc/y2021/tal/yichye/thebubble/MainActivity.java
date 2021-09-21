@@ -94,9 +94,7 @@ public class MainActivity extends AppCompatActivity {
             if (userName != null){
                 LiveData<PersonData> personDataLiveData = TheBubbleApplication.getInstance().getUsersDB().getUserByID(userName);
                 final Observer<PersonData> personDataObserver = personData -> {
-                    Log.d("main activity", "after get user by id");
                     if(personData != null){
-                        System.out.println(personData);
                         updateUserViewModel(personData);
                        }
                     else {
@@ -342,9 +340,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.getMenu().setGroupEnabled(R.id.group_bottom_menu,false);
         bottomNavigationView.getMenu().setGroupCheckable(R.id.group_bottom_menu,false, false);
         bottomNavigationView.setEnabled(false);
-
-        }
-
+    }
 
     private void attach_listener(PersonData personData){
         listenerRegistration = TheBubbleApplication.getInstance()
@@ -355,30 +351,22 @@ public class MainActivity extends AppCompatActivity {
                 .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
                     public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException error) {
-                        System.out.println("IN ON EVENT");
                         if (error != null) {
                             System.err.println(error.getMessage());
-
-                        } else if (snapshot == null) {
-                            System.err.println("snap shot is null");
-                        } else {
-                            System.out.println("in every");
+                        } else if (snapshot != null){
                             PersonData changedPerson = snapshot.toObject(PersonData.class);
                             if (changedPerson != null) {
                                 updateUserViewModel(changedPerson);
                             }
                         }
-                        System.out.println(userViewModel.fullNameLiveData.getValue());
-                        System.out.println(userViewModel.requestsLiveData.getValue());
-                        System.out.println(userViewModel.userNameLiveData.getValue());
-                        System.out.println(userViewModel.passwordLiveData.getValue());
-
                     }
                 });
     }
 
     private void detachListener(){
-        if(listenerRegistration != null)        listenerRegistration.remove();
+        if(listenerRegistration != null){
+            listenerRegistration.remove();
+        }
     }
 
 
@@ -425,7 +413,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         detachListener();
         super.onDestroy();
-
     }
 }
 
