@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import huji.postpc.y2021.tal.yichye.thebubble.Connections.ChatInfo;
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.Request;
 
 public class UserViewModel extends ViewModel {
@@ -32,6 +33,7 @@ public class UserViewModel extends ViewModel {
     protected MutableLiveData<String> aboutMeLiveData = new MutableLiveData<>("");
 
     protected MutableLiveData<ArrayList<Request>> requestsLiveData = new MutableLiveData<>(new ArrayList<>());
+    protected MutableLiveData<ArrayList<ChatInfo>> chatsLiveData = new MutableLiveData<>(new ArrayList<>());
 
     public MutableLiveData<ArrayList<String>> getIgnoreListLiveData() {
         return ignoreListLiveData;
@@ -77,15 +79,24 @@ public class UserViewModel extends ViewModel {
         return aboutMeLiveData;
     }
 
-
-    public void setGenderTendencyLiveData(ArrayList<PersonData.Gender> newTendencySet) {
-        genderTendency.setValue(newTendencySet);
-        usersDB.updateUserField(userNameLiveData.getValue(), "genderTendency", newTendencySet);
+    public MutableLiveData<ArrayList<ChatInfo>> getChatsLiveData() {
+        return chatsLiveData;
     }
 
-    public void setDateOfBirthLiveData(Long newDate) {
-        dateOfBirthLiveData.setValue(newDate);
-        usersDB.updateUserField(userNameLiveData.getValue(), "dateOfBirth", newDate);
+    public void setGenderTendencyLiveData(ArrayList<PersonData.Gender> newTendencySet, String id) {
+        if (id == null) {
+            id = userNameLiveData.getValue();
+            genderTendency.setValue(newTendencySet);
+        }
+        usersDB.updateUserField(id, "genderTendency", newTendencySet);
+    }
+
+    public void setDateOfBirthLiveData(Long newDate, String id) {
+        if (id == null) {
+            id = userNameLiveData.getValue();
+            dateOfBirthLiveData.setValue(newDate);
+        }
+        usersDB.updateUserField(id, "dateOfBirth", newDate);
     }
 
     public void setPhotosLiveData(ArrayList<String> newPhotosArray) {
@@ -93,43 +104,72 @@ public class UserViewModel extends ViewModel {
         usersDB.updateUserField(userNameLiveData.getValue(), "photos", newPhotosArray);
     }
 
-    public void setMinAgePreferenceLiveData(Integer newMinAge) {
-        minAgePreferenceLiveData.setValue(newMinAge);
-        usersDB.updateUserField(userNameLiveData.getValue(), "minAgePreference", newMinAge);
+    public void setMinAgePreferenceLiveData(Integer newMinAge, String id) {
+        if (id == null) {
+            id = userNameLiveData.getValue();
+            minAgePreferenceLiveData.setValue(newMinAge);
+        }
+        usersDB.updateUserField(id, "minAgePreference", newMinAge);
     }
 
-    public void setMaxAgePreferenceLiveData(Integer newMaxAge) {
-        maxAgePreferenceLiveData.setValue(newMaxAge);
-        usersDB.updateUserField(userNameLiveData.getValue(), "maxAgePreference", newMaxAge);
-    }
-
-
-    public void setFullNameLiveData(String newFullName) {
-        fullNameLiveData.setValue(newFullName);
-        usersDB.updateUserField(userNameLiveData.getValue(), "fullName", newFullName);
-    }
-
-    public void setAboutMeLiveData(String newDescription) {
-        aboutMeLiveData.setValue(newDescription);
-        usersDB.updateUserField(userNameLiveData.getValue(), "aboutMe", newDescription);
-    }
-
-    public void setCityLiveData(String newCity) {
-        cityLiveData.setValue(newCity);
-        usersDB.updateUserField(userNameLiveData.getValue(), "city", newCity);
+    public void setMaxAgePreferenceLiveData(Integer newMaxAge, String id) {
+        if (id == null) {
+            id = userNameLiveData.getValue();
+            maxAgePreferenceLiveData.setValue(newMaxAge);
+        }
+        usersDB.updateUserField(id, "maxAgePreference", newMaxAge);
     }
 
 
-    public void setRequestsLiveData(ArrayList<Request> newRequestArray) {
-        requestsLiveData.setValue(newRequestArray);
-        usersDB.updateUserField(userNameLiveData.getValue(), "requests", newRequestArray);
+    public void setFullNameLiveData(String newFullName, String id) {
+        if (id == null) {
+            id = userNameLiveData.getValue();
+            fullNameLiveData.setValue(newFullName);
+        }
+        usersDB.updateUserField(id, "fullName", newFullName);
+    }
+
+    public void setAboutMeLiveData(String newDescription, String id) {
+        if (id == null) {
+            id = userNameLiveData.getValue();
+            aboutMeLiveData.setValue(newDescription);
+        }
+        usersDB.updateUserField(id, "aboutMe", newDescription);
+    }
+
+    public void setCityLiveData(String newCity, String id ) {
+        if (id == null) {
+            id = userNameLiveData.getValue();
+            aboutMeLiveData.setValue(newCity);
+        }
+        usersDB.updateUserField(id, "city", newCity);
+    }
+
+
+    public void setRequestsLiveData(ArrayList<Request> newRequestArray, String id)
+    {
+        if (id == null){
+            id = userNameLiveData.getValue();
+            requestsLiveData.setValue(newRequestArray);
+        }
+        System.out.println("UPDATE REQUESTS FOR " + id);
+        usersDB.updateUserField(id, "requests",newRequestArray);
+    }
+
+
+    public void setChatsLiveData(ArrayList<ChatInfo> chatInfos, String id) {
+        if (id == null){
+            System.out.println("***********************");
+            System.out.println(chatInfos);
+            id = userNameLiveData.getValue();
+            chatsLiveData.setValue(chatInfos);
+        }
+        usersDB.updateUserField(id, "chatInfos", chatInfos);
     }
 
     public MutableLiveData<PersonData.Gender> getGenderLiveData()
     {
         return myGenderLiveData;
     }
-
-
 
 }

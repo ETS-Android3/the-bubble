@@ -15,6 +15,7 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import huji.postpc.y2021.tal.yichye.thebubble.Connections.ChatInfo;
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.Request;
 import huji.postpc.y2021.tal.yichye.thebubble.PersonData;
 import huji.postpc.y2021.tal.yichye.thebubble.R;
@@ -70,7 +71,9 @@ public class AppNavigationFragment extends Fragment
             tendencyList.add(genderList[genderIndex]);
         }
         newUser.genderTendency = tendencyList;
-        newUser.requests = new ArrayList<Request>();
+        newUser.requests = new ArrayList<>();
+        newUser.chatInfos = new ArrayList<>();
+
         newUser.photos = newUserViewModel.photosLiveData.getValue();
 
         TheBubbleApplication application = TheBubbleApplication.getInstance();

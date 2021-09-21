@@ -10,6 +10,7 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import huji.postpc.y2021.tal.yichye.thebubble.Connections.ChatInfo;
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.Request;
 
 
@@ -24,14 +25,75 @@ public class PersonData implements Serializable {
 	public String city;
 	public String phoneNumber; // TODO: phone number should be private and saved in othe place
 	public String profilePicture;
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+
+	public void setDateOfBirth(long dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public void setAboutMe(String aboutMe) {
+		this.aboutMe = aboutMe;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public void setProfilePicture(String profilePicture) {
+		this.profilePicture = profilePicture;
+	}
+
+	public void setPhotos(ArrayList<String> photos) {
+		this.photos = photos;
+	}
+
+	public void setMinAgePreference(int minAgePreference) {
+		this.minAgePreference = minAgePreference;
+	}
+
+	public void setMaxAgePreference(int maxAgePreference) {
+		this.maxAgePreference = maxAgePreference;
+	}
+
+	public void setGenderTendency(ArrayList<Gender> genderTendency) {
+		this.genderTendency = genderTendency;
+	}
+
+	public void setRequests(ArrayList<Request> requests) {
+		this.requests = requests;
+	}
+
+	public void setChatInfos(ArrayList<ChatInfo> chatInfos) {
+		this.chatInfos = chatInfos;
+	}
+
 	public ArrayList<String> photos;
 	public int minAgePreference;
 	public int maxAgePreference;
 	public ArrayList<Gender> genderTendency;
 	public ArrayList<Request> requests;
+	public ArrayList<ChatInfo> chatInfos;
 	public ArrayList<String> ignoreList;
 //	public ArrayList<String> matches;
-
 
 	public String getId() {
 		return userName;
@@ -57,6 +119,11 @@ public class PersonData implements Serializable {
 	{
 		return calcAge(dateOfBirth);
 	}
+
+	public ArrayList<Request> getRequests() {
+		return requests;
+	}
+
 
 	@RequiresApi(api = Build.VERSION_CODES.O)
 	public static int calcAge(Long epochDate) {

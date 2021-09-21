@@ -6,9 +6,10 @@
     tools:context=".Connections.MessagingFragment">
 
 
-    <FrameLayout
-        android:id="@+id/fragment_container_view"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/contactsRecycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        />
 
 </FrameLayout>

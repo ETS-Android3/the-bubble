@@ -46,6 +46,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static com.google.firebase.components.Dependency.setOf;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -125,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
         userViewModel.genderTendency.setValue(personData.genderTendency);
         userViewModel.requestsLiveData.setValue(personData.requests);
         userViewModel.aboutMeLiveData.setValue(personData.aboutMe);
+        userViewModel.chatsLiveData.setValue(personData.chatInfos);
         userViewModel.ignoreListLiveData.setValue(personData.ignoreList);
     }
 

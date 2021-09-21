@@ -169,7 +169,7 @@ public class SearchAlgorithm {
 		ArrayList<PersonData> possibleMatches = this.getPossibleMatchesLiveData().getValue();
 		getRadiusSearchFinished().setValue(false);
 		getPossibleMatchesInRadiusLiveData().setValue(new ArrayList<>());
-		if (possibleMatches != null && possibleMatches.size() != 0) {
+		if (possibleMatches != null) {
 			//TODO get my current location
 			getMyLocation();
 			myCurrentLocation.observe((LifecycleOwner) activity, new Observer<Location>() {
@@ -224,6 +224,12 @@ public class SearchAlgorithm {
 					}
 				}
 			});
+
+		}
+		if (possibleMatches.size() == 0)
+		{
+			myLocation.setValue(new GeoPoint(myLatitude, myLongitude));
+			getRadiusSearchFinished().setValue(true);
 		}
 	}
 

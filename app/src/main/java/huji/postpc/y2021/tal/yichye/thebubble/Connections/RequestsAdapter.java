@@ -9,20 +9,25 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.firebase.storage.StorageReference;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
+import huji.postpc.y2021.tal.yichye.thebubble.GlideApp;
 import huji.postpc.y2021.tal.yichye.thebubble.R;
 import huji.postpc.y2021.tal.yichye.thebubble.TheBubbleApplication;
 
 public class RequestsAdapter  extends RecyclerView.Adapter<RequestHolder> {
 
     private static final String TAG =  "ADAPTER";
+    private  Context adapterContext = null;
 
-    interface OnXClicked { void onClickedX(Request request); }
+    interface OnXClicked { void onClickedX(Request request, String forToast); }
     public OnXClicked XclickedCallable = null;
 
-    interface OnVClicked { void onClickedV(Request request); }
+    interface OnVClicked { void onClickedV(Request request, String forToast); }
     public OnVClicked VclickedCallable = null;
 
 
@@ -47,6 +52,7 @@ public class RequestsAdapter  extends RecyclerView.Adapter<RequestHolder> {
     @Override
     public RequestHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
+        adapterContext = context;
         View view = LayoutInflater.from(context)
                 .inflate(R.layout.bubble_in_item, parent, false);
         return new RequestHolder(view);
@@ -56,7 +62,21 @@ public class RequestsAdapter  extends RecyclerView.Adapter<RequestHolder> {
     public void onBindViewHolder(@NonNull RequestHolder holder, int position) {
         Request request = userRequests.get(position);
         //todo set sender image
-        holder.getReqUserName().setText(request.getReqUserName());
+
+
+        holder.getReqUserName().setText(request.getReqUserId());
+
+        StorageReference imageRef = TheBubbleApplication
+                .getInstance()
+                .getImageStorageDB()
+                .createReference(request.reqUserId, "profileImage");
+        GlideApp.with(adapterContext)
+                .load(imageRef)
+                .centerCrop()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .into(holder.getReqUserImg());
+
 
         if (request.inRequest){
             //todo set sender image
@@ -67,14 +87,14 @@ public class RequestsAdapter  extends RecyclerView.Adapter<RequestHolder> {
             holder.getRejectIcon().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    XclickedCallable.onClickedX(request);
+                    XclickedCallable.onClickedX(request, "Request Dismissed");
                 }
             });
 
             holder.getApproveIcon().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    VclickedCallable.onClickedV(request);
+                    VclickedCallable.onClickedV(request, "Contact created");
                 }
             });
         }
@@ -88,7 +108,7 @@ public class RequestsAdapter  extends RecyclerView.Adapter<RequestHolder> {
             holder.getCancelRequestButton().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    XclickedCallable.onClickedX(request);
+                    XclickedCallable.onClickedX(request, "Declined Request");
                 }
             });
         }

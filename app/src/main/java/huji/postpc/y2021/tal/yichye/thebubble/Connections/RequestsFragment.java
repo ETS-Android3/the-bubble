@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -27,6 +30,7 @@ import huji.postpc.y2021.tal.yichye.thebubble.UserViewModel;
 public class RequestsFragment extends Fragment {
 
     UserViewModel userViewModel;
+    ChatsViewModel chatsViewModel;
     RecyclerView requestsRecycler;
     SharedPreferences sp = TheBubbleApplication.getInstance().getSP();
 
@@ -41,6 +45,7 @@ public class RequestsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         userViewModel =  new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        chatsViewModel = new ViewModelProvider(requireActivity()).get(ChatsViewModel.class);
         RequestsAdapter adapter = new RequestsAdapter();
         adapter.setUserRequests(userViewModel.getRequestsLiveData().getValue());
         requestsRecycler = view.findViewById(R.id.reqRecycler);
@@ -51,8 +56,7 @@ public class RequestsFragment extends Fragment {
             if (personDataArr != null) {
                 adapter.setUserRequests(personDataArr);
             } else {
-                Toast.makeText(requireContext(),
-                        "Error occurred", Toast.LENGTH_SHORT).show();
+                System.err.println("error in observer req fragment");
             }
         });
 
@@ -60,23 +64,28 @@ public class RequestsFragment extends Fragment {
 
         adapter.XclickedCallable = new RequestsAdapter.OnXClicked() {
             @Override
-            public void onClickedX(Request request) {
+            public void onClickedX(Request request, String forToast) {
+                System.out.println("TRYING TO DELETE REQUEST FOR OTHER USER " + request.reqUserId);
                 ArrayList<Request> current_array = userViewModel.getRequestsLiveData().getValue();
                 for (int i = 0; i < current_array.size(); i++) {
                     if (current_array.get(i).getReqUserId().equals(request.getReqUserId())){
                         current_array.remove(current_array.get(i)); // safe deletion
                     }
                 }
-                Collections.sort(current_array);
-                userViewModel.getRequestsLiveData().setValue(current_array);
-                adapter.setUserRequests(userViewModel.getRequestsLiveData().getValue());// set adapter without deleted item
+//                Collections.sort(current_array);
+                userViewModel.setRequestsLiveData(current_array, null); // todo change to set firestore
+                adapter.setUserRequests(current_array);// set adapter without deleted item
 
-                //todo change whats shown on other user's requests
+                //todo change calling to DB ???
+
                 TheBubbleApplication.getInstance().getUsersDB().getUserByID(request.reqUserId).observe(getViewLifecycleOwner(), personData->
                 {
-                    if (personData != null && checkIfOtherHasMyRequest(personData)) {
+                    int index = checkIfOtherHasMyRequest(personData);
+                    if (personData != null && index!= -1) {
+                        personData.requests.remove(index);
+                        userViewModel.setRequestsLiveData(personData.getRequests(), personData.getId());
                         Toast.makeText(requireContext(),
-                                "Request Dismissed", Toast.LENGTH_SHORT).show();
+                                forToast, Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(requireContext(),
                                 "Error occurred", Toast.LENGTH_SHORT).show();
@@ -88,25 +97,46 @@ public class RequestsFragment extends Fragment {
 
         adapter.VclickedCallable = new RequestsAdapter.OnVClicked() {
             @Override
-            public void onClickedV(Request request) {
+            public void onClickedV(Request request, String forToast) {
                 //todo add a new listing for new chat to the user
-
+                String selfId = sp.getString("user_name", null);
+                if (selfId == null) {
+                    System.err.println("no user in system");
+                    return;
+                }
+                ChatFB newChat = new ChatFB(MessagingFragment.getIdsForChatFB(request.reqUserId));
+                //my listing
+                ChatInfo chatInfo1 = new ChatInfo(request.reqUserId);
+                //other listing
+                ChatInfo chatInfo2 = new ChatInfo(selfId);
+                chatsViewModel.addChatToDB(newChat);
+                chatsViewModel.newChatAddedLiveData.setValue(newChat);
+                ArrayList<ChatInfo> currSelfChatInfos = userViewModel.getChatsLiveData().getValue(); //todo need to update adapter?
+                currSelfChatInfos.add(chatInfo1);
+                userViewModel.setChatsLiveData(currSelfChatInfos, null);
+                System.out.println(request.getReqUserId()+ "-----------------------");
+                LiveData<PersonData> personDataLiveData = TheBubbleApplication.getInstance().getUsersDB().getUserByID(request.getReqUserId());
+                Observer<PersonData> observer = personData -> {
+                    System.out.println(personDataLiveData.getValue() + "--------------------------");
+                    boolean success = personData.chatInfos.add(chatInfo2);
+                    if(success) userViewModel.setChatsLiveData(personData.chatInfos, personData.getId());
+                };
+                personDataLiveData.observe(getViewLifecycleOwner(), observer);
+                adapter.XclickedCallable.onClickedX(request, forToast);
             }
+
         };
-
-
 
     }
 
-
-    boolean checkIfOtherHasMyRequest(PersonData personData){
+    private int checkIfOtherHasMyRequest(PersonData personData){
+        //todo change to delete from firebase
         String selfId = sp.getString("user_name", null);
         for (int i = 0; i < personData.requests.size() ; i++) {
             if (personData.requests.get(i).getReqUserId().equals(selfId)){
-                personData.requests.remove(i);
-                return true;
+                return i;
             } }
-        return false;
+        return -1;
     }
 
 

@@ -4,17 +4,25 @@ import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import huji.postpc.y2021.tal.yichye.thebubble.Connections.ChatsDB;
+
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class TheBubbleApplication extends Application {
 
     private UsersDB usersDB;
+    private ChatsDB chatsDB;
     private static TheBubbleApplication instance;
     private static SharedPreferences sp;
 
     public UsersDB getUsersDB() {
         usersDB = new UsersDB(this);
         return usersDB;
+    }
+
+    public ChatsDB getChatsDB(){
+        chatsDB = new ChatsDB(this);
+        return chatsDB;
     }
 
     public ImageStorageDB getImageStorageDB()
