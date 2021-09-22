@@ -305,15 +305,26 @@ public class MainActivity extends AppCompatActivity {
     {
         if ((ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED)) {
             return true;
-        } else if (shouldShowRequestPermissionRationale(permission)) {
-            // TODO - CHANGE TEXT MESSAGE
-            // TODO - CHECK WHICH PERMISSION IS NEEDED
-            Toast.makeText(MainActivity.this, "Must allow location permission", Toast.LENGTH_LONG).show();
-            ActivityCompat.requestPermissions(this, new String[]{permission}, permissionId);
-            return false;
         } else {
-            ActivityCompat.requestPermissions(this, new String[]{permission}, permissionId);
-            return false;
+            String message = "";
+            if (permission.equals(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                message = "Please give this permission in order to use Live Zone feature";
+            } else if (permission.equals(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+                message = "Please give this permission in order to use Smart Match Agent feature";
+            }
+            if (shouldShowRequestPermissionRationale(permission)) {
+                // TODO - CHANGE TEXT MESSAGE
+                // TODO - CHECK WHICH PERMISSION IS NEEDED
+
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                ActivityCompat.requestPermissions(this, new String[]{permission}, permissionId);
+                return false;
+            } else {
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+
+                ActivityCompat.requestPermissions(this, new String[]{permission}, permissionId);
+                return false;
+            }
         }
     }
 

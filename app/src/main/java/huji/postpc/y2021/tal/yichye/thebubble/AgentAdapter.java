@@ -108,12 +108,14 @@ public class AgentAdapter extends RecyclerView.Adapter<AgentAdapter.AgentPagerVi
 			usersDB.addRequest(personData.getId(), requestIn);
 			this.possibleMatches.remove(position);
 			this.notifyItemRemoved(position);
+			Toast.makeText(holder.itemView.getContext(), "The request was sent", Toast.LENGTH_LONG).show();
 		});
 
 		bubbleOutButton.setOnClickListener(v -> {
 			this.possibleMatches.remove(position);
 			usersDB.addToIgnoreList(userViewModel.getUserNameLiveData().getValue(), personData.getId());
 			this.notifyItemRemoved(position);
+			Toast.makeText(holder.itemView.getContext(), "The profile was hidden", Toast.LENGTH_LONG).show();
 		});
 
 	}

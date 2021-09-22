@@ -44,6 +44,7 @@ public class AgentFragment extends Fragment {
         ViewPager2 viewPager = view.findViewById(R.id.agentViewPager);
         CircularProgressIndicator loadingView = view.findViewById(R.id.loading);
         TextView loadingTextView = view.findViewById(R.id.loadingText);
+        loadingTextView.setText("We are looking for your destiny\nPlease wait");
 
         algorithm = new SearchAlgorithm(requireActivity());
         algorithm.SearchForPossibleMatches();
@@ -57,18 +58,20 @@ public class AgentFragment extends Fragment {
         algorithm.getAgentSearchFinished().observe(getViewLifecycleOwner(), isFinish -> {
             if (isFinish) {
                 loadingView.setVisibility(View.GONE);
-                loadingTextView.setVisibility(View.GONE);
-                System.out.println("is finish");
-                TheBubbleApplication.getInstance().getUsersDB().getUserByID(userId).
-                        observe(getViewLifecycleOwner(), personData -> {
-                            ArrayList<PersonData> possibleMatchesAgent = algorithm.getPossibleMatchesAgentLiveData().getValue();
-                            if (possibleMatchesAgent != null) {
+                ArrayList<PersonData> possibleMatchesAgent = algorithm.getPossibleMatchesAgentLiveData().getValue();
+                if (possibleMatchesAgent == null || possibleMatchesAgent.size() == 0) {
+                    loadingTextView.setText("We a sorry, but there are no possible matches right now :(");
+                } else {
+                    loadingTextView.setVisibility(View.GONE);
+                    System.out.println("is finish");
+                    TheBubbleApplication.getInstance().getUsersDB().getUserByID(userId).
+                            observe(getViewLifecycleOwner(), personData -> {
                                 AgentAdapter agentAdapter = new AgentAdapter(possibleMatchesAgent, userViewModel);
                                 viewPager.setAdapter(agentAdapter);
                                 viewPager.setOrientation(ViewPager2.ORIENTATION_VERTICAL);
-                            }
-                            algorithm.getAgentSearchFinished().setValue(false);
-                        });
+                                algorithm.getAgentSearchFinished().setValue(false);
+                            });
+                }
             }
         });
 
