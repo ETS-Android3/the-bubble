@@ -2,11 +2,9 @@ package huji.postpc.y2021.tal.yichye.thebubble.Connections;
 
 import android.view.View;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-
 import huji.postpc.y2021.tal.yichye.thebubble.R;
 
 public class OtherMessageHolder extends RecyclerView.ViewHolder {

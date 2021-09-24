@@ -143,7 +143,8 @@ public class PhotosFragment extends Fragment
                     currentOption = 0;
                     mLauncher.launch(takePicture);
                 } else if (options[item].equals("Choose from Gallery")) {
-                    Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     currentOption = 1;
                     mLauncher.launch(pickPhoto);
                 } else if (options[item].equals("Cancel")) {
@@ -237,7 +238,8 @@ public class PhotosFragment extends Fragment
             ArrayList<String> imagesArray = newUserViewModel.photosLiveData.getValue();
             String profileImage = newUserViewModel.profilePhotoLiveData.getValue();
             if (imagesArray.contains(imageName) || imageName.equals(profileImage)) {
-                StorageReference imageRef = storageDB.createReference(newUserViewModel.userNameLiveData.getValue(), imageName);
+                StorageReference imageRef = storageDB.createReference(
+                        newUserViewModel.userNameLiveData.getValue(), imageName);
                 GlideApp.with(requireActivity() /* context */)
                         .load(imageRef)
                         .skipMemoryCache(true)

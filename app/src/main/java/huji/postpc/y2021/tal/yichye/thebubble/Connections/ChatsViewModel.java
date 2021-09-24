@@ -6,9 +6,6 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-
-import huji.postpc.y2021.tal.yichye.thebubble.PersonData;
 import huji.postpc.y2021.tal.yichye.thebubble.TheBubbleApplication;
 import huji.postpc.y2021.tal.yichye.thebubble.UsersDB;
 
@@ -61,9 +58,6 @@ public class ChatsViewModel extends ViewModel {
         return fireBaseChats.get(id);
     }
 
-    //todo implement WHEN SEND BUTTON IS PRESSED
-
-
     /**
      * UPDATE IN FIRESTORE
      * @param newValue
@@ -71,7 +65,6 @@ public class ChatsViewModel extends ViewModel {
      */
     public void setMessagesForGivenChatFBId(Message added,ArrayList<Message> newValue, String chatId){
         chatsDB.updateChatMessages(newValue,chatId);
-        //todo update firebase person field of chatsInfo with new last message details
         String[] ids = chatId.split("-");
         usersDB.updateChatInfoByIdAndMsg(added, ids[0], ids[1]);
         usersDB.updateChatInfoByIdAndMsg(added, ids[1], ids[0]);

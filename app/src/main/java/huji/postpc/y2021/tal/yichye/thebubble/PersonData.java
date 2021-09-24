@@ -1,15 +1,11 @@
 package huji.postpc.y2021.tal.yichye.thebubble;
 
 import android.os.Build;
-
 import androidx.annotation.RequiresApi;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.HashSet;
-
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.ChatInfo;
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.Request;
 
@@ -23,7 +19,7 @@ public class PersonData implements Serializable {
 	public long dateOfBirth;
 	public String aboutMe;
 	public String city;
-	public String phoneNumber; // TODO: phone number should be private and saved in othe place
+	public String phoneNumber;
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
@@ -89,7 +85,6 @@ public class PersonData implements Serializable {
 	public ArrayList<Request> requests;
 	public ArrayList<ChatInfo> chatInfos;
 	public ArrayList<String> ignoreList;
-//	public ArrayList<String> matches;
 
 	public String getId() {
 		return userName;
@@ -138,13 +133,11 @@ public class PersonData implements Serializable {
 				", aboutMe='" + aboutMe + '\'' +
 				", city='" + city + '\'' +
 				", phoneNumber='" + phoneNumber + '\'' +
-//				", avatar=" + profilePicture +
 				", profilePhotos=" + photos +
 				", minAgePreference=" + minAgePreference +
 				", maxAgePreference=" + maxAgePreference +
 				", genderTendency=" + genderTendency +
 				", requests=" + requests +
-//				", matches=" + matches +
 				'}';
 	}
 

@@ -31,7 +31,8 @@ public class AgentFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.agent_fragment, container, false);
     }
 
@@ -54,16 +55,14 @@ public class AgentFragment extends Fragment {
         String userId = userViewModel.getUserNameLiveData().getValue();
 
 
-
         algorithm.getAgentSearchFinished().observe(getViewLifecycleOwner(), isFinish -> {
             if (isFinish) {
                 loadingView.setVisibility(View.GONE);
                 ArrayList<PersonData> possibleMatchesAgent = algorithm.getPossibleMatchesAgentLiveData().getValue();
                 if (possibleMatchesAgent == null || possibleMatchesAgent.size() == 0) {
-                    loadingTextView.setText("We a sorry, but there are no possible matches right now :(");
+                    loadingTextView.setText("We are sorry, but there are no possible matches right now :(");
                 } else {
                     loadingTextView.setVisibility(View.GONE);
-                    System.out.println("is finish");
                     TheBubbleApplication.getInstance().getUsersDB().getUserByID(userId).
                             observe(getViewLifecycleOwner(), personData -> {
                                 AgentAdapter agentAdapter = new AgentAdapter(possibleMatchesAgent, userViewModel);
@@ -74,19 +73,5 @@ public class AgentFragment extends Fragment {
                 }
             }
         });
-
-
-
-
-        ArrayList<PersonData> arrayList = new ArrayList<>();
-        PersonData personData = new PersonData();
-
-        personData.fullName = "Alice";
-        arrayList.add(personData);
-        personData = new PersonData();
-        personData.fullName = "Jane";
-        arrayList.add(personData);
-
-
     }
 }

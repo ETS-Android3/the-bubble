@@ -8,18 +8,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Looper;
-import android.os.SystemClock;
-import android.util.JsonReader;
-import android.util.JsonWriter;
 import android.util.Log;
-
-
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
@@ -35,22 +28,13 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
-
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -58,7 +42,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -87,11 +70,11 @@ public class BackgroundLocationWorker extends Worker {
 		SharedPreferences sp = this.context.getSharedPreferences("local_db", Context.MODE_PRIVATE);
 		String userName = sp.getString("user_name", null);
 		if (userName != null) {
-			if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-				// TODO: have permission
+			if (ActivityCompat.checkSelfPermission(context, Manifest.permission.
+					ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 				FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
 				LocationRequest locationRequest = createLocationRequest();
-				// Code for rec
+
 				fusedLocationProviderClient.getCurrentLocation(locationRequest.getPriority(), new CancellationToken() {
 					@Override
 					public boolean isCancellationRequested() {
@@ -106,7 +89,6 @@ public class BackgroundLocationWorker extends Worker {
 					@SuppressLint("MissingPermission")
 					@Override
 					public void onComplete(@NonNull Task<Location> task) {
-						// Init location
 						Location location = task.getResult();
 						if (location != null) {
 							latitude[0] = location.getLatitude();
@@ -126,13 +108,12 @@ public class BackgroundLocationWorker extends Worker {
 									long timePassed = (Instant.now().toEpochMilli() - location1.getTime()) / 1000;
 									Log.i(TAG, "MyLocation " + latitude[0] + " " + longitude[0] + " callback, " + timePassed);
 
-//									if ((Instant.now().toEpochMilli() - location1.getTime()) / 1000 < 60) {
-//									}
 									updateFile(userName, location1);
 								}
 							};
 							locationRequest.setNumUpdates(1);
-							fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+							fusedLocationProviderClient.requestLocationUpdates(locationRequest,
+									locationCallback, Looper.myLooper());
 						}
 					}
 				});
@@ -144,7 +125,6 @@ public class BackgroundLocationWorker extends Worker {
 
 
 	public JSONObject createJsonObject(Location location){
-		// TODO: to add name of location associated with time
 		Map<String, Double> map = new HashMap<>();
 		map.put("latitude", location.getLatitude());
 		map.put("longitude", location.getLongitude());
@@ -208,7 +188,6 @@ public class BackgroundLocationWorker extends Worker {
 
 
 	public void uploadFile(String userName, String fileName, JSONObject jsonObject) {
-//		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		byte[] sendData = null;
 		try {
 			sendData = jsonObject.toString().getBytes("utf-8");
@@ -220,8 +199,10 @@ public class BackgroundLocationWorker extends Worker {
 		if (sendData != null) {
 			UploadTask uploadTask = ref.putBytes(sendData);
 
-			uploadTask.addOnFailureListener(exception -> Log.i(TAG, "MyLocation upload data to FS error: " + exception.getMessage()))
-					.addOnSuccessListener(taskSnapshot -> Log.i(TAG, "MyLocation " + fileName +" added data to FS: " ));
+			uploadTask.addOnFailureListener(exception -> Log.i(TAG,
+					"MyLocation upload data to FS error: " + exception.getMessage()))
+					.addOnSuccessListener(taskSnapshot -> Log.i(TAG,
+							"MyLocation " + fileName +" added data to FS: " ));
 		}
 	}
 
@@ -232,7 +213,6 @@ public class BackgroundLocationWorker extends Worker {
 			public void onSuccess(byte[] bytes) {
 				InputStream inputStream = new ByteArrayInputStream(bytes);
 				try {
-//					JsonReader jsonReader = new JsonReader(new InputStreamReader(inputStream, "UTF-8"));
 					JSONObject jsonObject = new JSONObject(new JsonParser().parse(new InputStreamReader(inputStream, "UTF-8")).getAsJsonObject().toString());
 					Gson gson = new Gson();
 					uploadFile(userName, LocationHelper.LOCATIONS_FILE_NAME, updateJsonObject(jsonObject, location));

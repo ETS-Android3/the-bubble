@@ -2,22 +2,10 @@ package huji.postpc.y2021.tal.yichye.thebubble;
 
 
 import android.content.Context;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LifecycleOwner;
+import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
-
-import java.util.ArrayList;
-
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.ChatInfo;
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.Message;
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.Request;
@@ -28,7 +16,6 @@ public class UsersDB {
 
 	public UsersDB(Context context) {
 		db = FirebaseFirestore.getInstance();
-
 	}
 
 
@@ -92,7 +79,7 @@ public class UsersDB {
 						}
 						updateUserField(idSelf, "chatInfos", user.chatInfos);
 					} else {
-						System.err.println("couldnt find matching chat info ---updateChatInfoByIdAndMsg");
+						Log.d("users db", "could not find matching chat info");
 					}
 				});
 	}

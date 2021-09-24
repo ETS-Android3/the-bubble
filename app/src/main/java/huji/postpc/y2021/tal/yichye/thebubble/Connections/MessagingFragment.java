@@ -1,31 +1,25 @@
 package huji.postpc.y2021.tal.yichye.thebubble.Connections;
 
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.View;
-
 import huji.postpc.y2021.tal.yichye.thebubble.R;
 import huji.postpc.y2021.tal.yichye.thebubble.TheBubbleApplication;
 import huji.postpc.y2021.tal.yichye.thebubble.UserViewModel;
-
 import android.widget.FrameLayout;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 public class MessagingFragment extends Fragment {
@@ -57,13 +51,11 @@ public class MessagingFragment extends Fragment {
         frameLayout = view.findViewById(R.id.fragment_container_view);
         getChildFragmentManager().beginTransaction().replace(frameLayout.getId(), contactsFragment).commit();
 
-        //todo add listener to back arrow
         conversationFragment.listenerForBackArrow = () -> getChildFragmentManager()
                 .beginTransaction()
                 .replace(frameLayout.getId(), contactsFragment)
                 .commit();
 
-        // TODO:add listener to last chat picked for opening relevant chat -switching fragments
         setLastPickedObserver();
         setNewChatAddedListener();
     }
@@ -71,7 +63,6 @@ public class MessagingFragment extends Fragment {
 
     private void setChatViewModel() {
         for(ChatInfo chatInfo : userViewModel.getChatsLiveData().getValue()){
-            System.out.println("IN LOOP OF CHAT INFO");
             String chatIdentifier = getIdsForChatFB(chatInfo.getChatWith());
             LiveData<ChatFB> chatFBLiveData = TheBubbleApplication
                     .getInstance()
@@ -79,16 +70,11 @@ public class MessagingFragment extends Fragment {
                     .getChatByID(chatIdentifier);
             Observer<ChatFB> observer = chatFB -> {
                 if (chatFB != null){
-                    System.out.println(chatFB.ids);
-                    System.out.println(chatFB.chatMessages);
-
                     updateChatViewModel(chatFB);
                     attach_listener(chatFB);
                 }
-
             };
             chatFBLiveData.observe(getViewLifecycleOwner(), observer);
-
         }
     }
 
@@ -105,7 +91,7 @@ public class MessagingFragment extends Fragment {
                             System.err.println(error.getMessage());
 
                         } else if (snapshot == null) {
-                            System.err.println("snap shot is null");
+                            Log.d("message", "snapshot is null");
                         } else {
                             ChatFB changedChatFB = snapshot.toObject(ChatFB.class);
                             if (changedChatFB != null) {
@@ -125,7 +111,7 @@ public class MessagingFragment extends Fragment {
     public static String getIdsForChatFB(String otherId){
         String selfId = TheBubbleApplication.getInstance().getSP().getString("user_name", null);
         if(selfId == null) {
-            System.err.println("No user in sp");
+            Log.d("message", "No user in sp");
             return null;
         }
         else if (otherId.compareTo(selfId) < 0){
@@ -137,8 +123,6 @@ public class MessagingFragment extends Fragment {
     }
 
 
-
-
     private void setLastPickedObserver() {
         MutableLiveData<ChatInfo> currentChat = chatsViewModel.getLastChatPickedLiveData();
         final Observer<ChatInfo> chatObserver = new Observer<ChatInfo>() {
@@ -146,12 +130,12 @@ public class MessagingFragment extends Fragment {
             public void onChanged(ChatInfo chat) {
                 if (conversationFragment != null && chat != null){
                     conversationFragment.setCurrentOpenedChatInfo(chat);
-                    getChildFragmentManager().beginTransaction().replace(frameLayout.getId(), conversationFragment).commit();
+                    getChildFragmentManager().beginTransaction().replace(frameLayout.getId(),
+                            conversationFragment).commit();
                 }
             }
         };
         currentChat.observe(getViewLifecycleOwner(), chatObserver);
-
     }
 
     private void setNewChatAddedListener(){

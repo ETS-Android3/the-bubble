@@ -2,11 +2,9 @@ package huji.postpc.y2021.tal.yichye.thebubble.Connections;
 
 import android.view.View;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-
 import huji.postpc.y2021.tal.yichye.thebubble.R;
 
 public class SelfMessageHolder extends RecyclerView.ViewHolder {
@@ -23,6 +21,7 @@ public class SelfMessageHolder extends RecyclerView.ViewHolder {
         msgCard = itemView.findViewById(R.id.card_message_me);
         msgText = itemView.findViewById(R.id.text_message_me);
     }
+
     public CardView getMsgCard() {
         return msgCard;
     }
@@ -44,9 +43,6 @@ public class SelfMessageHolder extends RecyclerView.ViewHolder {
         date.setText(message.getDateSent());
         time.setText(message.getTimeSent());
         msgText.setText(message.getContent());
-
     }
-
-
 
 }

@@ -5,13 +5,10 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.storage.StorageReference;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -80,8 +77,6 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactHolder> {
             holder.getLastMsgTimeOrDate().setText(res);
         }
         holder.getUserName().setText(withId);
-        //todo set text for i image - at the moment
-
 
         holder.getDeleteIcon().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,10 +88,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactHolder> {
         holder.getNameAndMsgLayout().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //todo when click listing update live data by defining function in fragment of contacts
-
                 listingClickedCallable.onListingClicked(chatInfo);
-
             }
         });
     }
@@ -110,7 +102,6 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactHolder> {
         if (msg.length() < 20) return msg;
         else {
             return msg.substring(0,17) + "...";
-
         }
     }
 

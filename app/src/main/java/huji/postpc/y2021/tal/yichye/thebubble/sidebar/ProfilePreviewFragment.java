@@ -8,47 +8,29 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
-
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.StorageReference;
-
-import java.time.LocalDate;
 import java.util.ArrayList;
 
-import huji.postpc.y2021.tal.yichye.thebubble.Connections.MessagingFragment;
-import huji.postpc.y2021.tal.yichye.thebubble.Connections.RequestsFragment;
 import huji.postpc.y2021.tal.yichye.thebubble.GlideApp;
 import huji.postpc.y2021.tal.yichye.thebubble.ImageStorageDB;
 import huji.postpc.y2021.tal.yichye.thebubble.PersonData;
@@ -174,7 +156,8 @@ public class ProfilePreviewFragment extends Fragment {
             return false;
         }
         if (aboutMe.length() == 0){
-            Toast.makeText(requireActivity(), "Must enter about me description", Toast.LENGTH_LONG).show();
+            Toast.makeText(requireActivity(), "Must enter about me description",
+                    Toast.LENGTH_LONG).show();
             return false;
         }
         return true;
@@ -299,7 +282,8 @@ public class ProfilePreviewFragment extends Fragment {
                         Uri selectedImage = data.getData();
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
                         if (selectedImage != null) {
-                            Cursor cursor = getActivity().getApplicationContext().getContentResolver().query(selectedImage,
+                            Cursor cursor = getActivity().getApplicationContext().
+                                    getContentResolver().query(selectedImage,
                                     filePathColumn, null, null, null);
                             if (cursor != null) {
                                 cursor.moveToFirst();
@@ -362,7 +346,8 @@ public class ProfilePreviewFragment extends Fragment {
     {
         ArrayList<String> imagesArray = userViewModel.getPhotosLiveData().getValue();
         if (imagesArray.contains(imageName) || imageName.equals("profileImage")) {
-            StorageReference imageRef = storageDB.createReference(userViewModel.getUserNameLiveData().getValue(), imageName);
+            StorageReference imageRef = storageDB.createReference(
+                    userViewModel.getUserNameLiveData().getValue(), imageName);
             GlideApp.with(requireActivity() /* context */)
                     .load(imageRef)
                     .skipMemoryCache(true)

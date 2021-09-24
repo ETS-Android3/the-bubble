@@ -16,10 +16,8 @@ public class ContactHolder extends RecyclerView.ViewHolder {
     TextView userName;
     TextView lastMsg;
     TextView lastMsgTimeOrDate;
-//    TextView lastMsgDate;
     ImageView deleteIcon;
     LinearLayout nameAndMsgLayout;
-
 
 
     public ContactHolder(@NonNull View itemView) {
@@ -30,7 +28,6 @@ public class ContactHolder extends RecyclerView.ViewHolder {
         lastMsgTimeOrDate = itemView.findViewById(R.id.timeOrDateLastMessageText);
         deleteIcon = itemView.findViewById(R.id.deleteChat);
         nameAndMsgLayout = itemView.findViewById(R.id.layoutForClick);
-//        lastMsgDate = itemView.findViewById(R.id.dateLastMessageText);
     }
 
 
@@ -56,8 +53,5 @@ public class ContactHolder extends RecyclerView.ViewHolder {
         return nameAndMsgLayout;
     }
 
-//    public TextView getLastMsgDate() {
-//        return lastMsgDate;
-//    }
 }
 

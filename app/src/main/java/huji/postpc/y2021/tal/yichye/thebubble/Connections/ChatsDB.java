@@ -2,21 +2,10 @@ package huji.postpc.y2021.tal.yichye.thebubble.Connections;
 
 import android.content.Context;
 
-import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-
 import java.util.ArrayList;
-
-import huji.postpc.y2021.tal.yichye.thebubble.PersonData;
 
 public class ChatsDB {
 

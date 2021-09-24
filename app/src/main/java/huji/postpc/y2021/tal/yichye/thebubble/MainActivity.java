@@ -40,13 +40,9 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.storage.StorageReference;
-
 import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static com.google.firebase.components.Dependency.setOf;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -56,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sp;
     private ListenerRegistration listenerRegistration;
 
-    private NavController sideNavController;
     private AppBarConfiguration appBarConfiguration;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -82,11 +77,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (checkLocationPermission(WORKER_FOREGROUND_PERMISSION_ID, Manifest.permission.ACCESS_FINE_LOCATION))
         {
-            if (checkLocationPermission(WORKER_BACKGROUND_GROUND_PERMISSION_ID, Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+            if (checkLocationPermission(WORKER_BACKGROUND_GROUND_PERMISSION_ID,
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
                 startBackgroundWorker();
             }
         }
-
     }
 
     private void setUserViewModel() {
@@ -99,8 +94,7 @@ public class MainActivity extends AppCompatActivity {
                         updateUserViewModel(personData);
                        }
                     else {
-                        Toast.makeText(getBaseContext(),
-                                "Person doesn't exist", Toast.LENGTH_SHORT).show();
+                        Log.d("main activity", "person does not exist");
                     }
                     setMainView();
                     attach_listener(personData);
@@ -206,7 +200,8 @@ public class MainActivity extends AppCompatActivity {
     private void setProfileImageView(ImageView profileImageView)
     {
         ImageStorageDB storageDB = TheBubbleApplication.getInstance().getImageStorageDB();
-        StorageReference imageRef = storageDB.createReference(userViewModel.getUserNameLiveData().getValue(), "profileImage");
+        StorageReference imageRef = storageDB.createReference(
+                userViewModel.getUserNameLiveData().getValue(), "profileImage");
         GlideApp.with(MainActivity.this /* context */)
                 .load(imageRef)
                 .skipMemoryCache(true)
@@ -310,7 +305,7 @@ public class MainActivity extends AppCompatActivity {
             if (permission.equals(Manifest.permission.ACCESS_FINE_LOCATION)) {
                 message = "Please give this permission in order to use Live Zone feature";
             } else if (permission.equals(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
-                message = "Please give this permission in order to use Smart Match Agent feature";
+                message = "Please give this permission in order to use Agent Search feature";
             }
             if (shouldShowRequestPermissionRationale(permission)) {
                 // TODO - CHANGE TEXT MESSAGE

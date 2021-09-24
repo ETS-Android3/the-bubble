@@ -28,10 +28,6 @@ public class Request implements Comparable<Request>, Serializable {
         return inRequest;
     }
 
-//    public String getReqUserName() {
-//        return reqUserName;
-//    }
-
 
     @Override
     public int compareTo(Request o) {

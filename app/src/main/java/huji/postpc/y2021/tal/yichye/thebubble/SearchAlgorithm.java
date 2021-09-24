@@ -61,7 +61,8 @@ public class SearchAlgorithm {
 	public MutableLiveData<ArrayList<PersonData>> possibleMatchesLiveData = new MutableLiveData<>();
 	public MutableLiveData<ArrayList<PersonData>> possibleMatchesAgentLiveData = new MutableLiveData<>();
 
-	public MutableLiveData<ArrayList<Pair<PersonData, HashMap<String, Double>>>> possibleMatchesInRadiusLiveData = new MutableLiveData<>();
+	public MutableLiveData<ArrayList<Pair<PersonData, HashMap<String, Double>>>>
+			possibleMatchesInRadiusLiveData = new MutableLiveData<>();
 	public MutableLiveData<Location> myCurrentLocation = new MutableLiveData<>();
 	public MutableLiveData<Boolean> radiusSearchFinished = new MutableLiveData<>();
 	public MutableLiveData<Boolean> agentSearchFinished = new MutableLiveData<>();
@@ -120,7 +121,7 @@ public class SearchAlgorithm {
 		}
 		// checks age preference
 		int myAge = PersonData.calcAge(myDateOfBirth);
-		int otherUserAge = PersonData.calcAge(otherUser.dateOfBirth); //todo to use getter
+		int otherUserAge = PersonData.calcAge(otherUser.dateOfBirth);
 		return otherUserAge >= myMinAge && otherUserAge <= myMaxAge &&
 				myAge >= otherUser.minAgePreference && myAge <= otherUser.maxAgePreference;
 	}
@@ -137,7 +138,8 @@ public class SearchAlgorithm {
 				}
 				@NonNull
 				@Override
-				public CancellationToken onCanceledRequested(@NonNull OnTokenCanceledListener onTokenCanceledListener) { return null; }
+				public CancellationToken onCanceledRequested(
+						@NonNull OnTokenCanceledListener onTokenCanceledListener) { return null; }
 			}).addOnCompleteListener(new OnCompleteListener<Location>() {
 				@SuppressLint("MissingPermission")
 				@Override
@@ -190,19 +192,24 @@ public class SearchAlgorithm {
 		numOfUsersCheckedRadiusSearch.set(0);
 		for (PersonData user : possibleMatches) {
 			String userName = user.getUserName();
-			StorageReference ref = LocationHelper.createLocationReference(userName, LocationHelper.LAST_LOCATION_FILE_NAME);
+			StorageReference ref = LocationHelper.createLocationReference(userName,
+					LocationHelper.LAST_LOCATION_FILE_NAME);
 			ref.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
 				@Override
 				public void onSuccess(byte[] bytes) {
 					InputStream inputStream = new ByteArrayInputStream(bytes);
 					try {
-						JSONObject jsonObject = new JSONObject(new JsonParser().parse(new InputStreamReader(inputStream, "UTF-8")).getAsJsonObject().toString());
-						String timeStr = jsonObject.keys().next(); // assumes that the file has only one location record (since we work with the lastLocationFile)
-						HashMap<String, Double> locationMap = gson.fromJson(jsonObject.get(timeStr).toString(), HashMap.class);
+						JSONObject jsonObject = new JSONObject(
+								new JsonParser().parse(new InputStreamReader(inputStream,
+										"UTF-8")).getAsJsonObject().toString());
+						String timeStr = jsonObject.keys().next();
+						HashMap<String, Double> locationMap = gson.fromJson(
+								jsonObject.get(timeStr).toString(), HashMap.class);
 						Double otherLatitude = locationMap.get("latitude");
 						Double otherLongitude = locationMap.get("longitude");
 						if (otherLatitude != null && otherLongitude != null) {
-							if (distance(myLatitude, otherLatitude, myLongitude, otherLongitude, 0 ,0) <= radius) {
+							if (distance(myLatitude, otherLatitude, myLongitude,
+									otherLongitude, 0 ,0) <= radius) {
 								updatePossibleMatchesInRadius(user, locationMap);
 							}
 						}
@@ -224,7 +231,6 @@ public class SearchAlgorithm {
 					}
 				}
 			});
-
 		}
 		if (possibleMatches.size() == 0)
 		{
@@ -281,7 +287,8 @@ public class SearchAlgorithm {
 			public void onSuccess(byte[] MyBytes) {
 				InputStream myInputStream = new ByteArrayInputStream(MyBytes);
 				try {
-					JSONObject myJsonObject = new JSONObject(new JsonParser().parse(new InputStreamReader(myInputStream, "UTF-8")).getAsJsonObject().toString());
+					JSONObject myJsonObject = new JSONObject(new JsonParser().parse(
+							new InputStreamReader(myInputStream, "UTF-8")).getAsJsonObject().toString());
 
 					ArrayList<PersonData> possibleMatches = getPossibleMatchesLiveData().getValue();
 					ArrayList<String> ignoreList = userViewModel.getIgnoreListLiveData().getValue();
@@ -304,53 +311,59 @@ public class SearchAlgorithm {
 								inIgnore = true;
 							}
 							if (!inRequests && !inIgnore) {
-								StorageReference otherUserRef = LocationHelper.createLocationReference(otherUserName, LocationHelper.LOCATIONS_FILE_NAME);
-								otherUserRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-									@Override
-									public void onSuccess(byte[] otherBytes) {
-										InputStream otherInputStream = new ByteArrayInputStream(otherBytes);
-										try {
-											JSONObject otherJsonObject = new JSONObject(new JsonParser().parse(new InputStreamReader(otherInputStream, "UTF-8")).getAsJsonObject().toString());
+								StorageReference otherUserRef =
+										LocationHelper.createLocationReference(otherUserName,
+												LocationHelper.LOCATIONS_FILE_NAME);
+								otherUserRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(otherBytes -> {
+									InputStream otherInputStream = new ByteArrayInputStream(otherBytes);
+									try {
+										JSONObject otherJsonObject = new JSONObject(
+												new JsonParser().parse(new InputStreamReader(
+														otherInputStream, "UTF-8")).
+														getAsJsonObject().toString());
 
-											Iterator<String> otherKeys = otherJsonObject.keys();
-											while (otherKeys.hasNext()) {
-												String otherKey = otherKeys.next();
-												Iterator<String> myKeys = myJsonObject.keys();
-												boolean matchFound = false;
-												while (myKeys.hasNext()){
-													String myKey = myKeys.next();
+										Iterator<String> otherKeys = otherJsonObject.keys();
+										while (otherKeys.hasNext()) {
+											String otherKey = otherKeys.next();
+											Iterator<String> myKeys = myJsonObject.keys();
+											boolean matchFound = false;
+											while (myKeys.hasNext()){
+												String myKey = myKeys.next();
 
-													HashMap<String, Double> myLocationMap = gson.fromJson(myJsonObject.get(myKey).toString(), HashMap.class);
-													Double myLatitude = myLocationMap.get("latitude");
-													Double myLongitude = myLocationMap.get("longitude");
-													Double myCount = myLocationMap.get("count");
+												HashMap<String, Double> myLocationMap =
+														gson.fromJson(myJsonObject.get(myKey).
+																toString(), HashMap.class);
+												Double myLatitude = myLocationMap.get("latitude");
+												Double myLongitude = myLocationMap.get("longitude");
+												Double myCount = myLocationMap.get("count");
 
-													HashMap<String, Double> otherLocationMap = gson.fromJson(otherJsonObject.get(otherKey).toString(), HashMap.class);
-													Double otherLatitude = otherLocationMap.get("latitude");
-													Double otherLongitude = otherLocationMap.get("longitude");
-													Double otherCount = otherLocationMap.get("count");
+												HashMap<String, Double> otherLocationMap =
+														gson.fromJson(otherJsonObject.get(otherKey).
+																toString(), HashMap.class);
+												Double otherLatitude = otherLocationMap.get("latitude");
+												Double otherLongitude = otherLocationMap.get("longitude");
+												Double otherCount = otherLocationMap.get("count");
 
-													if (myLatitude != null && myLongitude != null && myCount != null &&
-															otherLatitude != null && otherLongitude != null && otherCount != null) {
-														if (myCount > 1 && otherCount > 1 &&
-																distance(myLatitude, otherLatitude, myLongitude, otherLongitude, 0 ,0) <= similarityDist) {
-															matchFound = true;
-															break;
-														}
+												if (myLatitude != null && myLongitude != null && myCount != null &&
+														otherLatitude != null && otherLongitude != null && otherCount != null) {
+													if (myCount > 1 && otherCount > 1 &&
+															distance(myLatitude, otherLatitude, myLongitude, otherLongitude, 0 ,0) <= similarityDist) {
+														matchFound = true;
+														break;
 													}
 												}
-												if (matchFound) {
-													updatePossibleMatchesAgent(possibleMatch);
-													break;
-												}
 											}
-										} catch (JSONException | UnsupportedEncodingException e) {
-											e.printStackTrace();
+											if (matchFound) {
+												updatePossibleMatchesAgent(possibleMatch);
+												break;
+											}
 										}
-										numOfUsersCheckedAgentSearch.addAndGet(1);
-										if (numOfUsersCheckedAgentSearch.get() == possibleMatches.size()) {
-											agentSearchFinished.setValue(true);
-										}
+									} catch (JSONException | UnsupportedEncodingException e) {
+										e.printStackTrace();
+									}
+									numOfUsersCheckedAgentSearch.addAndGet(1);
+									if (numOfUsersCheckedAgentSearch.get() == possibleMatches.size()) {
+										agentSearchFinished.setValue(true);
 									}
 								}).addOnFailureListener(new OnFailureListener() {
 									@Override

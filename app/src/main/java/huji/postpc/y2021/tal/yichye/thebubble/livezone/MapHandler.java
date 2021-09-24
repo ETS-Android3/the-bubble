@@ -16,8 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
-
-import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.storage.StorageReference;
 import org.osmdroid.api.IMapController;
@@ -70,7 +68,6 @@ public class MapHandler {
         mapView.setMinZoomLevel(DEFAULT_ZOOM);
         mapController.setZoom(DEFAULT_ZOOM);
         mapController.stopAnimation(true);
-
     }
 
     public void setCenter()
@@ -80,8 +77,9 @@ public class MapHandler {
         mapView.setScrollableAreaLimitDouble(mapView.getBoundingBox());
     }
 
-    public void showMarkerOnMap(Drawable profileImage, Pair<PersonData, HashMap<String, Double>> match, boolean isCenter) {
-        // TODO NEED TO CHECK ALSO CHATINFO
+    public void showMarkerOnMap(Drawable profileImage, Pair<PersonData, HashMap<String, Double>> match,
+                                boolean isCenter) {
+
         if (!isCenter && checkRequestBetweenUsers(match.first)){
             return;
         }
@@ -100,7 +98,6 @@ public class MapHandler {
         myMarker.setPosition(location);
         myMarker.setTitle(match.first.getId());
         myMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
-
         myMarker.setIcon(profileImage);
         myMarker.setId(match.first.getId());
 
@@ -175,7 +172,8 @@ public class MapHandler {
 
         aboutMeView.setText(cutAboutMe);
 
-        StorageReference profileImageRef = storageDB.createReference(personData.getId(), "profileImage");
+        StorageReference profileImageRef = storageDB.createReference(personData.getId(),
+                "profileImage");
         GlideApp.with(mapView.getContext())
                 .load(profileImageRef)
                 .centerCrop()
@@ -184,13 +182,8 @@ public class MapHandler {
         if (checkRequestBetweenUsers(personData)){
             sendRequestButton.setEnabled(false);
             sendRequestButton.setText("Request sent !");
-            sendRequestButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(mapView.getContext(), R.color.disable_gray)));
-//            Drawable icon = currentMarker.getIcon();
-//            icon.setAlpha(255);
-//
-//            mapView.getOverlays().remove(currentMarker);
-//            currentMarker.setIcon(icon);
-//            mapView.getOverlays().add(currentMarker);
+            sendRequestButton.setBackgroundTintList(ColorStateList.valueOf(
+                    ContextCompat.getColor(mapView.getContext(), R.color.disable_gray)));
             mapView.invalidate();
         }
 

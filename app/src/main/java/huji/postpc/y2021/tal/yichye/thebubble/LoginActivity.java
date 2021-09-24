@@ -6,19 +6,15 @@ import android.content.pm.PackageManager;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.time.Duration;
 
 import huji.postpc.y2021.tal.yichye.thebubble.onboarding.OnBoardingActivity;
 
@@ -37,7 +33,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestPermissionToStorageLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+        requestPermissionToStorageLauncher = registerForActivityResult(new
+                ActivityResultContracts.RequestPermission(), isGranted -> {
             if (isGranted) {
                 if (clickedOnSignIn) {
                     checkUserCredentials();

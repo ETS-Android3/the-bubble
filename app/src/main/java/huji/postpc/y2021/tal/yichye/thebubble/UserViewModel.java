@@ -152,15 +152,12 @@ public class UserViewModel extends ViewModel {
             id = userNameLiveData.getValue();
             requestsLiveData.setValue(newRequestArray);
         }
-        System.out.println("UPDATE REQUESTS FOR " + id);
         usersDB.updateUserField(id, "requests",newRequestArray);
     }
 
 
     public void setChatsLiveData(ArrayList<ChatInfo> chatInfos, String id) {
         if (id == null){
-            System.out.println("***********************");
-            System.out.println(chatInfos);
             id = userNameLiveData.getValue();
             chatsLiveData.setValue(chatInfos);
         }

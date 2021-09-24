@@ -30,8 +30,6 @@ public class RequestsAdapter  extends RecyclerView.Adapter<RequestHolder> {
     interface OnVClicked { void onClickedV(Request request, String forToast); }
     public OnVClicked VclickedCallable = null;
 
-
-    SharedPreferences sp = TheBubbleApplication.getInstance().getSP();
     ArrayList<Request> userRequests;
 
 
@@ -46,8 +44,6 @@ public class RequestsAdapter  extends RecyclerView.Adapter<RequestHolder> {
         notifyDataSetChanged();
         }
 
-
-
     @NonNull
     @Override
     public RequestHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -61,8 +57,6 @@ public class RequestsAdapter  extends RecyclerView.Adapter<RequestHolder> {
     @Override
     public void onBindViewHolder(@NonNull RequestHolder holder, int position) {
         Request request = userRequests.get(position);
-        //todo set sender image
-
 
         holder.getReqUserName().setText(request.getReqUserId());
 
@@ -77,9 +71,7 @@ public class RequestsAdapter  extends RecyclerView.Adapter<RequestHolder> {
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(holder.getReqUserImg());
 
-
         if (request.inRequest){
-            //todo set sender image
             holder.getCancelRequestButton().setVisibility(View.GONE);
             holder.getApproveIcon().setVisibility(View.VISIBLE);
             holder.getRejectIcon().setVisibility(View.VISIBLE);

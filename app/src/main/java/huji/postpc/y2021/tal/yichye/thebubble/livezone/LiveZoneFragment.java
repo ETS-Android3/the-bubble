@@ -6,13 +6,10 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.location.Location;
 import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -22,17 +19,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.storage.StorageReference;
-
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import huji.postpc.y2021.tal.yichye.thebubble.MainActivity;
 import huji.postpc.y2021.tal.yichye.thebubble.PersonData;
 import huji.postpc.y2021.tal.yichye.thebubble.R;
 import huji.postpc.y2021.tal.yichye.thebubble.SearchAlgorithm;
@@ -121,7 +114,7 @@ public class LiveZoneFragment extends Fragment {
 			StorageReference reference = TheBubbleApplication.getInstance()
 					.getImageStorageDB().createReference(match.first.getId(), "profileImage");
 
-			reference.getBytes(500000).addOnSuccessListener(requireActivity(), bytes -> {
+			reference.getBytes(700000).addOnSuccessListener(requireActivity(), bytes -> {
 				Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 				RoundedBitmapDrawable circularDrawable = getCircularDrawable(bitmap);
 				mapHandler.showMarkerOnMap(circularDrawable, match, false);

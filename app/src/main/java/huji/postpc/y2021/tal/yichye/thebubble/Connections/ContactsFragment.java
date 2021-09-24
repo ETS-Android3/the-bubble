@@ -1,18 +1,16 @@
 package huji.postpc.y2021.tal.yichye.thebubble.Connections;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
-
 import huji.postpc.y2021.tal.yichye.thebubble.R;
 import huji.postpc.y2021.tal.yichye.thebubble.UserViewModel;
 
@@ -21,7 +19,6 @@ public class ContactsFragment extends Fragment {
     UserViewModel userViewModel;
     ChatsViewModel chatsViewModel;
     RecyclerView chatsRecycler;
-//    Button b;
 
     public ContactsFragment(){
         super(R.layout.contacts_layout);
@@ -40,7 +37,7 @@ public class ContactsFragment extends Fragment {
         adapter.setChatInfos(userViewModel.getChatsLiveData().getValue());
         chatsRecycler = view.findViewById(R.id.contactsRecycler);
         chatsRecycler.setAdapter(adapter);
-        chatsRecycler.setLayoutManager(new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL,false)); // check if  require activity is ok
+        chatsRecycler.setLayoutManager(new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL,false));
 
         //update if new contacts added or deleted
         userViewModel.getChatsLiveData().observe(getViewLifecycleOwner(), personDataArr->
@@ -57,16 +54,14 @@ public class ContactsFragment extends Fragment {
         adapter.XclickedCallable = new ContactsAdapter.OnXClicked() {
             @Override
             public void onClickedX(ChatInfo chatInfo) {
-                //TODO DELETE CHAT ONLY AT USER AT THE MOMENT
                 int res = findChatToRemove(chatInfo);
                 if (res != -1){
                     userViewModel.getChatsLiveData().getValue().remove(res);
                     adapter.setChatInfos(userViewModel.getChatsLiveData().getValue());
-                    //todo also delete from fb
                     userViewModel.setChatsLiveData(userViewModel.getChatsLiveData().getValue(), null);
                 }
                 else {
-                    System.err.println("no such chat was found");
+                    Log.d("chat", "no such chat was found");
                 }
             }
         };
@@ -77,8 +72,6 @@ public class ContactsFragment extends Fragment {
                 chatsViewModel.setLastChatPickedLiveData(chatInfo);
             }
         };
-
-
     }
 
     private int findChatToRemove(ChatInfo chatInfo){

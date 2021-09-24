@@ -3,12 +3,7 @@ package huji.postpc.y2021.tal.yichye.thebubble.Connections;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
 
-//todo currently assuming user icon and name is in object
 public class ChatInfo implements Serializable, Comparable<ChatInfo> {
 
     private String chatWith;
@@ -17,16 +12,12 @@ public class ChatInfo implements Serializable, Comparable<ChatInfo> {
     private String dateLastSentMsg;
     boolean newChat;
 
-
-
     public ChatInfo(){}
 
     public ChatInfo(String id){
         chatWith = id;
         lastSentMsg = null;
     }
-
-
 
 
     public String getChatWith() {
@@ -54,7 +45,6 @@ public class ChatInfo implements Serializable, Comparable<ChatInfo> {
     }
 
 
-
     public void setTimeLastSentMsg(String timeLastSentMsg) {
         this.timeLastSentMsg = timeLastSentMsg;
     }
@@ -69,7 +59,6 @@ public class ChatInfo implements Serializable, Comparable<ChatInfo> {
         String d1 = o.dateLastSentMsg + " " + o.timeLastSentMsg;
         String d2 = dateLastSentMsg + " " + timeLastSentMsg;
         if(lastSentMsg == null ){
-            System.out.println("IN COMPARE TO LASTMSG NULL");
             if(o.lastSentMsg == null)
             {
                 return o.getChatWith().compareTo(chatWith);
@@ -91,7 +80,5 @@ public class ChatInfo implements Serializable, Comparable<ChatInfo> {
                 return -2;
             }
         }
-
-
     }
 }
