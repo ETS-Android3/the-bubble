@@ -24,7 +24,7 @@
     <fragment
         android:id="@+id/agent"
         android:name="huji.postpc.y2021.tal.yichye.thebubble.AgentFragment"
-        android:label="Smart Match" />
+        android:label="Agent Search" />
     <fragment
         android:id="@+id/connections"
         android:name="huji.postpc.y2021.tal.yichye.thebubble.Connections.ConnectionsFragment"
