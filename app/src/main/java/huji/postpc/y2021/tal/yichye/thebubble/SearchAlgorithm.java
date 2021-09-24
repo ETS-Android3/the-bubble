@@ -227,6 +227,7 @@ public class SearchAlgorithm {
 				public void onFailure(@NonNull Exception e) {
 					SearchAlgorithm.this.numOfUsersCheckedRadiusSearch.addAndGet(1);
 					if (SearchAlgorithm.this.numOfUsersCheckedRadiusSearch.get() == possibleMatches.size()) {
+						myLocation.setValue(new GeoPoint(myLatitude, myLongitude));
 						getRadiusSearchFinished().setValue(true);
 					}
 				}
