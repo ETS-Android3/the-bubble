@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -128,8 +129,13 @@ public class ProfilePreviewFragment extends Fragment {
         userViewModel.getAboutMeLiveData().observe(getViewLifecycleOwner(), s ->
                 aboutMeEditText.setText(s));
 
-        userViewModel.getGenderLiveData().observe(getViewLifecycleOwner(), gender ->
-                genderTextView.setText(gender.toString().toLowerCase() + ""));
+        userViewModel.getGenderLiveData().observe(getViewLifecycleOwner(), new Observer<PersonData.Gender>() {
+            @Override
+            public void onChanged(PersonData.Gender gender) {
+                String genderText = gender.toString().toLowerCase();
+                genderTextView.setText(genderText);
+            }
+        });
 
         editButton.setOnClickListener(v -> {
             setAllViewsEditable(true);

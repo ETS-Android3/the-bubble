@@ -140,7 +140,7 @@ public class UserViewModel extends ViewModel {
     public void setCityLiveData(String newCity, String id ) {
         if (id == null) {
             id = userNameLiveData.getValue();
-            aboutMeLiveData.setValue(newCity);
+            cityLiveData.setValue(newCity);
         }
         usersDB.updateUserField(id, "city", newCity);
     }

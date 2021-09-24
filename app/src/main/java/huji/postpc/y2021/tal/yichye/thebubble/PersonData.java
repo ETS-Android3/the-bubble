@@ -146,6 +146,15 @@ public class PersonData implements Serializable {
 		FEMALE,
 		TRANSGENDER_M_F,
 		TRANSGENDER_F_M,
-		GENDERQUEER
+		GENDERQUEER;
+
+		@Override
+		public String toString() {
+			String genderText = super.toString().toLowerCase();
+			if (genderText.startsWith("trans")) {
+				return "transgender";
+			}
+			return genderText;
+		}
 	}
 }
