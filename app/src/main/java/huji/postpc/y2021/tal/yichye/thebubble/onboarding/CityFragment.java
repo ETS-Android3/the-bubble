@@ -1,10 +1,12 @@
 package huji.postpc.y2021.tal.yichye.thebubble.onboarding;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,7 +48,7 @@ public class CityFragment extends Fragment
 
         citySpinner = (Spinner) view.findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireActivity(),
-                R.array.city_array, R.layout.simple_spinner_item);
+                R.array.city_array, R.layout.simple_spinner_item_on_boarding);
         adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         citySpinner.setAdapter(adapter);
 

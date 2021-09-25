@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="170dp"
-    android:background = "@color/background_gray"
+    android:background = "@color/white_blue"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <!-- Card View -->
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         app:cardElevation="16dp"
@@ -35,13 +35,13 @@
         android:layout_width="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/user_name_header"
+        app:layout_constraintBottom_toBottomOf="@id/user_name_header"
         android:textAppearance="?attr/textAppearanceBody2"
-        android:textColor="@color/gradient_purple"
+        android:textColor="@color/gradient_pink"
         android:textStyle="bold"
-        android:text="logout"
+        android:text="@string/logout"
         android:layout_marginEnd="10dp"
-        android:textSize="20sp"/>
+        android:textSize="17sp"/>
 
     <TextView
         android:id="@+id/full_name_header"
@@ -53,7 +53,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:textAppearance="?attr/textAppearanceBody2"
-        android:textColor="@color/black"
+        android:textColor="@color/gradient_purple"
         android:textStyle="bold"
         android:text="@string/user_name"
         android:textSize="30sp"/>
@@ -66,7 +66,7 @@
         app:layout_constraintTop_toBottomOf="@+id/full_name_header"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="26dp"
         android:layout_marginEnd="24dp"
         android:textAppearance="?attr/textAppearanceBody2"
         android:textColor="@color/black"

@@ -51,6 +51,17 @@
         <item name="android:shadowRadius">6</item>
     </style>
 
+    <style name="CommunityRulesSideBar" parent="Theme.TheBubble">
+        <item name="android:textSize">40sp</item>
+        <item name="fontFamily">@font/the_bubble_font_bold</item>
+        <item name="android:textColor">@color/black</item>
+
+        <item name="android:shadowDy">5</item>
+        <item name="android:shadowDx">7</item>
+        <item name="android:shadowColor">@color/white_blue</item>
+        <item name="android:shadowRadius">6</item>
+    </style>
+
 
 
     <style name="EditTextHintStyle" parent="Theme.TheBubble">

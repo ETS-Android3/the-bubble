@@ -1,8 +1,6 @@
-package huji.postpc.y2021.tal.yichye.thebubble;
+package huji.postpc.y2021.tal.yichye.thebubble.agent;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +8,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
@@ -18,7 +15,12 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+
+import huji.postpc.y2021.tal.yichye.thebubble.PersonData;
+import huji.postpc.y2021.tal.yichye.thebubble.R;
+import huji.postpc.y2021.tal.yichye.thebubble.SearchAlgorithm;
+import huji.postpc.y2021.tal.yichye.thebubble.TheBubbleApplication;
+import huji.postpc.y2021.tal.yichye.thebubble.UserViewModel;
 
 public class AgentFragment extends Fragment {
 
@@ -45,7 +47,7 @@ public class AgentFragment extends Fragment {
         ViewPager2 viewPager = view.findViewById(R.id.agentViewPager);
         CircularProgressIndicator loadingView = view.findViewById(R.id.loading);
         TextView loadingTextView = view.findViewById(R.id.loadingText);
-        loadingTextView.setText("We are looking for your destiny\nPlease wait");
+        loadingTextView.setText("Looking for potential bubbles\nPlease wait");
 
         algorithm = new SearchAlgorithm(requireActivity());
         algorithm.SearchForPossibleMatches();
@@ -60,7 +62,7 @@ public class AgentFragment extends Fragment {
                 loadingView.setVisibility(View.GONE);
                 ArrayList<PersonData> possibleMatchesAgent = algorithm.getPossibleMatchesAgentLiveData().getValue();
                 if (possibleMatchesAgent == null || possibleMatchesAgent.size() == 0) {
-                    loadingTextView.setText("We are sorry, but there are no possible matches right now :(");
+                    loadingTextView.setText("We are sorry, but there are no potential bubbles right now");
                 } else {
                     loadingTextView.setVisibility(View.GONE);
                     TheBubbleApplication.getInstance().getUsersDB().getUserByID(userId).

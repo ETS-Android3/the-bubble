@@ -37,4 +37,7 @@
     <string name="live_search_description">Live search for matches nearby</string>
     <string name="connections_description">Chats and match requests</string>
     <string name="agent_description">Search for matches using \ncommon location history</string>
+    <string name="logout"><u>Log out</u></string>
+
+
 </resources>

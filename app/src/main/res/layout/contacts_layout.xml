@@ -5,11 +5,20 @@
     android:layout_height="match_parent"
     tools:context=".Connections.MessagingFragment">
 
+    <TextView
+        android:id="@+id/noChatsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No chats"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/contactsRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         />
 
 </FrameLayout>

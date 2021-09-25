@@ -5,10 +5,20 @@
     android:layout_height="match_parent"
     tools:context=".Connections.RequestsFragment">
 
+    <TextView
+        android:id="@+id/noRequestTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No requests"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/reqRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         />
 
 </FrameLayout>

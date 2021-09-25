@@ -116,13 +116,13 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/sendRequestButton"
-            android:layout_width="160dp"
+            android:layout_width="190dp"
             android:layout_height="40dp"
             android:backgroundTint="@color/white_blue"
             android:background="@null"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:text="Send Request"
+            android:text="Bubble in request"
             android:textAlignment="viewStart"
             android:textColor="@color/black"
             android:textSize="15sp"
@@ -130,15 +130,15 @@
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="160dp"
+            android:layout_width="190dp"
             android:layout_height="2dp"
             android:background="@color/background_gray"
             />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/viewProfileButton"
-            android:layout_width="160dp"
+            android:layout_width="190dp"
             android:layout_height="40dp"
-            android:text="View Profile  "
+            android:text="View Full Profile "
             android:textSize="15sp"
             android:insetTop="0dp"
             android:insetBottom="0dp"

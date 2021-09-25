@@ -8,78 +8,12 @@
         android:centerColor="@color/gradient_pink"
         android:endColor="@color/gradient_purple"
         android:angle="45"
-        android:type="linear" />
-
-
-
-
+        android:type="linear"
+        />
 
     <size
         android:height="500dp"
         android:width="500dp">
     </size>
 
-
-<!--    <solid android:color="@color/background_gray">-->
-<!--    </solid>-->
-
-<!--    <stroke-->
-<!--        android:color="@color/background_gray"-->
-
-<!--        android:width="4dp"-->
-<!--        ></stroke>-->
-
-<!--    <gradient-->
-<!--        android:startColor="@color/gradient_peach"-->
-<!--        android:centerColor="@color/gradient_pink"-->
-<!--        android:endColor="@color/gradient_purple"-->
-<!--        android:angle="45"-->
-<!--        android:type="linear" />-->
-
-
-
-
-
-
-<!--    android:shape="ring"-->
-<!--    android:thickness="4dp"-->
-<!--    android:useLevel="false"-->
-<!--    android:innerRadius="196dp">-->
-
-<!--<gradient-->
-<!--android:startColor="@color/gradient_peach"-->
-<!--android:centerColor="@color/gradient_pink"-->
-<!--android:endColor="@color/gradient_purple"-->
-<!--android:angle="45"-->
-<!--android:type="linear" />-->
-
-
-<!--<?xml version="1.0" encoding="UTF-8"?>-->
-<!--<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >-->
-<!--    <item>-->
-<!--        <shape android:shape="oval" >-->
-<!--            <gradient-->
-<!--                android:startColor="@color/gradient_peach"-->
-<!--                android:centerColor="@color/gradient_pink"-->
-<!--                android:endColor="@color/gradient_purple"-->
-<!--                android:angle="45"-->
-<!--                android:type="linear" />-->
-<!--            <size android:width="24dp"-->
-<!--                android:height="24dp"/>-->
-<!--        </shape>-->
-
-<!--    </item>-->
-
-<!--    &lt;!&ndash;    <item&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:bottom="2dp"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:left="2dp"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:right="2dp"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:top="2dp">&ndash;&gt;-->
-<!--    &lt;!&ndash;        <shape android:shape="oval" >&ndash;&gt;-->
-<!--    &lt;!&ndash;            <solid android:color="#F4F1F1" />&ndash;&gt;-->
-<!--    &lt;!&ndash;        </shape>&ndash;&gt;-->
-
-<!--    &lt;!&ndash;    </item>&ndash;&gt;-->
-
-<!--</layer-list>-->
 </shape>

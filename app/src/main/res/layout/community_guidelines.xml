@@ -38,7 +38,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             style="@style/CommunityRules"
-            android:text="First rule."
+            android:text="Be respectful."
             />
 
 
@@ -52,7 +52,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             style="@style/CommunityRules"
-            android:text="Second rule."
+            android:text="Be authentic."
             />
 
 
@@ -66,7 +66,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             style="@style/CommunityRules"
-            android:text="Third rule."
+            android:text="Be safe."
             />
 
     </LinearLayout>

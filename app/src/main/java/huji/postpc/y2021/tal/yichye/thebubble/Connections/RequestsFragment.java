@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import huji.postpc.y2021.tal.yichye.thebubble.PersonData;
@@ -26,6 +27,7 @@ public class RequestsFragment extends Fragment {
     UserViewModel userViewModel;
     ChatsViewModel chatsViewModel;
     RecyclerView requestsRecycler;
+    TextView requestMessageTextView;
     SharedPreferences sp = TheBubbleApplication.getInstance().getSP();
 
 
@@ -42,12 +44,23 @@ public class RequestsFragment extends Fragment {
         chatsViewModel = new ViewModelProvider(requireActivity()).get(ChatsViewModel.class);
         RequestsAdapter adapter = new RequestsAdapter();
         adapter.setUserRequests(userViewModel.getRequestsLiveData().getValue());
+
+        requestMessageTextView = view.findViewById(R.id.noRequestTextView);
         requestsRecycler = view.findViewById(R.id.reqRecycler);
         requestsRecycler.setAdapter(adapter);
+
         requestsRecycler.setLayoutManager(new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL,false)); // check if  require activity is ok
         userViewModel.getRequestsLiveData().observe(getViewLifecycleOwner(), personDataArr->
         {
             if (personDataArr != null) {
+                if (personDataArr.size() == 0) {
+                    requestMessageTextView.setVisibility(View.VISIBLE);
+                    requestsRecycler.setVisibility(View.GONE);
+                }
+                else{
+                    requestMessageTextView.setVisibility(View.GONE);
+                    requestsRecycler.setVisibility(View.VISIBLE);
+                }
                 adapter.setUserRequests(personDataArr);
             } else {
                 Log.d("request", "error in observer req fragment");

@@ -381,8 +381,10 @@ public class SearchAlgorithm {
 									agentSearchFinished.setValue(true);
 								}
 							}
-
-
+						}
+						if (possibleMatches.size() == 0)
+						{
+							getAgentSearchFinished().setValue(true);
 						}
 					}
 				} catch (UnsupportedEncodingException | JSONException e) {

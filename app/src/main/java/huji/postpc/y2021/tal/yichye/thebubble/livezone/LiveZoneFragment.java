@@ -135,9 +135,32 @@ public class LiveZoneFragment extends Fragment {
 
 	@Override
 	public void onDestroyView() {
+		System.out.println("on destroy");
+		mapHandler.cleanupMap();
 		super.onDestroyView();
 		if (timeCounter != null) {
 			timeCounter.cancel();
 		}
+	}
+
+	@Override
+	public void onPause() {
+		mapHandler.cleanupMap();
+		System.out.println("on pause");
+		super.onPause();
+	}
+
+	@Override
+	public void onResume() {
+		System.out.println("on resume");
+
+		super.onResume();
+	}
+
+	@Override
+	public void onStop() {
+		System.out.println("on stop");
+
+		super.onStop();
 	}
 }

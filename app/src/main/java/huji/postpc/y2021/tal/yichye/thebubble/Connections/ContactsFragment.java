@@ -3,6 +3,7 @@ package huji.postpc.y2021.tal.yichye.thebubble.Connections;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +20,8 @@ public class ContactsFragment extends Fragment {
     UserViewModel userViewModel;
     ChatsViewModel chatsViewModel;
     RecyclerView chatsRecycler;
+    TextView chatsMessageTextView;
+
 
     public ContactsFragment(){
         super(R.layout.contacts_layout);
@@ -35,6 +38,7 @@ public class ContactsFragment extends Fragment {
 
         ContactsAdapter adapter = new ContactsAdapter();
         adapter.setChatInfos(userViewModel.getChatsLiveData().getValue());
+        chatsMessageTextView = view.findViewById(R.id.noChatsTextView);
         chatsRecycler = view.findViewById(R.id.contactsRecycler);
         chatsRecycler.setAdapter(adapter);
         chatsRecycler.setLayoutManager(new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL,false));
@@ -43,6 +47,14 @@ public class ContactsFragment extends Fragment {
         userViewModel.getChatsLiveData().observe(getViewLifecycleOwner(), personDataArr->
         {
             if (personDataArr != null) {
+                if (personDataArr.size() == 0) {
+                    chatsMessageTextView.setVisibility(View.VISIBLE);
+                    chatsRecycler.setVisibility(View.GONE);
+                }
+                else{
+                    chatsMessageTextView.setVisibility(View.GONE);
+                    chatsRecycler.setVisibility(View.VISIBLE);
+                }
                 adapter.setChatInfos(personDataArr);
             } else {
                 Toast.makeText(requireContext(),

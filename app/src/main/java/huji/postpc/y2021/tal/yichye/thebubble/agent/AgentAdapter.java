@@ -1,4 +1,4 @@
-package huji.postpc.y2021.tal.yichye.thebubble;
+package huji.postpc.y2021.tal.yichye.thebubble.agent;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
@@ -21,6 +21,13 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 
 import huji.postpc.y2021.tal.yichye.thebubble.Connections.Request;
+import huji.postpc.y2021.tal.yichye.thebubble.GlideApp;
+import huji.postpc.y2021.tal.yichye.thebubble.ImageStorageDB;
+import huji.postpc.y2021.tal.yichye.thebubble.PersonData;
+import huji.postpc.y2021.tal.yichye.thebubble.R;
+import huji.postpc.y2021.tal.yichye.thebubble.TheBubbleApplication;
+import huji.postpc.y2021.tal.yichye.thebubble.UserViewModel;
+import huji.postpc.y2021.tal.yichye.thebubble.UsersDB;
 import huji.postpc.y2021.tal.yichye.thebubble.sidebar.ViewPagerImagesAdapter;
 
 public class AgentAdapter extends RecyclerView.Adapter<AgentAdapter.AgentPagerViewHolder> {
@@ -86,10 +93,6 @@ public class AgentAdapter extends RecyclerView.Adapter<AgentAdapter.AgentPagerVi
 				boolean focusable = true;
 				final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
 				popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, -30);
-//				popupView.setOnTouchListener((v, event) -> {
-//					popupWindow.dismiss();
-//					return true;
-//				});
 				updateFullPopupViews(popupView, personData, profileImageRef);
 
 			}

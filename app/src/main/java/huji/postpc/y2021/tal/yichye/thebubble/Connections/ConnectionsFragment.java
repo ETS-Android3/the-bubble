@@ -34,9 +34,9 @@ public class ConnectionsFragment extends Fragment {
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> {
                     if (position == 0 ){
-                        tab.setText("Conversations");
+                        tab.setText("chats");
                     }
-                    else tab.setText("BTB Requests");
+                    else tab.setText("Bubbles Requests");
 
                 }).attach();
 
