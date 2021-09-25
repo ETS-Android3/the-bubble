@@ -42,7 +42,7 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class MapHandler {
 
-    private double DEFAULT_ZOOM = 19;
+    private double DEFAULT_ZOOM = 18.1;
     private MapView mapView;
     private GeoPoint centerLocation;
     private ImageStorageDB storageDB;
@@ -110,6 +110,7 @@ public class MapHandler {
 
         mapView.getOverlays().add(myMarker);
         mapView.invalidate();
+
     }
 
 

@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -113,12 +114,15 @@ public class LiveZoneFragment extends Fragment {
 		for (Pair<PersonData, HashMap<String, Double>> match: matches) {
 			StorageReference reference = TheBubbleApplication.getInstance()
 					.getImageStorageDB().createReference(match.first.getId(), "profileImage");
-
 			reference.getBytes(700000).addOnSuccessListener(requireActivity(), bytes -> {
-				Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-				RoundedBitmapDrawable circularDrawable = getCircularDrawable(bitmap);
-				mapHandler.showMarkerOnMap(circularDrawable, match, false);
+				if (getView() != null )
+				{
+					Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+					RoundedBitmapDrawable circularDrawable = getCircularDrawable(bitmap);
+					mapHandler.showMarkerOnMap(circularDrawable, match, false);
+				}
 			});
+
 		}
 	}
 
@@ -135,7 +139,6 @@ public class LiveZoneFragment extends Fragment {
 
 	@Override
 	public void onDestroyView() {
-		System.out.println("on destroy");
 		mapHandler.cleanupMap();
 		super.onDestroyView();
 		if (timeCounter != null) {
@@ -146,21 +149,7 @@ public class LiveZoneFragment extends Fragment {
 	@Override
 	public void onPause() {
 		mapHandler.cleanupMap();
-		System.out.println("on pause");
 		super.onPause();
 	}
 
-	@Override
-	public void onResume() {
-		System.out.println("on resume");
-
-		super.onResume();
-	}
-
-	@Override
-	public void onStop() {
-		System.out.println("on stop");
-
-		super.onStop();
-	}
 }
