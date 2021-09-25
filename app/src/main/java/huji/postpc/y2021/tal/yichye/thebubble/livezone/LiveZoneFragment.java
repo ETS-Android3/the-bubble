@@ -32,6 +32,7 @@ import huji.postpc.y2021.tal.yichye.thebubble.R;
 import huji.postpc.y2021.tal.yichye.thebubble.SearchAlgorithm;
 import huji.postpc.y2021.tal.yichye.thebubble.TheBubbleApplication;
 import huji.postpc.y2021.tal.yichye.thebubble.UserViewModel;
+import pl.droidsonroids.gif.GifImageView;
 
 public class LiveZoneFragment extends Fragment {
 
@@ -82,7 +83,7 @@ public class LiveZoneFragment extends Fragment {
 
 		algorithm.getRadiusSearchFinished().observe(getViewLifecycleOwner(), isFinish -> {
 			if (isFinish) {
-				CircularProgressIndicator loadingView = getView().findViewById(R.id.loading);
+				GifImageView loadingView = getView().findViewById(R.id.loading);
 				TextView loadingTextView = getView().findViewById(R.id.loadingText);
 				loadingView.setVisibility(View.GONE);
 				loadingTextView.setVisibility(View.GONE);

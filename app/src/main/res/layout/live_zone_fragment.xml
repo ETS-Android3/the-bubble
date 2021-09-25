@@ -10,7 +10,6 @@
         android:id="@+id/loadingText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/loading"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,19 +19,18 @@
         >
 
     </TextView>
-    <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/loading"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:indeterminate="true"
-        >
 
-    </com.google.android.material.progressindicator.CircularProgressIndicator>
-    <org.osmdroid.views.MapView
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/gif_resize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+       <org.osmdroid.views.MapView
         android:id="@+id/map"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

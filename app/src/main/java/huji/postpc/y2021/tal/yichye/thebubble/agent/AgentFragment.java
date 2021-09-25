@@ -21,6 +21,7 @@ import huji.postpc.y2021.tal.yichye.thebubble.R;
 import huji.postpc.y2021.tal.yichye.thebubble.SearchAlgorithm;
 import huji.postpc.y2021.tal.yichye.thebubble.TheBubbleApplication;
 import huji.postpc.y2021.tal.yichye.thebubble.UserViewModel;
+import pl.droidsonroids.gif.GifImageView;
 
 public class AgentFragment extends Fragment {
 
@@ -45,7 +46,7 @@ public class AgentFragment extends Fragment {
 
 
         ViewPager2 viewPager = view.findViewById(R.id.agentViewPager);
-        CircularProgressIndicator loadingView = view.findViewById(R.id.loading);
+        GifImageView loadingView = view.findViewById(R.id.loading);
         TextView loadingTextView = view.findViewById(R.id.loadingText);
         loadingTextView.setText("Looking for potential bubbles\nPlease wait");
 
