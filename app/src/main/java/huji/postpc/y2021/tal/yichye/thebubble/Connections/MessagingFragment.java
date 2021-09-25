@@ -11,6 +11,8 @@ import huji.postpc.y2021.tal.yichye.thebubble.R;
 import huji.postpc.y2021.tal.yichye.thebubble.TheBubbleApplication;
 import huji.postpc.y2021.tal.yichye.thebubble.UserViewModel;
 import android.widget.FrameLayout;
+import android.widget.Toast;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -58,6 +60,16 @@ public class MessagingFragment extends Fragment {
 
         setLastPickedObserver();
         setNewChatAddedListener();
+
+        userViewModel.getChatsLiveData().observe(getViewLifecycleOwner(), personDataArr->
+        {
+            if (personDataArr != null) {
+                setChatViewModel();
+            } else {
+                Toast.makeText(requireContext(),
+                        "Error occurred", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
