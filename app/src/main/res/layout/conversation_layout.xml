@@ -33,6 +33,7 @@
             android:layout_height="50dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
             android:backgroundTint="@android:color/transparent"
             >
             <ImageView
@@ -43,14 +44,7 @@
                 android:background="@drawable/user_icon"
                 />
         </androidx.cardview.widget.CardView>
-<!--        -->
-<!--        <ImageView-->
-<!--            android:id="@+id/otherImage"-->
-<!--            android:layout_height="70dp"-->
-<!--            android:layout_width="70dp"-->
-<!--            android:layout_marginStart="20dp"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent" />-->
+
 
         <TextView
             android:id="@+id/otherName"

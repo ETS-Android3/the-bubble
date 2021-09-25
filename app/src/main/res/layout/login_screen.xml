@@ -8,6 +8,16 @@
     >
 
 
+    <ImageView
+        android:id="@+id/otherImage"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:background="@drawable/app_icon_final"
+        app:layout_constraintBottom_toTopOf="@+id/userNameTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="15dp" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/userNameTextView"
         android:layout_width="250dp"
