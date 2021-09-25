@@ -20,7 +20,7 @@ public class NewUserViewModel extends ViewModel
 
     protected MutableLiveData<String> phoneNumberLiveData = new MutableLiveData<>("");
     protected MutableLiveData<Long> dataOfBirthLiveData = new MutableLiveData<Long>(START_DATE);
-    protected MutableLiveData<Integer> myGenderLiveData = new MutableLiveData<Integer>(1);
+    protected MutableLiveData<Integer> myGenderLiveData = new MutableLiveData<Integer>(0);
     protected MutableLiveData<String> cityLiveData = new MutableLiveData<>("");
 
     protected MutableLiveData<Integer> minAgePreferenceLiveData = new MutableLiveData<Integer>( 26);

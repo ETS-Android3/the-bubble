@@ -39,7 +39,6 @@ public class ConversationFragment extends Fragment {
     public interface OnBackPressedListener { public void onPressed();}
     protected OnBackPressedListener listenerForBackArrow;
 
-
     public ConversationFragment ( ){
         super(R.layout.conversation_layout);
     }
@@ -115,7 +114,7 @@ public class ConversationFragment extends Fragment {
             Observer<ArrayList<Message>> observer = messages -> {
                 if (messages != null){
                     adapter.setMessages(messages);
-                    conversationRecycler.smoothScrollToPosition(messages.size()-1);
+                    conversationRecycler.smoothScrollToPosition(Math.max(0, messages.size()-1));
                 }
                 else {
                     Log.d("conversation", "error in observer conversation frag");
