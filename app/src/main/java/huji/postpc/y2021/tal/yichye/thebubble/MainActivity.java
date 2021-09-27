@@ -18,6 +18,8 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -43,6 +45,8 @@ import com.google.firebase.storage.StorageReference;
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
+import huji.postpc.y2021.tal.yichye.thebubble.onboarding.OnBoardingActivity;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -271,20 +275,17 @@ public class MainActivity extends AppCompatActivity {
                 NavController navController = navHostFragment.getNavController();
                 switch (item.getItemId()) {
                     case R.id.liveZone:
-                        //TODO CHECK IF NEED TO CHANGE LAYOUT OF LIVE ZONE BUTTON
                         if (checkLocationPermission(LIVE_ZONE_FOREGROUND_PERMISSION_ID, Manifest.permission.ACCESS_FINE_LOCATION)) {
                             enableBottomNavigationView();
                             navController.navigate(R.id.liveZone);
+                            break;
                         }
-                        else{
-                            Toast.makeText(MainActivity.this,
-                                    "Must allow location permissions before running live zone",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                        break;
+                        return false;
                     case R.id.agent:
+                        checkLocationPermission(WORKER_BACKGROUND_GROUND_PERMISSION_ID, Manifest.permission.ACCESS_BACKGROUND_LOCATION);
                         enableBottomNavigationView();
                         navController.navigate(R.id.agent);
+
                         break;
                     case R.id.connections:
                         enableBottomNavigationView();
@@ -302,24 +303,26 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else {
             String message = "";
+            String title = "";
             if (permission.equals(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                message = "Please give this permission in order to use Live Zone feature";
+                title = "Foreground location permission";
+                message = "Please give permission for foreground location service in order to use Live Zone feature";
             } else if (permission.equals(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
-                message = "Please give this permission in order to use Agent Search feature";
+                title = "Background location permission";
+                message = "Please give permission for background location service in order to receive Agent Search feature's up to date results";
             }
-            if (shouldShowRequestPermissionRationale(permission)) {
-                // TODO - CHANGE TEXT MESSAGE
-                // TODO - CHECK WHICH PERMISSION IS NEEDED
-
-                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
-                ActivityCompat.requestPermissions(this, new String[]{permission}, permissionId);
-                return false;
-            } else {
-                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
-
-                ActivityCompat.requestPermissions(this, new String[]{permission}, permissionId);
-                return false;
-            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(title);
+            builder.setMessage(message);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{permission}, permissionId);
+                    dialogInterface.dismiss();
+                }
+            });
+            builder.show();
+            return false;
         }
     }
 
@@ -392,7 +395,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // TODO MAYBE CHECK ALL RESULT IN GRANT RESULT ARRAY
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (requestCode == WORKER_FOREGROUND_PERMISSION_ID) {
                 checkLocationPermission(WORKER_BACKGROUND_GROUND_PERMISSION_ID, Manifest.permission.ACCESS_BACKGROUND_LOCATION);
@@ -407,11 +409,6 @@ public class MainActivity extends AppCompatActivity {
                 enableBottomNavigationView();
                 navController.navigate(R.id.liveZone);
             }
-        } else {
-            // TODO change message
-            Toast.makeText(MainActivity.this,
-                    "Must allow location permission" + permissions[0],
-                    Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -199,9 +199,6 @@ public class PhotosFragment extends Fragment
             @Override
             public void onChanged(Boolean isUpload) {
                 if (isUpload) {
-                    Toast.makeText(requireActivity(),
-                            "Finished uploading image to Firebase", Toast.LENGTH_SHORT).show();
-
                     ArrayList<String> newArray = newUserViewModel.photosLiveData.getValue();
                     if (imageName.equals("profileImage")){
                         newUserViewModel.profilePhotoLiveData.setValue("profileImage");

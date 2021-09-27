@@ -329,9 +329,6 @@ public class ProfilePreviewFragment extends Fragment {
 
         uploadLiveData.observe(getViewLifecycleOwner(), isUpload -> {
             if (isUpload) {
-                Toast.makeText(requireActivity(),
-                        "Finished uploading image to Firebase", Toast.LENGTH_SHORT).show();
-
                 ArrayList<String> newArray = userViewModel.getPhotosLiveData().getValue();
                 if (!newArray.contains(imageName) && !imageName.equals("profileImage")) {
                     newArray.add(imageName);

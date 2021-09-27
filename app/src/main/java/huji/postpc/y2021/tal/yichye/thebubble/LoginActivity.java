@@ -1,6 +1,8 @@
 package huji.postpc.y2021.tal.yichye.thebubble;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.LinearGradient;
@@ -12,6 +14,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -43,7 +46,17 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), OnBoardingActivity.class));
                 }
             } else {
-                Toast.makeText(this, "Can't use the application with storage permission", Toast.LENGTH_SHORT).show();
+//                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//                builder.setTitle("Files and Media permission");
+//                builder.setMessage("Please give Files and Media permission in order to use the app");
+//                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                        dialogInterface.dismiss();
+//                    }
+//                });
+//                builder.show();
             }
         });
         startLoginProcess();
@@ -71,8 +84,19 @@ public class LoginActivity extends AppCompatActivity {
                 checkUserCredentials();
             }
             else {
-                requestPermissionToStorageLauncher.launch(
-                        Manifest.permission.READ_EXTERNAL_STORAGE);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Files and Media permission");
+                builder.setMessage("Please give Files and Media permission in order to use the app");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        requestPermissionToStorageLauncher.launch(
+                                Manifest.permission.READ_EXTERNAL_STORAGE);
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.show();
+
             }
         });
 

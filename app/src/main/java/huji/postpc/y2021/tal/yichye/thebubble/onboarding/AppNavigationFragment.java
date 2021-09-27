@@ -1,5 +1,7 @@
 package huji.postpc.y2021.tal.yichye.thebubble.onboarding;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -36,7 +38,18 @@ public class AppNavigationFragment extends Fragment
         createUser(newUserViewModel);
 
         nextButton.setOnClickListener(v -> {
-            newUserViewModel.progressLiveData.setValue(OnBoardingActivity.DONE_ON_BOARDING);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Location tracking");
+            builder.setMessage("Note! This app collects location data to enable Agent Search & " +
+                    "Live Zone even when the app is closed or not in use.");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    newUserViewModel.progressLiveData.setValue(OnBoardingActivity.DONE_ON_BOARDING);
+                    dialogInterface.dismiss();
+                }
+            });
+            builder.show();
         });
 
     }
