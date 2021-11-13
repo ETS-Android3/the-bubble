@@ -8,6 +8,8 @@ import huji.postpc.y2021.tal.yichye.thebubble.Connections.ChatsDB;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
+import androidx.appcompat.app.AppCompatDelegate;
+
 public class TheBubbleApplication extends Application {
 
     private UsersDB usersDB;
@@ -42,6 +44,8 @@ public class TheBubbleApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
         sp = getSharedPreferences("local_db", MODE_PRIVATE);
         usersDB = new UsersDB(this);
         instance = this;
